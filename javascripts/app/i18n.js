@@ -1,0 +1,1 @@
+$(function(){var a,n;return"/"===location.pathname?(a=navigator.languages?navigator.languages[0]:navigator.language||navigator.userLanguage,n=a.substring(0,2),-1===$.inArray(n,["pt","en"])&&(n="pt"),window.location.replace("http://"+window.location.host+"/"+n+window.location.hash)):void 0});
