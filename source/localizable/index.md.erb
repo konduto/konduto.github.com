@@ -1,0 +1,1501 @@
+---
+title: API | Konduto
+
+language_tabs_copy:
+  - shell: JSON
+  - php: PHP
+  - java: Java
+  - csharp: .NET
+  - js: JavaScript
+
+toc_footers:
+  - <a href='https://www.konduto.com'>HOME</a>
+  - <a href='#'>-</a>
+  - <a href='/pt'>PORTUGUÊS</a>
+  - <a href='/en'>ENGLISH</a>
+
+search: false
+---
+
+<%# %>
+<%# INTRO %>
+<%# %>
+
+# <%= t("introduction.title") %>
+<%= t("introduction.content") %>
+
+
+<%# %>
+<%# COLLECTOR %>
+<%# %>
+
+# <%= t("collector.title") %>
+
+> <%= t("collector.code.paste") %>
+
+```html
+<script type="text/javascript">
+  var __kdt = __kdt || [];
+  // <%= t("collector.code.comment") %>
+  __kdt.push({"public_key": "TEE973BEC88"});
+  (function() {
+  var kdt = document.createElement('script');
+  kdt.id = 'kdtjs'; kdt.type = 'text/javascript';
+  kdt.async = true; 
+  kdt.src = 'https://i.k-analytix.com/k.js';
+  var s = document.getElementsByTagName('body')[0];
+  s.parentNode.insertBefore(kdt, s);
+  })();
+</script>
+```
+
+<%= t("collector.content") %>
+
+## <%= t("collector.methods.title") %>
+
+> <%= t("collector.code.setcustomer") %>
+
+```html
+<script type="text/javascript">
+  Konduto.setCustomerID('customer.id');
+</script>
+```
+
+> <%= t("collector.code.getvisitor") %>
+
+```html
+<script type="text/javascript">
+  var visitor_id = Konduto.getVisitorID();
+</script>
+```
+
+<%= t("collector.methods.content") %>
+
+
+
+<%# %>
+<%# TAGS %>
+<%# %>
+
+# <%= t("tags.title") %>
+<%= t("tags.content") %>
+
+## <%= t("tags.basic.title") %>
+
+```html
+<!-- <%= t("tags.code.password") %> -->
+<meta name="kdt:page" content="password-reset">
+
+<!-- <%= t("tags.code.checkout") %> -->
+<meta name="kdt:page" content="checkout">
+
+<!-- <%= t("tags.code.product") %> -->
+<meta name="kdt:page" content="product">
+<meta name="kdt:product" content="sku=123, name=Camiseta Verde">
+
+<!-- <%= t("tags.code.flight") %> -->
+<meta name="kdt:page" content="search">
+<meta name="kdt:departure" content="GRU-SFO">
+<meta name="kdt:departure-date" content="2020-12-25">
+<meta name="kdt:return" content="SFO-GRU">
+<meta name="kdt:return-date" content="2021-01-25">
+```
+
+<%= t("tags.basic.content") %>
+
+## <%= t("tags.advanced.title") %>
+
+> <%= t("tags.code.advanced") %>
+
+```html
+<script type="text/javascript">
+  var __kdt = __kdt || [];
+  __kdt.push({"public_key": "TEE973BEC88"});
+  // <%= t("tags.code.advanced_comment") %>
+  __kdt.push({"post_on_load": "false"});
+  (function() {
+  var kdt = document.createElement('script');
+  kdt.id = 'kdtjs'; kdt.type = 'text/javascript';
+  kdt.async = true; 
+  kdt.src = 'https://i.k-analytix.com/k.js';
+  var s = document.getElementsByTagName('body')[0];
+  s.parentNode.insertBefore(kdt, s);
+  })();
+</script>
+```
+
+> <%= t("tags.code.advanced_sendEvent") %>
+
+```html
+<!-- <%= t("tags.code.checkout") %> -->
+<script type="text/javascript">
+  Konduto.sendEvent('page','checkout');
+</script>
+```
+
+```html
+<!-- <%= t("tags.code.password") %> -->
+<script type="text/javascript">
+  Konduto.sendEvent('page','password-reset');
+</script>
+```
+
+
+<%= t("tags.advanced.content") %>
+
+### <%= t("tags.advanced.more_title") %>
+<%= t("tags.advanced.more") %>
+
+
+
+<%# %>
+<%# HELPERS %>
+<%# %>
+
+# <%= t("helpers.title") %>
+
+> [php-sdk](https://github.com/konduto/php-sdk) - PHP helper  
+> [java-sdk](https://github.com/konduto/java-sdk) - Java helper    
+> [dotnet-sdk](https://github.com/konduto/dotnet-sdk) - .NET helper  
+> [konduto.js](https://github.com/konduto/konduto.js) - JS client
+
+<%= t("helpers.content") %>
+
+
+
+
+<%# %>
+<%# AUTHENTICATION %>
+<%# %>
+
+# <%= t("authentication.title") %>
+
+```config
+# <%= t("authentication.code.how") %>
+Authorization: Basic BASE64(T738D516F09CAB3A2C1EE:)
+
+# <%= t("authentication.code.result") %>
+Authorization: Basic VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg==
+```
+
+<%= t("authentication.content") %>
+
+
+
+<%# %>
+<%# ORDERS %>
+<%# %>
+
+
+# <%= t("orders.title") %>
+
+> <%= t("orders.code.resources") %>
+
+```apache
+POST https://api.konduto.com/v1/orders
+PUT  https://api.konduto.com/v1/orders/{order_id}
+GET  https://api.konduto.com/v1/orders/{order_id}
+```
+
+<%= t("orders.content") %>
+
+
+<%# %>
+<%# ORDERS POST %>
+<%# %>
+
+
+## <%= t("orders.post.title") %>
+<%= t("orders.post.content") %>
+
+
+### <%= t("orders.post.root.title") %>
+
+```shell
+{
+  "id":"10000000001",
+  "visitor":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "total_amount":100.00,
+  "shipping_amount":20.00,
+  "tax_amount":3.45,
+  "currency":"<%= t("examples.currency") %>",
+  "installments":2,
+  "ip":"<%= t("examples.ip") %>",
+  "analyze":true,
+  "customer":{ },
+  "payment":[ ],
+  "billing":{ },
+  "shipping":{  },
+  "shopping_cart":[ ],
+  "travel":{ }
+}
+```
+
+<%= t("orders.post.root.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+id | *<%= t("required") %>* <br /> <%= t("orders.post.root.table.id") %> 
+visitor | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.visitor") %>
+total_amount | *<%= t("required") %>* <br /> <%= t("orders.post.root.table.total_amount") %>
+shipping_amount | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.shipping_amount") %>
+tax_amount | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.tax_amount") %>
+currency | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.currency") %>
+installments | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.installments") %>
+ip | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.ip") %>
+analyze | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.analyze") %>
+customer | *<%= t("required") %>* <br /> <%= t("orders.post.root.table.customer") %>
+payment | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.payment") %>
+billing | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.billing") %>
+shipping | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.shipping") %>
+shopping_cart | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.shopping_cart") %>
+travel | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.travel") %>
+
+
+### <%= t("orders.post.customer.title") %>
+
+```shell
+{
+  "customer": {
+    "id":"28372",
+    "name":"<%= t("examples.name") %>",
+    "tax_id":"<%= t("examples.tax_id") %>",
+    "dob":"1970-12-25",
+    "phone1":"<%= t("examples.phone1") %>",
+    "phone2":"<%= t("examples.phone2") %>",
+    "email":"<%= t("examples.email") %>",
+    "new":false,
+    "vip":false
+  }
+}
+```
+
+<%= t("orders.post.customer.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+id | *<%= t("required") %>* <br /> <%= t("orders.post.customer.table.id") %> 
+name | *<%= t("required") %>* <br /> <%= t("orders.post.customer.table.name") %> 
+email | *<%= t("required") %>* <br /> <%= t("orders.post.customer.table.email") %> 
+dob | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.dob") %> 
+tax_id | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.tax_id") %> 
+phone1 | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.phone1") %> 
+phone2 | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.phone2") %> 
+new | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.new") %> 
+vip | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.vip") %> 
+
+
+### <%= t("orders.post.payment.title") %>
+
+```shell
+{  
+  "payment":[  
+    {  
+      "type":"credit",
+      "bin":"490172",
+      "last4":"0012",
+      "expiration_date":"072015",
+      "status":"approved"
+    },
+    {  
+      "type":"credit",
+      "bin":"514800",
+      "last4":"3752",
+      "expiration_date":"082016",
+      "status":"approved"
+    }
+  ]
+}
+```
+
+<%= t("orders.post.payment.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+type | *<%= t("required") %>* <br /> <%= t("orders.post.payment.table.type") %> 
+status | *<%= t("required") %>* <br /> <%= t("orders.post.payment.table.status") %> 
+bin | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table.bin") %> 
+last4 | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table.last4") %> 
+expiration_date | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table.expiration_date") %> 
+
+
+### <%= t("orders.post.billing.title") %>
+
+```
+{  
+  "billing":{  
+    "name":"<%= t("examples.name") %>",
+    "address1":"<%= t("examples.address1") %>",
+    "address2":"<%= t("examples.address2") %>",
+    "city":"<%= t("examples.city") %>",
+    "state":"<%= t("examples.state") %>",
+    "zip":"<%= t("examples.zip") %>",
+    "country":"<%= t("examples.country") %>"
+  }
+}
+```
+
+<%= t("orders.post.billing.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+name | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.name") %> 
+address1 | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.address1") %> 
+address2 | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.address2") %> 
+city | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.city") %> 
+state | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.state") %> 
+zip | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.zip") %> 
+country | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.country") %> 
+
+
+### <%= t("orders.post.shipping.title") %>
+
+```
+{  
+  "shipping":{  
+    "name":"<%= t("examples.name") %>",
+    "address1":"<%= t("examples.address1") %>",
+    "address2":"<%= t("examples.address2") %>",
+    "city":"<%= t("examples.city") %>",
+    "state":"<%= t("examples.state") %>",
+    "zip":"<%= t("examples.zip") %>",
+    "country":"<%= t("examples.country") %>"
+  }
+}
+```
+
+<%= t("orders.post.shipping.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+name | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.name") %> 
+address1 | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.address1") %> 
+address2 | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.address2") %> 
+city | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.city") %> 
+state | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.state") %> 
+zip | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.zip") %> 
+country | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.country") %> 
+
+### <%= t("orders.post.shopping_cart.title") %>
+
+```shell
+{  
+  "shopping_cart":[  
+    {  
+      "sku":"9919023",
+      "product_code":"123456789999",
+      "category":201,
+      "name":"<%= t("examples.product1") %>",
+      "description":"<%= t("examples.description1") %>",
+      "unit_cost":29.99,
+      "quantity":1
+    },
+    {  
+      "sku":"0017273",
+      "category":202,
+      "name":"<%= t("examples.product2") %>",
+      "description":"<%= t("examples.description2") %>",
+      "unit_cost":7.50,
+      "quantity":2,
+      "discount":1.00
+    }
+  ]
+}
+```
+
+<%= t("orders.post.shopping_cart.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+sku | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.sku") %> 
+product_code | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.product_code") %> 
+category | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.category") %> 
+name | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.name") %> 
+description | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.description") %> 
+unit_cost | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.unit_cost") %> 
+quantity | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.quantity") %> 
+discount | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.discount") %> 
+
+### <%= t("orders.post.travel.title") %>
+
+```shell
+{  
+  "travel":{  
+    "type":"flight",
+    "departure":{  
+      "origin_airport":"<%= t("examples.airport1") %>",
+      "destination_airport":"<%= t("examples.airport2") %>",
+      "date":"2018-12-25T18:00Z",
+      "number_of_connections":1,
+      "class":"economy",
+      "fare_basis":"Y"
+    },
+    "return":{  
+      "origin_airport":"<%= t("examples.airport2") %>",
+      "destination_airport":"<%= t("examples.airport1") %>",
+      "date":"2018-12-30T18:00Z",
+      "number_of_connections":1,
+      "class":"business"
+    },
+    "passengers":[  
+      {  
+        "name":"<%= t("examples.name") %>",
+        "document":"<%= t("examples.tax_id") %>",
+        "document_type":"id",
+        "dob":"1970-01-01",
+        "nationality":"BR",
+        "loyalty":{  
+          "program":"smiles",
+          "category":"gold"
+        },
+        "frequent_traveler":true,
+        "special_needs":false
+      },
+      {  
+        "name":"<%= t("examples.passenger2") %>",
+        "document":"XYZ1234",
+        "document_type":"passport",
+        "dob":"1970-12-01",
+        "nationality":"US",
+        "loyalty":{  
+          "program":"multiplus",
+          "category":"silver"
+        },
+        "frequent_traveler":false,
+        "special_needs":true
+      }
+    ]
+  }
+}
+```
+
+<%= t("orders.post.travel.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+type | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.type") %> 
+departure | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.departure") %> 
+return | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.return") %> 
+passengers | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.passengers") %> 
+
+
+#### <%= t("orders.post.travel.travel") %><br /><br />
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+origin_city | *<%= t("required_if_bus") %>* <br /> <%= t("orders.post.travel.table.origin_city") %> 
+destination_city | *<%= t("required_if_bus") %>* <br /> <%= t("orders.post.travel.table.destination_city") %> 
+origin_airport | *<%= t("required_if_flight") %>* <br /> <%= t("orders.post.travel.table.origin_airport") %> 
+destination_airport | *<%= t("required_if_flight") %>* <br /> <%= t("orders.post.travel.table.destination_airport") %> 
+date | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.date") %> 
+number_of_connections | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.number_of_connections") %> 
+class | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.class") %> 
+fare_basis | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.fare_basis") %> 
+
+#### <%= t("orders.post.travel.passengers") %><br /><br />
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+name | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.name") %> 
+document | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.document") %> 
+document_type | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.document_type") %> 
+dob | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.dob") %> 
+nationality | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.nationality") %> 
+frequent_passenger | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.frequent_passenger") %> 
+special_needs | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.special_needs") %> 
+
+
+
+<%# %>
+<%# ORDERS PUT %>
+<%# %>
+
+
+## <%= t("orders.put.title") %>
+
+```shell
+{  
+  "status":"approve",
+  "comments":"<%= t("examples.comments") %>"
+}
+```
+
+<%= t("orders.put.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+status | *<%= t("required") %>* <br /> <%= t("orders.put.table.status") %> 
+comments | *<%= t("required") %>* <br /> <%= t("orders.put.table.comments") %> 
+
+
+
+<%# %>
+<%# ORDERS GET %>
+<%# %>
+
+
+## <%= t("orders.get.title") %>
+
+```shell
+GET https://api.konduto.com/v1/orders/ORD1837213
+```
+
+<%= t("orders.get.content") %>
+
+
+<%# %>
+<%# BLACKLIST %>
+<%# %>
+
+
+# <%= t("blacklist.title") %>
+
+> <%= t("blacklist.code.email_resources") %>
+
+```apache
+POST    https://api.konduto.com/v1/blacklist/email/{email}
+PUT     https://api.konduto.com/v1/blacklist/email/{email}
+GET     https://api.konduto.com/v1/blacklist/email/{email}
+DELETE  https://api.konduto.com/v1/blacklist/email/{email}
+```
+
+> <%= t("blacklist.code.email_resources") %>
+
+```apache
+POST    https://api.konduto.com/v1/blacklist/address/{id}
+PUT     https://api.konduto.com/v1/blacklist/address/{id}
+GET     https://api.konduto.com/v1/blacklist/address/{id}
+DELETE  https://api.konduto.com/v1/blacklist/address/{id}
+```
+
+<%= t("blacklist.content") %>
+
+
+<%# %>
+<%# BLACKLIST POST %>
+<%# %>
+
+
+## <%= t("blacklist.post.title") %>
+
+> <%= t("blacklist.code.email_add") %>
+
+```shell
+{  
+  "email_address":"<%= t("examples.email") %>",
+  "days_to_expire":180
+}
+```
+
+> <%= t("blacklist.code.address_add") %>
+
+```shell
+{  
+  "address_identifier":"382773ABC",
+  "address_line_1":"<%= t("examples.address1") %>",
+  "address_line_2":"<%= t("examples.address2") %>",
+  "city":"<%= t("examples.city") %>",
+  "state":"<%= t("examples.state") %>",
+  "zip":"<%= t("examples.zip") %>",
+  "country":"<%= t("examples.country") %>",
+  "days_to_expire":180
+}
+```
+
+<%= t("blacklist.post.content") %>
+
+
+#### <%= t("blacklist.table.email_title") %> 
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+email_address | *<%= t("required") %>* <br /> <%= t("blacklist.table.email_address") %> 
+days_to_expire | *<%= t("optional") %>* <br /> <%= t("blacklist.table.days_to_expire") %> 
+
+
+#### <%= t("blacklist.table.address_title") %> 
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+address_identifier | *<%= t("required") %>* <br /> <%= t("blacklist.table.address_identifier") %> 
+address_line_1 | *<%= t("optional") %>* <br /> <%= t("blacklist.table.address_line_1") %> 
+address_line_2 | *<%= t("optional") %>* <br /> <%= t("blacklist.table.address_line_2") %> 
+city | *<%= t("optional") %>* <br /> <%= t("blacklist.table.city") %> 
+state | *<%= t("optional") %>* <br /> <%= t("blacklist.table.state") %> 
+zip | *<%= t("optional") %>* <br /> <%= t("blacklist.table.zip") %> 
+country | *<%= t("optional") %>* <br /> <%= t("blacklist.table.country") %> 
+days_to_expire | *<%= t("optional") %>* <br /> <%= t("blacklist.table.days_to_expire") %> 
+
+
+
+
+<%# %>
+<%# BLACKLIST PUT %>
+<%# %>
+
+
+## <%= t("blacklist.put.title") %>
+
+> <%= t("blacklist.code.update") %>
+
+```shell
+{
+  "days_to_expire": 360
+}
+```
+
+<%= t("blacklist.put.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+days_to_expire | *<%= t("required") %>* <br /> <%= t("blacklist.table.days_to_expire") %> 
+
+
+
+<%# %>
+<%# BLACKLIST GET %>
+<%# %>
+
+
+## <%= t("blacklist.get.title") %>
+
+```shell
+GET https://api.konduto.com/v1/blacklist/email/<%= t("examples.email") %>
+```
+
+<%= t("blacklist.get.content") %>
+
+
+<%# %>
+<%# BLACKLIST DELETE %>
+<%# %>
+
+
+## <%= t("blacklist.delete.title") %>
+
+```shell
+DELETE https://api.konduto.com/v1/blacklist/email/<%= t("examples.email") %>
+```
+
+<%= t("blacklist.delete.content") %>
+
+
+<%# %>
+<%# RESPONSE %>
+<%# %>
+
+
+# <%= t("responses.title") %>
+
+## <%= t("responses.codes.title") %>
+
+```config
+200 OK # <%= t("responses.code.ok") %>
+201 Created # <%= t("responses.code.created") %>
+400 Bad Request # <%= t("responses.code.badrequest") %>
+401 Unauthorized # <%= t("responses.code.unauthorized") %>
+403 Forbidden # <%= t("responses.code.forbidden") %>
+404 Not Found # <%= t("responses.code.notfound") %>
+405 Method Not Allowed # <%= t("responses.code.method") %>
+429 Too Many Requests # <%= t("responses.code.toomany") %>
+444 No Response # <%= t("responses.code.invalid") %>
+500 Server Error # <%= t("responses.code.server") %>
+```
+
+<%= t("responses.codes.content") %>
+
+
+<%= t("responses.table.code") %> | <%= t("responses.table.details") %>
+-------------- | --------------
+200 | <%= t("responses.table.ok") %>
+201 | <%= t("responses.table.created") %>
+400 | <%= t("responses.table.badrequest") %>
+401 | <%= t("responses.table.unauthorized") %>
+403 | <%= t("responses.table.forbidden") %>
+404 | <%= t("responses.table.notfound") %>
+405 | <%= t("responses.table.method") %>
+429 | <%= t("responses.table.toomany") %>
+444 | <%= t("responses.table.invalid") %>
+500 | <%= t("responses.table.server") %>
+
+
+## <%= t("responses.errors.title") %>
+<%= t("responses.errors.content") %>
+
+### <%= t("responses.errors.badrequest.title") %>
+
+> <%= t("responses.errors.code.badrequest") %>
+
+```json
+{  
+  "status":"error",
+  "message":{  
+    "where":"/total_amount",
+    "why":{  
+      "expected":[  
+        "integer",
+        "number"
+      ],
+      "found":"string"
+    }
+  }
+}
+```
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+where | <%= t("responses.errors.badrequest.table.where") %>
+why | <%= t("responses.errors.badrequest.table.why") %>
+expected | <%= t("responses.errors.badrequest.table.expected") %>
+found | <%= t("responses.errors.badrequest.table.found") %>
+missing | <%= t("responses.errors.badrequest.table.missing") %>
+unknown_field | <%= t("responses.errors.badrequest.table.unknown_field") %>
+
+
+> <%= t("responses.errors.code.server") %>
+
+```json
+{  
+  "status":"error",
+  "message":{  
+    "notification":"We've been notified about this error and will investigate it. Please keep this error identifier",
+    "error_identifier":"09e1a98c-eada-4695-8864-bff8ba4707ba",
+    "where":"/",
+    "why":{  
+      "expected":"ok",
+      "found":"Internal error"
+    }
+  }
+}
+```
+
+### <%= t("responses.errors.server.title") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+notification | <%= t("responses.errors.server.table.notification") %>
+error_identifier | <%= t("responses.errors.server.table.error_identifier") %>
+where | <%= t("responses.errors.server.table.where") %>
+why | <%= t("responses.errors.server.table.why") %>
+expected | <%= t("responses.errors.server.table.expected") %>
+found | <%= t("responses.errors.server.table.found") %>
+
+## <%= t("responses.orders.title") %>
+<%= t("responses.orders.content") %>
+
+<%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- 
+status | <%= t("responses.orders.post.table.status") %>
+order | <%= t("responses.orders.post.table.order") %>
+
+### <%= t("responses.orders.post.title") %>
+
+```shell
+{  
+  "status":"ok",
+  "order":{  
+    "id":"ORD1837213",
+    "visitor":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "score":0.07,
+    "recommendation":"APPROVE",
+    "ip":"<%= t("examples.ip") %>",
+    "device":{  
+      "user_id": "405961fab293600daeed93ae561",
+      "fingerprint": "e4f2c690951038a8f77aa583847",
+      "platform": "MacIntel",
+      "browser": "Chrome",
+      "language": "<%= t("examples.lang") %>",
+      "timezone": "<%= t("examples.gmt") %>",
+      "cookie": true,
+      "javascript":  true,
+      "flash": true
+    },
+    "geolocation":{  
+      "city":"<%= t("examples.city") %>",
+      "state":"<%= t("examples.state") %>",
+      "country":"<%= t("examples.country") %>"
+    },
+    "navigation":{  
+      "time_site_7d":15.0,
+      "time_per_page_7d":2.0,
+      "new_accounts_7d":0,
+      "password_resets_7d":1,
+      "checkout_count_7d":0,
+      "sales_declined_7d":0,
+      "sessions_7d":3,
+      "time_site_1d":45.0,
+      "new_accounts_1d":0,
+      "password_resets_1d":0,
+      "sales_declined_1d":0,
+      "sessions_1d":1,
+      "session_time":45.0,
+      "time_since_last_sale":121.0,
+      "referrer": "http://www.google.com/"
+    }
+  }
+}
+```
+
+<%= t("responses.orders.post.content") %>
+
+<%= t("object") %> | <%= t("parameter") %> | <%= t("description") %> 
+-------------- | --------------  | -------------- 
+- | **id** | <%= t("responses.orders.post.table.id") %>
+- | **visitor** | <%= t("responses.orders.post.table.visitor") %>
+- | **score** | <%= t("responses.orders.post.table.score") %>
+- | **recommendation** | <%= t("responses.orders.post.table.recommendation") %>
+- | **device** | <%= t("responses.orders.post.table.device_title") %>
+device | **user_id** | <%= t("responses.orders.post.table.device.user_id") %>
+device | **fingerprint** | <%= t("responses.orders.post.table.device.fingerprint") %>
+device | **platform** | <%= t("responses.orders.post.table.device.platform") %>
+device | **browser** | <%= t("responses.orders.post.table.device.browser") %>
+device | **language** | <%= t("responses.orders.post.table.device.language") %>
+device | **timezone** | <%= t("responses.orders.post.table.device.timezone") %>
+device | **cookie** | <%= t("responses.orders.post.table.device.cookie") %>
+device | **javascript** | <%= t("responses.orders.post.table.device.javascript") %>
+device | **flash** | <%= t("responses.orders.post.table.device.flash") %>
+device | **ip** | <%= t("responses.orders.post.table.device.ip") %>
+- | **geolocation** | <%= t("responses.orders.post.table.geolocation_title") %>
+geolocation | **city** |  <%= t("responses.orders.post.table.geolocation.city") %>
+geolocation | **state** |  <%= t("responses.orders.post.table.geolocation.state") %>
+geolocation | **country** |  <%= t("responses.orders.post.table.geolocation.country") %>
+- | **navigation** | <%= t("responses.orders.post.table.navigation_title") %>
+navigation | **session_time** | <%= t("responses.orders.post.table.navigation.session_time") %>
+navigation | **referrer** | <%= t("responses.orders.post.table.navigation.referrer") %>
+navigation | **time_site_1d** | <%= t("responses.orders.post.table.navigation.time_site_1d") %>
+navigation | **new_accounts_1d** | <%= t("responses.orders.post.table.navigation.new_accounts_1d") %>
+navigation | **password_resets_1d** | <%= t("responses.orders.post.table.navigation.password_resets_1d") %>
+navigation | **sales_declined_1d** | <%= t("responses.orders.post.table.navigation.sales_declined_1d") %>
+navigation | **sessions_1d** | <%= t("responses.orders.post.table.navigation.sessions_1d") %>
+navigation | **time_since_last_sale** | <%= t("responses.orders.post.table.navigation.time_since_last_sale") %>
+navigation | **time_site_7d** | <%= t("responses.orders.post.table.navigation.time_site_7d") %>
+navigation | **time_per_page_7d** | <%= t("responses.orders.post.table.navigation.time_per_page_7d") %>
+navigation | **new_accounts_7d** | <%= t("responses.orders.post.table.navigation.new_accounts_7d") %>
+navigation | **password_resets_7d** | <%= t("responses.orders.post.table.navigation.password_resets_7d") %>
+navigation | **checkout_count_7d** | <%= t("responses.orders.post.table.navigation.checkout_count_7d") %>
+navigation | **sales_declined_7d** | <%= t("responses.orders.post.table.navigation.sales_declined_7d") %>
+navigation | **sessions_7d** | <%= t("responses.orders.post.table.navigation.sessions_7d") %>
+
+
+
+
+### <%= t("responses.orders.put.title") %>
+
+```shell
+{
+  "status": "ok",
+  "order": {
+    "old_status": "pending",
+    "new_status": "approved"
+  }
+}
+```
+
+<%= t("responses.orders.put.content") %>
+
+<%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- 
+old_status | <%= t("responses.orders.put.table.old_status") %>
+new_status | <%= t("responses.orders.put.table.new_status") %>
+
+
+### <%= t("responses.orders.get.title") %>
+
+```shell
+{  
+  "status":"ok",
+  "order":{  
+    "id":"ORD1837213",
+    "visitor":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "created_at":"2028-03-13T21:48:30Z",
+    "updated_at":"2028-03-15T08:09:26Z",
+    "score":0.07,
+    "recommendation":"approve",
+    "status":"approved",
+    "ip":"<%= t("examples.ip") %>",
+    "total_amount":159.61,
+    "tax_amount":3.04,
+    "shipping_amount":6.57,
+    "currency":"<%= t("examples.currency") %>",
+    "device":{  
+      "user_id": "405961fab293600daeed93ae561",
+      "fingerprint": "e4f2c690951038a8f77aa583847",
+      "platform": "MacIntel",
+      "browser": "Chrome",
+      "language": "<%= t("examples.lang") %>",
+      "timezone": "<%= t("examples.gmt") %>",
+      "cookie": true,
+      "javascript":  true,
+      "flash": true
+    },
+    "geolocation":{  
+      "city":"<%= t("examples.city") %>",
+      "state":"<%= t("examples.state") %>",
+      "country":"<%= t("examples.country") %>"
+    },
+    "billing":{  
+      "name":"<%= t("examples.name") %>",
+      "address1":"<%= t("examples.address1") %>",
+      "address2":"<%= t("examples.address2") %>",
+      "city":"<%= t("examples.city") %>",
+      "state":"<%= t("examples.state") %>",
+      "zip":"<%= t("examples.zip") %>",
+      "country":"<%= t("examples.country") %>"
+    },
+    "shipping":{  
+      "name":"<%= t("examples.name") %>",
+      "address1":"<%= t("examples.address1") %>",
+      "address2":"<%= t("examples.address2") %>",
+      "city":"<%= t("examples.city") %>",
+      "state":"<%= t("examples.state") %>",
+      "zip":"<%= t("examples.zip") %>",
+      "country":"<%= t("examples.country") %>"
+    },
+    "customer":{  
+      "id":"28372",
+      "name":"<%= t("examples.name") %>",
+      "tax_id":"<%= t("examples.tax_id") %>",
+      "dob":"1970-12-25",
+      "phone1":"<%= t("examples.phone1") %>",
+      "phone2":"<%= t("examples.phone2") %>",
+      "email":"<%= t("examples.email") %>",
+      "new":false,
+      "vip":false
+    },
+    "navigation":{  
+      "time_site_7d":15.0,
+      "time_per_page_7d":2.0,
+      "new_accounts_7d":0,
+      "password_resets_7d":1,
+      "checkout_count_7d":0,
+      "sales_declined_7d":0,
+      "sessions_7d":3,
+      "time_site_1d":45.0,
+      "new_accounts_1d":0,
+      "password_resets_1d":0,
+      "sales_declined_1d":0,
+      "sessions_1d":1,
+      "session_time":45.0,
+      "time_since_last_sale":121.0,
+      "referrer": "http://www.google.com/"
+    },
+    "payment":[  
+      {  
+        "type":"credit",
+        "bin":"490172",
+        "last4":"0012",
+        "expiration_date":"072015",
+        "status":"approved"
+      },
+      {  
+        "type":"credit",
+        "bin":"514800",
+        "last4":"3752",
+        "expiration_date":"082016",
+        "status":"approved"
+      }
+    ],
+    "shopping_cart":[  
+      {  
+        "sku":"9919023",
+        "product_code":"123456789999",
+        "category":201,
+        "name":"<%= t("examples.product1") %>",
+        "description":"<%= t("examples.description1") %>",
+        "unit_cost":29.99,
+        "quantity":1
+      },
+      {  
+        "sku":"0017273",
+        "category":202,
+        "name":"<%= t("examples.product2") %>",
+        "description":"<%= t("examples.description2") %>",
+        "unit_cost":7.50,
+        "quantity":2,
+        "discount":1.00
+      }
+    ],
+    "travel":{  
+      "type":"flight",
+      "departure":{  
+        "origin_airport":"<%= t("examples.airport1") %>",
+        "destination_airport":"<%= t("examples.airport2") %>",
+        "date":"2018-12-25T18:00Z",
+        "number_of_connections":1,
+        "class":"economy",
+        "fare_basis":"Y"
+      },
+      "return":{  
+        "origin_airport":"<%= t("examples.airport2") %>",
+        "destination_airport":"<%= t("examples.airport1") %>",
+        "date":"2018-12-30T18:00Z",
+        "number_of_connections":1,
+        "class":"business"
+      },
+      "passengers":[  
+        {  
+          "name":"<%= t("examples.name") %>",
+          "document":"<%= t("examples.tax_id") %>",
+          "document_type":"id",
+          "dob":"1970-01-01",
+          "nationality":"BR",
+          "loyalty":{  
+            "program":"smiles",
+            "category":"gold"
+          },
+          "frequent_traveler":true,
+          "special_needs":false
+        },
+        {  
+          "name":"<%= t("examples.passenger2") %>",
+          "document":"XYZ1234",
+          "document_type":"passport",
+          "dob":"1970-12-01",
+          "nationality":"US",
+          "loyalty":{  
+            "program":"multiplus",
+            "category":"silver"
+          },
+          "frequent_traveler":false,
+          "special_needs":true
+        }
+      ]
+    }
+  }
+}
+```
+
+<%= t("responses.orders.get.content") %>
+
+<%= t("object") %> | <%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- | --------------
+- | **id** | <%= t("responses.orders.get.table.id") %>
+- | **created_at** | <%= t("responses.orders.get.table.created_at") %>
+- | **updated_at** | <%= t("responses.orders.get.table.updated_at") %>
+- | **visitor** | <%= t("responses.orders.get.table.visitor") %>
+- | **score** | <%= t("responses.orders.get.table.score") %>
+- | **recommendation** | <%= t("responses.orders.get.table.recommendation") %>
+- | **status** | <%= t("responses.orders.get.table.status") %>
+- | **ip** | <%= t("responses.orders.get.table.ip") %>
+- | **total_amount** | <%= t("responses.orders.get.table.total_amount") %>
+- | **tax_amount** | <%= t("responses.orders.get.table.tax_amount") %>
+- | **shipping_amount** | <%= t("responses.orders.get.table.shipping_amount") %>
+- | **installments** | <%= t("responses.orders.get.table.installments") %>
+- | **currency** | <%= t("responses.orders.get.table.currency") %>
+- | **payment** | <%= t("responses.orders.get.table.payment_title") %>
+payment | **type** | <%= t("responses.orders.get.table.payment_title") %>
+payment | **bin** | <%= t("responses.orders.get.table.payment_title") %>
+payment | **last4** | <%= t("responses.orders.get.table.payment_title") %>
+payment | **expiration_date** | <%= t("responses.orders.get.table.payment_title") %>
+payment | **status** | <%= t("responses.orders.get.table.payment_title") %>
+- | **customer** | <%= t("responses.orders.get.table.customer_title") %>
+customer | **id** | <%= t("responses.orders.get.table.customer.id") %> 
+customer | **name** | <%= t("responses.orders.get.table.customer.name") %> 
+customer | **email** | <%= t("responses.orders.get.table.customer.email") %> 
+customer | **dob** | <%= t("responses.orders.get.table.customer.dob") %> 
+customer | **tax_id** | <%= t("responses.orders.get.table.customer.tax_id") %> 
+customer | **phone1** | <%= t("responses.orders.get.table.customer.phone1") %> 
+customer | **phone2** | <%= t("responses.orders.get.table.customer.phone2") %> 
+customer | **new** | <%= t("responses.orders.get.table.customer.new") %> 
+customer | **vip** | <%= t("responses.orders.get.table.customer.vip") %> 
+- | **billing** | <%= t("responses.orders.get.table.billing_title") %>
+billing | **name** | <%= t("responses.orders.get.table.billing.name") %> 
+billing | **address1** | <%= t("responses.orders.get.table.billing.address1") %> 
+billing | **address2** | <%= t("responses.orders.get.table.billing.address2") %> 
+billing | **city** | <%= t("responses.orders.get.table.billing.city") %> 
+billing | **state** | <%= t("responses.orders.get.table.billing.state") %> 
+billing | **zip** | <%= t("responses.orders.get.table.billing.zip") %> 
+billing | **country** | <%= t("responses.orders.get.table.billing.country") %> 
+- | **shipping** | <%= t("responses.orders.get.table.shipping_title") %>
+shipping | **name** | <%= t("responses.orders.get.table.shipping.name") %> 
+shipping | **address1** | <%= t("responses.orders.get.table.shipping.address1") %> 
+shipping | **address2** | <%= t("responses.orders.get.table.shipping.address2") %> 
+shipping | **city** | <%= t("responses.orders.get.table.shipping.city") %> 
+shipping | **state** | <%= t("responses.orders.get.table.shipping.state") %> 
+shipping | **zip** | <%= t("responses.orders.get.table.shipping.zip") %> 
+shipping | **country** | <%= t("responses.orders.get.table.shipping.country") %> 
+- | **shopping_cart** | <%= t("responses.orders.get.table.shopping_cart_title") %>
+shopping_cart | **sku** | <%= t("responses.orders.get.table.shopping_cart.sku") %> 
+shopping_cart | **product_code** | <%= t("responses.orders.get.table.shopping_cart.product_code") %> 
+shopping_cart | **category** | <%= t("responses.orders.get.table.shopping_cart.category") %> 
+shopping_cart | **name** | <%= t("responses.orders.get.table.shopping_cart.name") %> 
+shopping_cart | **description** | <%= t("responses.orders.get.table.shopping_cart.description") %> 
+shopping_cart | **unit_cost** | <%= t("responses.orders.get.table.shopping_cart.unit_cost") %> 
+shopping_cart | **quantity** | <%= t("responses.orders.get.table.shopping_cart.quantity") %> 
+shopping_cart | **discount** | <%= t("responses.orders.get.table.shopping_cart.discount") %> 
+- | **device** | <%= t("responses.orders.get.table.device_title") %>
+device | **user_id** | <%= t("responses.orders.get.table.device.user_id") %>
+device | **fingerprint** | <%= t("responses.orders.get.table.device.fingerprint") %>
+device | **platform** | <%= t("responses.orders.get.table.device.platform") %>
+device | **browser** | <%= t("responses.orders.get.table.device.browser") %>
+device | **language** | <%= t("responses.orders.get.table.device.language") %>
+device | **timezone** | <%= t("responses.orders.get.table.device.timezone") %>
+device | **cookie** | <%= t("responses.orders.get.table.device.cookie") %>
+device | **javascript** | <%= t("responses.orders.get.table.device.javascript") %>
+device | **flash** | <%= t("responses.orders.get.table.device.flash") %>
+device | **ip** | <%= t("responses.orders.get.table.device.ip") %>
+- | **geolocation** | <%= t("responses.orders.get.table.geolocation_title") %>
+geolocation | **city** |  <%= t("responses.orders.get.table.geolocation.city") %>
+geolocation | **state** |  <%= t("responses.orders.get.table.geolocation.state") %>
+geolocation | **country** |  <%= t("responses.orders.get.table.geolocation.country") %>
+- | **navigation** | <%= t("responses.orders.get.table.navigation_title") %>
+navigation | **session_time** | <%= t("responses.orders.get.table.navigation.session_time") %>
+navigation | **referrer** | <%= t("responses.orders.get.table.navigation.referrer") %>
+navigation | **time_site_1d** | <%= t("responses.orders.get.table.navigation.time_site_1d") %>
+navigation | **new_accounts_1d** | <%= t("responses.orders.get.table.navigation.new_accounts_1d") %>
+navigation | **password_resets_1d** | <%= t("responses.orders.get.table.navigation.password_resets_1d") %>
+navigation | **sales_declined_1d** | <%= t("responses.orders.get.table.navigation.sales_declined_1d") %>
+navigation | **sessions_1d** | <%= t("responses.orders.get.table.navigation.sessions_1d") %>
+navigation | **time_since_last_sale** | <%= t("responses.orders.get.table.navigation.time_since_last_sale") %>
+navigation | **time_site_7d** | <%= t("responses.orders.get.table.navigation.time_site_7d") %>
+navigation | **time_per_page_7d** | <%= t("responses.orders.get.table.navigation.time_per_page_7d") %>
+navigation | **new_accounts_7d** | <%= t("responses.orders.get.table.navigation.new_accounts_7d") %>
+navigation | **password_resets_7d** | <%= t("responses.orders.get.table.navigation.password_resets_7d") %>
+navigation | **checkout_count_7d** | <%= t("responses.orders.get.table.navigation.checkout_count_7d") %>
+navigation | **sales_declined_7d** | <%= t("responses.orders.get.table.navigation.sales_declined_7d") %>
+navigation | **sessions_7d** | <%= t("responses.orders.get.table.navigation.sessions_7d") %>
+- | **travel** | <%= t("responses.orders.get.table.travel_title") %>
+travel | **type** | <%= t("responses.orders.get.table.travel.type") %>
+travel | **departure** | <%= t("responses.orders.get.table.travel.departure") %>
+travel | **return** | <%= t("responses.orders.get.table.travel.return") %>
+travel | **passengers** | <%= t("responses.orders.get.table.travel.passengers") %>
+travel | **departure**/**return** | <%= t("responses.orders.get.table.travel_leg") %> 
+departure<br />return | **origin_city** | <%= t("responses.orders.get.table.travel.origin_city") %>
+departure<br />return | **destination_city** | <%= t("responses.orders.get.table.travel.destination_city") %>
+departure<br />return | **origin_airport** | <%= t("responses.orders.get.table.travel.origin_airport") %>
+departure<br />return | **destination_airport** | <%= t("responses.orders.get.table.travel.destination_airport") %>
+departure<br />return | **date** | <%= t("responses.orders.get.table.travel.date") %>
+departure<br />return | **number_of_connections** | <%= t("responses.orders.get.table.travel.number_of_connections") %>
+departure<br />return | **class** | <%= t("responses.orders.get.table.travel.class") %>
+departure<br />return | **fare_basis** | <%= t("responses.orders.get.table.travel.fare_basis") %>
+travel | **passenger** | <%= t("responses.orders.get.table.travel_passengers") %>
+passengers | **name** | <%= t("responses.orders.get.table.travel.name") %>
+passengers | **document** | <%= t("responses.orders.get.table.travel.document") %>
+passengers | **document_type** | <%= t("responses.orders.get.table.travel.document_type") %>
+passengers | **dob** | <%= t("responses.orders.get.table.travel.dob") %>
+passengers | **nationality** | <%= t("responses.orders.get.table.travel.nationality") %>
+passengers | **frequent_passenger** | <%= t("responses.orders.get.table.travel.frequent_passenger") %>
+passengers | **special_needs** | <%= t("responses.orders.get.table.travel.special_needs") %>
+
+
+
+
+
+## <%= t("responses.blacklist.title") %>
+<%= t("responses.blacklist.content") %>
+
+
+
+### <%= t("responses.blacklist.post.title") %>
+
+```shell
+{
+  "status": "ok",
+  "uri": "/v1/blacklist/email/tom@tom.com",
+  "expires_at": "2015-11-21"
+}
+```
+
+<%= t("parameter") %> | <%= t("description") %>
+--------------  | -------------- 
+status | <%= t("responses.blacklist.table.status") %>
+uri | <%= t("responses.blacklist.table.uri") %>
+expires_at | <%= t("responses.blacklist.table.expires_at") %>
+
+
+
+### <%= t("responses.blacklist.put.title") %>
+
+```shell
+{
+  "status": "ok",
+  "expires_at": "2015-11-22"
+}
+```
+
+<%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- 
+status | <%= t("responses.blacklist.table.status") %>
+expires_at | <%= t("responses.blacklist.table.expires_at") %>
+
+
+
+### <%= t("responses.blacklist.get.title") %>
+
+> <%= t("responses.blacklist.code.email_example") %>
+
+```shell
+{
+  "email_address": "tom@tom.com",
+  "expires_at": "2015-11-21"
+}
+```
+
+> <%= t("responses.blacklist.code.address_example") %>
+
+```shell
+{
+  "address_identifier":"382773ABC",
+  "address_line_1":"<%= t("examples.address1") %>",
+  "address_line_2":"<%= t("examples.address2") %>",
+  "city":"<%= t("examples.city") %>",
+  "state":"<%= t("examples.state") %>",
+  "zip":"<%= t("examples.zip") %>",
+  "country":"<%= t("examples.country") %>",
+  "expires_at":"2017-11-22"
+}
+````
+
+
+<%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- 
+status | <%= t("responses.blacklist.table.status") %>
+expires_at | <%= t("responses.blacklist.table.expires_at") %>
+email_address | <%= t("responses.blacklist.table.email_address") %>
+address_identifier | <%= t("responses.blacklist.table.address_identifier") %>
+address_line_1 | <%= t("responses.blacklist.table.address_line_1") %>
+address_line_2 | <%= t("responses.blacklist.table.address_line_2") %>
+city | <%= t("responses.blacklist.table.city") %>
+state | <%= t("responses.blacklist.table.state") %>
+zip | <%= t("responses.blacklist.table.zip") %>
+country | <%= t("responses.blacklist.table.country") %>
+
+
+
+### <%= t("responses.blacklist.delete.title") %>
+
+```shell
+{
+  "status": "ok",
+  "message": "deleted tom@tom.com from email blacklist"
+}
+```
+
+<%= t("parameter") %> | <%= t("description") %> 
+--------------  | -------------- 
+status | <%= t("responses.blacklist.table.status") %>
+message | <%= t("responses.blacklist.table.message") %>
+
+
+
+<%# %>
+<%# TESTING %>
+<%# %>
+
+
+# <%= t("testing.title") %>
+<%= t("testing.content") %>
+
+<%= t("testing.table.amount") %> | <%= t("testing.table.response") %>
+-------------- | --------------
+*.00 - *.29 | APPROVED
+*.30 - *.60 | REVIEW
+*.61 - *.99 | DECLINE
+
+
+
+<%# %>
+<%# WEBHOOK %>
+<%# %>
+
+
+# <%= t("webhook.title") %>
+<%= t("webhook.content") %>
+
+## <%= t("webhook.send.title") %>
+<%= t("webhook.send.content") %>
+
+
+```json
+{
+  "order_id": "ORD1837213",
+  "timestamp": 1608898332000,
+  "status": "APPROVED",
+  "signature": "6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"
+}
+```
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+order_id | <%= t("webhook.table.order_id") %>
+timestamp | <%= t("webhook.table.timestamp") %>
+status | <%= t("webhook.table.status") %>
+signature | <%= t("webhook.table.signature") %>
+
+
+## <%= t("webhook.receive.title") %>
+
+```json
+{
+  "status":"ok"
+}
+```
+
+<%= t("webhook.receive.content") %>
+
+## <%= t("webhook.signature.title") %>
+
+```php
+<?php 
+// <%= t("webhook.code.private_key") %>
+$private_key = "T738D516F09CAB3A2C1EE";
+
+// <%= t("webhook.code.webhook") %>
+$webhook = '{
+  "order_id": "ORD1837213",
+  "timestamp": 1608898332000,
+  "status": "APPROVED",
+  "signature": "6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"
+}';
+
+// <%= t("webhook.code.arr") %>
+$arr = json_decode($webhook, true);
+
+// <%= t("webhook.code.signature") %>
+$signature = $arr["signature"];
+
+// <%= t("webhook.code.unset") %>
+unset($arr["signature"]);
+
+// <%= t("webhook.code.to_hash") %>
+// ORD1837213#1608898332000#APPROVED
+$to_hash = implode("#", $arr);
+
+// <%= t("webhook.code.my_hash") %>
+$my_hash = hash_hmac("sha256", $to_hash, $private_key);
+
+// 6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30
+echo $my_hash;
+
+// true
+echo ($my_hash === $signature) ? true : false;
+?>
+```
+
+<%= t("webhook.signature.content") %>
+
+
+<%# %>
+<%# REFERENCES %>
+<%# %>
+
+
+# <%= t("tables.title") %>
+<%= t("tables.content") %>
+
+
+## <%= t("tables.currency.title") %>
+
+> ### <%= t("tables.currency.code.title") %>  
+
+> <%= t("tables.currency.code.content") %>
+
+<%= t("tables.currency.table.code") %> | <%= t("tables.currency.table.currency") %> 
+-------------- | --------------
+USD | <%= t("tables.currency.table.usd") %>
+BRL | <%= t("tables.currency.table.brl") %>
+ARS | <%= t("tables.currency.table.ars") %>
+AUD | <%= t("tables.currency.table.aud") %>
+CAD | <%= t("tables.currency.table.cad") %>
+CLP | <%= t("tables.currency.table.clp") %>
+EUR | <%= t("tables.currency.table.eur") %>
+GBP | <%= t("tables.currency.table.gbp") %>
+JPY | <%= t("tables.currency.table.jpy") %>
+MXP | <%= t("tables.currency.table.mxp") %>
+
+
+
+## <%= t("tables.categories.title") %>
+
+> ### <%= t("tables.categories.code.title") %>  
+
+> <%= t("tables.categories.code.content") %>
+
+
+<%= t("tables.categories.table.description") %> | <%= t("tables.categories.table.code") %> 
+-------------- | --------------
+**<%= t("tables.categories.table.animals") %>** | 100
+**<%= t("tables.categories.table.clothing.title") %>** | 
+<%= t("tables.categories.table.clothing.main") %> | 201
+<%= t("tables.categories.table.clothing.accessories") %> | 202
+<%= t("tables.categories.table.clothing.costumes") %> | 203
+<%= t("tables.categories.table.clothing.handbags_accessories") %> | 204
+<%= t("tables.categories.table.clothing.handbags") %> | 205
+<%= t("tables.categories.table.clothing.jewelry") %> | 206
+<%= t("tables.categories.table.clothing.shoe_accessories") %> | 207
+<%= t("tables.categories.table.clothing.shoes") %> | 208
+<%= t("tables.categories.table.others") %> | 299
+<%= t("tables.categories.table.arts") %> | 300
+<%= t("tables.categories.table.baby") %> | 400
+**<%= t("tables.categories.table.business.title") %>** | 
+<%= t("tables.categories.table.business.advertising") %> | 501
+<%= t("tables.categories.table.business.agriculture") %> | 502
+<%= t("tables.categories.table.business.construction") %> | 503
+<%= t("tables.categories.table.business.film") %> | 504
+<%= t("tables.categories.table.business.finance") %> | 505
+<%= t("tables.categories.table.business.food") %> | 506
+<%= t("tables.categories.table.business.forestry") %> | 507
+<%= t("tables.categories.table.business.machinery") %> | 508
+<%= t("tables.categories.table.business.hotel") %> | 509
+<%= t("tables.categories.table.business.storage") %> | 510
+<%= t("tables.categories.table.business.law") %> | 511
+<%= t("tables.categories.table.business.manufacturing") %> | 512
+<%= t("tables.categories.table.business.handling") %> | 513
+<%= t("tables.categories.table.business.medical") %> | 514
+<%= t("tables.categories.table.business.mining") %> | 515
+<%= t("tables.categories.table.business.tattoo") %> | 516
+<%= t("tables.categories.table.business.retail") %> | 517
+<%= t("tables.categories.table.business.science") %> | 518
+<%= t("tables.categories.table.business.signage") %> | 519
+<%= t("tables.categories.table.business.safety") %> | 520
+<%= t("tables.categories.table.others") %> | 599
+**<%= t("tables.categories.table.cameras.title") %>** | 
+<%= t("tables.categories.table.cameras.main") %> | 601
+<%= t("tables.categories.table.cameras.accessories") %> | 602
+<%= t("tables.categories.table.cameras.photography") %> | 603
+<%= t("tables.categories.table.others") %> | 699
+**<%= t("tables.categories.table.electronics.title") %>** | 
+<%= t("tables.categories.table.electronics.3d") %> | 701
+<%= t("tables.categories.table.electronics.audio") %> | 702
+<%= t("tables.categories.table.electronics.circuit") %> | 703
+<%= t("tables.categories.table.electronics.comm") %> | 704
+<%= t("tables.categories.table.electronics.components") %> | 705
+<%= t("tables.categories.table.electronics.computers") %> | 706
+<%= t("tables.categories.table.electronics.accessories") %> | 707
+<%= t("tables.categories.table.electronics.gps") %> | 708
+<%= t("tables.categories.table.electronics.gps_accessories") %> | 709
+<%= t("tables.categories.table.electronics.networking") %> | 711
+<%= t("tables.categories.table.electronics.print") %> | 712
+<%= t("tables.categories.table.electronics.print_accessories") %> | 713
+<%= t("tables.categories.table.electronics.video") %> | 715
+<%= t("tables.categories.table.electronics.consoles") %> | 716
+<%= t("tables.categories.table.electronics.consoles_accessories") %> | 717
+<%= t("tables.categories.table.others") %> | 799
+**<%= t("tables.categories.table.food") %>** | 800
+**<%= t("tables.categories.table.furniture") %>** | 900
+**<%= t("tables.categories.table.hardware") %>** | 1000
+**<%= t("tables.categories.table.health") %>** | 1100
+**<%= t("tables.categories.table.garden") %>** | 1200
+**<%= t("tables.categories.table.luggage") %>** | 1300
+**<%= t("tables.categories.table.adult") %>** | 1400
+**<%= t("tables.categories.table.weapons") %>** | 1500
+**<%= t("tables.categories.table.office") %>** | 1600
+**<%= t("tables.categories.table.religious") %>** | 1700
+**<%= t("tables.categories.table.software.title") %>** | 
+<%= t("tables.categories.table.software.computer") %> | 1801
+<%= t("tables.categories.table.software.digital") %> | 1802
+<%= t("tables.categories.table.software.services") %> | 1803
+<%= t("tables.categories.table.software.games") %> | 1804
+<%= t("tables.categories.table.others") %> | 1899
+**<%= t("tables.categories.table.sport") %>** | 1900
+**<%= t("tables.categories.table.toys") %>** | 2000
+**<%= t("tables.categories.table.vehicles") %>** | 2100
+**<%= t("tables.categories.table.books") %>** | 2300
+**<%= t("tables.categories.table.dvds") %>** | 2400
+**<%= t("tables.categories.table.magazines") %>** | 2500
+**<%= t("tables.categories.table.music.title") %>** | 
+<%= t("tables.categories.table.music.cds") %> | 2601
+<%= t("tables.categories.table.music.instruments") %> | 2602
+<%= t("tables.categories.table.music.digital") %> | 2603
+<%= t("tables.categories.table.others") %> | 2699
+**<%= t("tables.categories.table.others_not_specified") %>** | 9999

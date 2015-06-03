@@ -1,0 +1,1224 @@
+---
+pt:
+  parameter: Parâmetro
+  description: Descrição
+  object: Objeto
+  required: (obrigatório)
+  required_if_flight: (obrigatório se type=flight)
+  required_if_bus: (obrigatório se type=bus)
+  optional: (opcional)
+  recommended: Recomendado
+  home: Home
+  product: Produto
+  introduction:
+    title: Introdução
+    content: |
+      Olá! Este documento explica como integrar com o serviço de antifraude da
+      **Konduto** para que você comece a detectar as fraudes no seu e-commerce.
+
+      Nosso serviço usa o comportamento do visitante para analisar padrões de
+      navegação e detectar fraudes. Você precisará adicionar um código
+      **JavaScript** ao seu site e marcar suas páginas, para que possamos ver
+      os seus visitantes, e deverá enviar pedidos para nossa **API REST**, para
+      que nós possamos fazer a análise.
+
+      Nós estamos melhorando constantemente este documento e agradecemos
+      qualquer sugestão enviada. Você pode mandar uma mensagem para
+      <oi@konduto.com> com suas perguntas e sugestões de como melhora-lo.
+
+  collector:
+    title: Coletor de eventos
+    content: |
+      Nós capturamos o comportamento de compra do cliente para detectar
+      atividades fraudulentas. Para habilitar esta funcionalidade você deve
+      colar um código JavaScript no rodapé do seu site para que nós possamos
+      receber os dados de navegação e analisa-los.
+
+      Este código **não afeta a performance** do seu site e é **invisível**
+      para o seu visitante.
+
+
+    code:
+      paste: "Cole o código abaixo do fechamento do `</body>`:"
+      comment: A chave pública identifica a sua loja
+      getvisitor: "Para recuperar o nosso ID do visitante:"
+      setcustomer: "Para enviar o seu próprio ID de cliente:"
+      sendevent: "Para enviar manualmente um evento de navegação:"
+
+
+    methods:
+      title: Identificando o visitante
+      content: |
+        Há duas formas de ligar uma visita anônima a uma venda analisada. A
+        primeira é utilizando o nosso **ID de visitante**, criado por nós para
+        a sessão daquele usuário. A outra é através do **ID de cliente**, um
+        identificador único do cliente e que é definido pela loja.
+
+        Você pode optar pelas duas formas de identificação, de acordo com a sua
+        preferência e com as restrições da sua aplicação.
+
+
+
+  tags: 
+    title: Marcação de páginas
+    content: |
+      A marcação de páginas (*page tagging*) nos permite ter um entendimento
+      mais profundo do conteúdo mostrado em seu site. Isto nos ajuda a
+      determinar o que o visitante está vendo e fazendo na sua página, e
+      aumenta consideravelmente a precisão de nosso algoritmo.
+
+      **Recomendamos sempre** marcar suas páginas quando possível.
+
+    basic:
+      title: Usando meta tags (preferível)
+      content: |
+        Para marcar uma página adicione nossas `<meta>` tags no seu header.
+        Elas nos dirão que tipo de página você está servindo e, opcionalmente,
+        qual produto ou categoria de produto estão sendo mostrados.
+
+    advanced:
+      title: Usando JavaScript (avançado)
+      content: |  
+        Há casos onde não é possível usar a marcação por <meta> tags, como 
+        quando as tags são inseridas usando o [Google Tag Manager]
+        (http://www.google.com/tagmanager/).
+
+        Para estes cenários você pode usar o nosso próprio JavaScript para
+        disparar os eventos de navegação. **Esta é uma implementação
+        avançada**, então estude com cuidado se é a melhor opção para a sua
+        loja.
+
+      more_title: "Como ativar o modo avançado"
+      more: |
+        Neste modo o nosso JavaScript **não envia a navegação automaticamente**
+        e espera que **você** faça o envio quando a página carregar. Para isso
+        é preciso:
+        <br /><br /><br />
+        **1. Desabilitar o envio automático**
+
+        Você deve definir a variável `post_on_load` como `false` dentro do seu
+        snippet, como mostra o exemplo.
+        <br /><br /><br />
+        **2. Enviar o evento via método JavaScript**
+
+        Quando souber o contexto da página (*home*, *checkout*, *account*) é
+        preciso chamar o método `Konduto.sendEvent()`, passando as tags como
+        parâmetro.
+
+
+
+        
+    code:
+      password: "Página de 'Esqueci minha senha'"
+      checkout: "Processo de checkout"
+      product: "Detalhe de produto"
+      flight: "Busca de passagens (voo, ônibus)"
+      advanced: "Snippet com envio automático desligado"
+      advanced_comment: "Envio automático desativado"
+      advanced_sendEvent: "Envio de evento com contexto de página"
+
+
+  helpers: 
+    title: Bibliotecas de integração
+    content: |
+      Nós disponibilizamos bibliotecas para ajudar com o desenvolvimento, bem
+      como plugins para as plataformas mais comuns de e-commerce. Você
+      encontrará ao lado uma lista com as integrações disponíveis até o
+      momento, que estão hospedadas em nosso [Github]
+      (https://github.com/konduto).
+
+      Se você não vê a biblioteca da sua linguagem ou o seu plugin, por favor
+      entre em contato através do email <oi@konduto.com>.
+
+  authentication:
+    title: Autenticação da API
+    content: |
+      Nós usamos padrão [HTTP Basic Auth]
+      (https://en.wikipedia.org/wiki/Basic_access_authentication)
+      para autenticar os lojistas na nossa API.
+
+      Neste tipo de autenticação, você deve enviar um header HTTP chamado
+      `Authorization` cujo valor é a palavra **Basic** seguida de um Base64 da
+      sua chave privada.
+
+      Se você utiliza um de nossos helpers então a própria biblioteca já faz
+      este passo, e você precisa apenas definir a sua chave.
+
+    code:
+      how: Como montar
+      result: Resultado
+
+  
+  orders: 
+    title: API de Pedidos
+    content: |
+      Quando o cliente faz a compra você deve nos enviar os dados do pedido
+      para nossa API REST para que possamos analisa-la. Nós fazemos uma análise
+      em tempo real e devolvemos uma **recomendação** do que fazer com o
+      pedido e um score, que é o grau de confiança que temos do pedido.
+
+      Apesar de muitos dos parâmetros que aceitamos na API serem opcionais,
+      nós recomendamos que você envie o quanto puder, pois cada ponto de dado
+      faz diferença na análise.
+
+      O endereço de cobrança e as informações de cartão de crédito são
+      especialmente importantes, mas entendemos que há casos onde você não tem
+      esta informação em seu sistema.
+
+    code:
+      resources: URLs da API de Pedidos
+
+    post:
+      title: Enviar um pedido
+      content: |
+        Você pode mandar pedidos usando o método **POST** e passando um JSON no
+        corpo da requisição.
+
+        A chamada consiste em um objeto raiz que contém informações
+        relacionadas ao pedido, bem como os objetos `customer`, `billing`,
+        `shipping` e `travel` e as listas `payment` e `shopping_cart`.
+
+      root:
+        title: Pedido &nbsp; &nbsp; &nbsp; &nbsp; `order`
+        content: |
+          A raíz do objeto contém os dados básicos do pedido, como número,
+          valor e moeda.
+
+        table:
+          id:
+            "Identificador único para cada pedido.<br />
+            **Max. 100 chars, alpha-numérico**"
+          visitor: 
+            "Identificador do visitante obtido do nosso JavaScript.<br />
+            **Exatamente 40 chars, alpha-numérico**"
+          total_amount: "Valor total do pedido.<br>**Max. 10 dígitos, número**"
+          shipping_amount: "Valor do frete<br>**Max. 10 dígitos, número**"
+          tax_amount: "Valor dos impostos.<br>**Max. 10 dígitos, número**"
+          currency: 
+            "Código da moeda com 3 letras
+            ([ISO-4712](https://pt.wikipedia.org/wiki/ISO_4217)).
+            <br />**Exatamente 3 chars, string**"
+          installments:
+            "Número de parcelas do pagamento.<br />
+            **Max. 3 dígitos, número**"
+          ip: "Endereço IPv4 do cliente<br>**Max. 15 chars, string**"
+          analyze: 
+            "Se `false` o sistema levará em conta a transação nas próximas
+            análises mas não devolve uma recomendação e você não é cobrado.
+            <br />**Boolean. Se não enviado o padrão é `true`**"
+          customer: "Objeto que contém os detalhes do cliente."
+          payment: "Lista que contém os meios de pagamento."
+          billing: "Objeto que contém o endereço de cobrança."
+          shipping: "Objeto que contém o endereço de entrega."
+          shopping_cart: "Lista que contém os itens comprados."
+          travel: "Objeto que contém os dados de viagem e passageiros."
+
+      customer:
+        title: Comprador &nbsp; &nbsp; &nbsp; &nbsp; `customer`
+        content: |
+          Este objeto deve ser usado para enviar informações sobre a pessoa que
+          está fazendo a compra, que na maioria dos casos é aquele que está
+          logado em seu sistema.
+
+          Para passar informações sobre o portador do cartão ou o destinatário
+          do produto você deve usar o objeto billing e shipping,
+          respectivamente.
+
+        table:
+          id:
+            "Identificador único do cliente. Pode ser qualquer valor
+            (sequencial, documento, e-mail) desde que seja consistente em
+            pedidos futuros.<br />**Max. 100 chars, string.**"
+          name: "Nome completo do cliente.<br>**Max. 100 chars, string.**"
+          tax_id: 
+            "Número de documento fiscal do cliente (CPF, CNPJ, etc).
+            <br />**Max. 100 chars, string.**"
+          dob: 
+            "Data de nascimento do cliente no formato AAAA-MM-DD
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))
+            <br />**Exatamente 10 chars, string.**"
+          phone1:
+            "Número de telefone principal do cliente
+            <br />**Max. 100 chars, string.**"
+          phone2:
+            "Número de telefone secundário do cliente.
+            <br />**Max. 100 chars, string.**"
+          email:
+            "Endereço de e-mail do cliente.<br />**Max. 100 chars, string.**"
+          new:
+            "Flag indicando se o cliente está usando uma conta recém-criada
+            nesta compra.<br />**Boolean.**"
+          vip:
+            "Flag indicando se este é um cliente VIP ou comprador frequente.
+            <br />**Boolean.**"
+
+      billing:
+        title: Endereço de Cobrança &nbsp; &nbsp; &nbsp; &nbsp; `billing`
+        content: |
+          Este objeto deve conter informações do titular do cartão. É o mesmo
+          nome e endereço que consta na fatura.
+
+        table:
+          name: "Nome do titular do cartão.<br>**Max. 100 chars, string.**"
+          address1:
+            "Endereço da fatura do cliente com o banco.
+            <br />**Max. 255 chars, string.**"
+          address2:
+            "Complemento do endereço de fatura.
+            <br />**Max. 255 chars, string.**"
+          city: "Cidade do titular.<br>**Max. 100 chars, string.**"
+          state: "Estado do titular<br>**Max. 100 chars, string.**"
+          zip: "CEP do titular.<br>**Max. 100 chars, string.**"
+          country:
+            "Código do país do titular
+            ([ISO 3166-2](https://pt.wikipedia.org/wiki/ISO_3166-2))
+            <br />**Exatamente 2 chars, string.**"
+
+
+      shipping:
+        title: Endereço de Entrega &nbsp; &nbsp; &nbsp; &nbsp; `shipping`
+        content: |
+          Este objeto deve conter informações do destinatário que vai receber
+          os produtos. Não há necessidade de enviá-lo caso você forneça um
+          serviço ou download de software.
+
+        table:
+          name:
+            "Nome do destinatário do cartão.<br />**Max. 100 chars, string.**"
+          address1:
+            "Endereço de entrega do destinatário.
+            <br />**Max. 255 chars, string.**"
+          address2:
+            "Complemento do endereço de fatura.
+            <br />**Max. 255 chars, string.**"
+          city: "Cidade do destinatário.<br>**Max. 100 chars, string.**"
+          state: "Estado do destinatário<br>**Max. 100 chars, string.**"
+          zip: "CEP do destinatário.<br>**Max. 100 chars, string.**"
+          country:
+            "Código do país do destinatário
+            ([ISO 3166-2](https://pt.wikipedia.org/wiki/ISO_3166-2))
+            <br />**Exatamente 2 chars, string.**"
+
+
+      payment:
+        title: Meios de Pagamento &nbsp; &nbsp; &nbsp; &nbsp; `payment`
+        content: |
+          Esta lista de objetos deve ser usado para enviar informações sobre os
+          meios de pagamentos usados na compra.
+
+          Você pode mandar um pedido que contém múltiplos meios de pagamento,
+          como compras com dois cartões de crédito.
+
+          Atualmente nós suportamos apenas compras com cartão de crédito.
+          Consulte com o support a respeito de outros meios de pagamento para
+          análise.
+
+        table:
+          type:
+            "Meio de pagamento usado pelo cliente. Atualmente suportamos
+            apenas credit<br />**Max. 6 chars, string.**"
+          bin:
+            "Os primeiros seis números do cartão de crédito. É usado para
+            identificar o tipo de cartão usado.
+            <br />**Exatamente 6 chars, string.**"
+          last4:
+            "Os últimos quatro dígitos do cartão de crédito.
+            <br />**Exatamente 4 chars, string.**"
+          expiration_date:
+            "Data de validade do cartão no formato MMAAAA
+            <br />**Exatamente 6 chars, string.**"
+          status:
+            "O status do pagamento retornado pela operadora de cartão.
+            <br />Pode ser approved (aprovado), declined (negado) ou pending
+            (pendente), caso o pagamento não tenha sido feito ainda.
+            <br />**Max. 8 chars, string.**"
+
+
+      shopping_cart:
+        title: Carrinho de Compras &nbsp; &nbsp; &nbsp; &nbsp; `shopping_cart`
+        content: |
+          Esta lista de objetos contém uma lista dos produtos que foram
+          comprados neste pedido. Não existe limite para a quantidade de
+          objetos que esta lista aceita.
+
+        table:
+          sku:
+            "[SKU](https://pt.wikipedia.org/wiki/Stock_Keeping_Unit) ou número
+            de inventário do produto ou serviço.
+            <br />**Max. 100 chars, string.**"
+          product_code:
+            "Código de barras ou [UPC]
+            (https://pt.wikipedia.org/wiki/C%C3%B3digo_de_barras) do produto ou
+            serviço.<br />**Max. 100 chars, string.**"
+          category:
+            "Código da categoria do produto comprado.<br />Veja nossa [lista de
+            categorias](#) para mais informações.
+            <br />**Max. 4 dígitos, número.**"
+          name: "Nome do produto ou serviço.<br>**Max. 100 chars, string.**"
+          description:
+            "Descrição de detalhada do produto ou serviço.
+            <br />**Max. 100 chars, string.**"
+          unit_cost:
+            "Custo unitário deste produto ou serviço.
+            <br />**Max. 10 dígitos, número.**"
+          quantity:
+            "Quantidade de unidades compradas.
+            <br />**Max. 10 dígitos, número.**"
+          discount:
+            "Valor de desconto do produto.<br />**Max. 10 dígitos, número.**"
+          image: "URL da imagem do produto.<br />**Max. 255 chars, string.**"
+
+      travel:
+        title: Viagem &nbsp; &nbsp; &nbsp; &nbsp; `travel`
+        travel: Informações da viagem
+        passengers: Informações dos passageiros
+        content: |
+          Contém informações de viagem e dos passageiros desta compra. Dados de
+          viagem estão divididos em objetos de ida (`departure`) e volta
+          (`return`), além do tipo de transporte. Dados dos passageiros ficam
+          no array `passengers`.
+
+        table:
+          type: "Tipo de viagem. Atualmente são suportados `flight` ou `bus`."
+          departure: "Objeto com as informações do viagem de **ida**."
+          return: "Objeto com as informações do viagem de **volta**."
+          passengers: "Array de objetos com os dados dos passegeiros"
+          origin_city: "Cidade de origem.<br/>**Max 100 chars, string.**"
+          destination_city: "Cidade de destino.<br/>**Max 100 chars, string.**"
+          origin_airport:
+            "[Código IATA]
+            (https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA)
+            para o aeroporto de origem<br />**Exatamente 3 chars, string.**"
+          destination_airport:
+            "[Código IATA]
+            (https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA)
+            para o aeroporto de destino<br />**Exatamente 3 chars, string.**"
+          date:
+            "Date e hora do embarque em UTC no formato YYYY-MM-DDThh:mmZ
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))
+            <br />**Exatamente 17 chars, string.**"
+          number_of_connections: "Número de conexões"
+          class:
+            "Nome da classe, como `economy`, `business` e `first`
+            <br />**Max. 8 chars, string.**"
+          fare_basis:
+            "[Código da classe]
+            (https://pt.wikipedia.org/wiki/C%C3%B3digos_de_classes_da_IATA).
+            <br />**Max 20 chars, string.**"
+          name: "Nome completo do passangeiro<br>**Max 100 chars, string.**"
+          document: "Número do documento<br>**Max 100 chars, string.**"
+          document_type:
+            "Tipo do documento. Pode ser `passport` ou `id`.
+            <br />**Max 8 chars, string.**"
+          dob:
+            "Data de nascimento do passageiro no formato YYYY-MM-DD ([ISO 8601]
+            (https://en.wikipedia.org/wiki/ISO_8601)).
+            <br />**Exatamente 10 chars, string.**"
+          nationality:
+            "País de nascimento do passageniro ([ISO 3166-2]
+            (https://en.wikipedia.org/wiki/ISO_3166-2))
+            <br />**Exatamente 2 chars, string.**"
+          loyalty: "Objeto contendo os detalhes do programa de fidelidade"
+          loyalty_program:
+            "Nome do programa de fidelidade.<br />**Max 100 chars, string.**"
+          loyalty_category:
+            "Categoria do programa.<br />**Max 20 chars, string.**"
+          frequent_passenger:
+            "Flag de viajante frequente.<br />**Boolean, padrão é `false`.**"
+          special_needs:
+            "Passageiro com necessidades especiais.
+            <br />**Boolean, padrão é `false`.**"
+
+
+    put:
+      title: Atualizar status de um pedido
+      content: |
+        Você pode atualizar o status de um pedido através do método **PUT** e
+        passando um JSON no corpo da requisição.
+
+        A chamada consiste em um objeto simples que contém dois campos,
+        `status` e `comments`.
+
+      table:
+        status:
+          "Novo status deste pedido. Pode ser `approved`, `declined` ou
+          `fraud`, quando você identificar uma fraude ou chargeback.
+          <br />**Max. 8 chars, string**."
+        comments:
+          "Razão ou comentários sobre a atualização do pedido.
+          <br />**Max. 255 chars, string**."
+
+    get:
+      title: Consultar um pedido
+      content: |
+        Você pode buscar os dados de um pedido usando o método **GET**. A
+        resposta será um JSON com todos os dados que temos sobre o pedido,
+        incluindo `recommendation`, `score` e o `status` atual.
+
+
+  blacklist: 
+    title: API de Blacklist
+    content: |
+      A Blacklist é um recurso que lhe permite bloquear pedidos que contém
+      certos dados. Compras feitas com estas informações serão **negadas
+      automaticamente** pelo nosso sistema. Você pode adicionar uma entrada à
+      Blacklist permanentemente ou até uma certa data de expiração.
+
+      Com a API de Blacklist você pode **adicionar**, **atualizar**,
+      **consultar** e **remover** itens da lista. Atualmente é possível
+      bloquear **emails** e **endereços**.
+
+      Note que para gerenciar um **endereço** você precisa associar um
+      identificador único para aquela entrada.
+
+    code:
+      email_resources: URLs da Blacklist de Email
+      address_resources: URLs da Blacklist de Endereço
+      email_add: Exemplo de adição de email à Blacklist
+      address_add: Exemplo de adição de endereço à Blacklist
+      update: Examplo de atualização de expiração
+
+    table:
+      email_title: Parâmetros para adicionar um email
+      address_title: Parâmetros para adicionar um endereço
+      email_address: "Endereço de email<br />**Max. 100 chars, string**"
+      days_to_expire:
+        "Dias para que esta entrada seja removida automaticamente da
+        Blacklist<br />**Número.**"
+      address_identifier:
+        "Identificador **único** do endereço. Será utilizado para referenciar
+        este registro na Blacklist no futuro.<br />**Max. 100 chars, string.**"
+      address_line_1:
+        "Endereço de entrega do destinatário.<br />**Max. 255 chars, string.**"
+      address_line_2:
+        "Complemento do endereço de fatura.<br />**Max. 255 chars, string.**"
+      city: "Cidade do destinatário.<br>**Max. 100 chars, string.**"
+      state: "Estado do destinatário<br>**Max. 100 chars, string.**"
+      zip: "CEP do destinatário.<br>**Max. 100 chars, string.**"
+      country: 
+        "Código do país do destinatário [ISO 3166-2]
+        (https://pt.wikipedia.org/wiki/ISO_3166-2)
+        <br />**Exatamente 2 chars, string.**"
+
+
+    post:
+      title: Adicionar item
+      content: |
+        Para adicionar uma entrada você deve usar o método **POST**. Os
+        resultados são **imediatos**, então o próximo pedido analisado já
+        levará em conta este item da Blacklist.
+
+        O tempo de expiração é opcional. Se definido, a entrada será removida
+        automaticamente ao vencer o prazo. Se não, o registro permanecerá na
+        Blacklist indefinidamente.
+
+
+    put:
+      title: Atualizar a expiração
+      content: |
+        A atualização de um item da Blacklist serve **unicamente** para trocar
+        a sua data de expiração. Você pode adiar ou adiantar a remoção
+        automática de uma entrada. Ela é feita utilizando o método **PUT**.
+
+
+    get:
+      title: Consultar uma entrada
+      content: |
+        Você pode consultar se uma entrada já existe na Blacklist usando o
+        método **GET**. Se ela tiver uma data de expiração este valor também
+        será retornado na consulta.
+
+    delete:
+      title: Remover item
+      content: |
+        Para retirar uma entrada da Blacklist você deve usar o método
+        **DELETE**.
+
+  responses:
+    title: Respostas
+
+    codes:
+      title: Códigos HTTP
+      content: |
+        Nossa API usa [códigos de resposta HTTP]
+        (https://pt.wikipedia.org/wiki/Anexo:Lista_de_c%C3%B3digos_de_status_HTTP)
+        para indicar o resultado de uma chamada.
+
+        Uma resposta na casa dos **2xx** significa que a requisição foi
+        processada e não continha erros. Já uma resposta com códigos na faixa
+        dos **4xx** ou **5xx** indica algum erro.
+
+    errors:
+      title: Respostas de erro
+      content: |
+        As respostas de erro da nossa API trazem sempre o motivo do erro e,
+        quando possível, uma indicação de como e onde fazer a correção.
+
+        A principal razão para uma chamada à API falhar é um **problema na
+        validação**, seja na **sintaxe** ou nos **valores passados**. Se o
+        erro for causado por algum problema interno na Konduto nós
+        devolveremos um ID único que pode ser enviado para o [nosso suporte]
+        (mailto:oi@konduto.com) para investigação.
+      badrequest:
+        title: Resposta com erro de validação
+        table:
+          where: "Campo ou objeto onde o erro aconteceu"
+          why: "Causas do erro de validação"
+          expected: "Tipo de dado esperado neste campo"
+          found: "Valor que foi recebido neste campo"
+          missing: "Campo obrigatório ausente"
+          unknown_field: "Campo não reconhecido"
+
+      server:
+        title: Resposta com erro de servidor
+        table:
+          notification: "Mensagem de erro do servidor"
+          error_identifier:
+            "Identificador do erro, que pode ser enviado ao [nosso suporte]
+            (mailto:oi@konduto.com) para investigação."
+          where: "Campo ou objeto onde o erro aconteceu"
+          why: "Causas do erro de validação"
+          expected: "Tipo de dado esperado neste campo"
+          found: "Valor que foi recebido neste campo"
+
+
+      code:
+        badrequest: "Exemplo de erro onde o valor foi enviado como string"
+        server: "Exemplo de erro interno do processamento"
+
+    orders:
+      title: Resposta da API de Pedidos
+      content: |
+        Uma resposta bem sucedida da API de pedidos retorna sempre dois
+        objetos.
+
+        O campo `status` indica o resultado da chamada, e o campo `order` traz
+        o retorno do pedido que está sendo manipulado. O valor do objeto
+        `order` varia de acordo com a chamada que está sendo feita.
+
+      post:
+        title: Resposta da análise
+        content: |
+          Na resposta da análise de um pedido os campos retornados dentro do
+          objeto `order` são:
+
+        table:
+          status:
+            "Mensagem de status da chamada. Retorna `ok` quando bem sucedida e
+            `error` quando falhou."
+          order: "Objeto contendo a resposta da análise."
+          id: "Identificador único enviado na chamada"
+          visitor: "Identificador do visitante enviado na chamada"
+          score:
+            "Score da transação entre `0` e `1`.<br/><br/>
+            Para transações que não foram analisadas o valor `-1` é retornado
+            (ver parâmetro **order.analyze**)."
+          recommendation:
+            "Ação recomendada para este pedido. Pode ser
+            `APPROVE`, `REVIEW` ou `DECLINE`.<br/><br/>
+            Para transações que não foram analisadas o valor `NONE` é retornado
+            (ver parâmetro **order.analyze**)."
+          geolocation_title:
+            "Objeto contendo os dados de geolocalização do cliente"
+          device_title: "Objeto contendo os dados coletados da máquina"
+          navigation_title: "Objeto contento os resumo de navegação do cliente"
+          device:
+            user_id: "Identificador único do visitante"
+            fingerprint: "Identificação do navegador"
+            platform: "Tipo de dispositivo pelo cliente"
+            browser: "Navegador do cliente"
+            language: "Idioma do navegador do cliente"
+            timezone: "Fuso horário do cliente em GMT"
+            cookie: "Flag indicando se o cliente tem Cookies habilitados"
+            javascript:
+              "Flag indicando se o cliente tem JavaScript habilitados"
+            flash: "Flag indicando se o cliente tem Flash habilitados"
+            ip: "Endereço de IP do cliente"
+          geolocation:
+            city: "Cidade detectada"
+            state: "Estado detectado"
+            country: "País detectado"
+          navigation:
+            session_time: "Tempo da última sessão, em minutos."
+            referrer: "Origem da visita."
+            time_site_1d: 
+              "Tempo gasto no site pelo usuário no último dia, em minutos."
+            new_accounts_1d:
+              "Quantidade de contas criadas pelo usuário no último dia."
+            password_resets_1d:
+              "Quantidade de redefinições de senha do usuário no último dia."
+            sales_declined_1d:
+              "Quantidade de pedidos negados feitos pelo cliente no último dia."
+            sessions_1d: "Número de visitas do usuário no último dia."
+            time_since_last_sale:
+              "Tempo desde a última compra do usuário, em minutos."
+            time_site_7d:
+              "Tempo gasto no site pelo usuário nos últimos 7 dias,
+              em minutos."
+            time_per_page_7d:
+              "Tempo médio por página gasto pelo usuário nos últimos 7 dias,
+              em minutos"
+            new_accounts_7d:
+              "Quantidade de contas criadas pelo usuário na última semana."
+            password_resets_7d:
+              "Quantidade de redefinições de senha do usuário na última
+              semana."
+            checkout_count_7d:
+              "Visualizações do carrinho de compras feitas pelo usuário na
+              última semana."
+            sales_declined_7d:
+              "Quantidade de pedidos negados feitos pelo cliente na última
+              semana."
+            sessions_7d:  "Número de visitas do usuário na última semana."
+
+      put:
+        title: Resposta da atualização
+        content: |
+          A resposta da atualização de status sempre retorna o status anterior
+          e o status atual, o que acabou de ser mudado. Isto acontece mesmo
+          quando o status antigo e o novo são o mesmo, ou seja, quando não
+          houve atualização.
+
+        table:
+          old_status: Antigo status da transação.
+          new_status: Novo status da transação.
+      get:
+        title: Resposta da consulta
+        content: |
+          A consulta de um pedido traz **todos** os dados relacionados aquela
+          venda, que incluem tanto informações enviadas pela loja quanto da
+          nossa análise.
+
+        table:
+          status:
+            "Mensagem de status da chamada. Retorna `ok` quando bem sucedida e
+            `error` quando falhou."
+          order: "Objeto contendo a resposta da análise."
+          id: "Identificador único enviado na chamada"
+          visitor: "Identificador do visitante enviado na chamada"
+          score:
+            "Score da transação entre `0` e `1`.<br/><br/>
+            Para transações que não foram analisadas o valor `-1` é retornado."
+          recommendation:
+            "Ação recomendada para este pedido. Pode ser
+            `APPROVE`, `REVIEW` ou `DECLINE`.<br/><br/>
+            Para transações que não foram analisadas o valor `NONE` é
+            retornado."
+          total_amount: "Valor total do pedido."
+          shipping_amount: "Valor do frete."
+          tax_amount: "Valor dos impostos."
+          currency:  "Código da moeda."
+          installments: "Número de parcelas do pagamento."
+          created_at:
+            "Date e hora do envio da transação, em formato YYYY-MM-DDThh:mmZ
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))."
+          updated_at:
+            "Date e hora da última atualização da transação, em formato
+            YYYY-MM-DDThh:mmZ
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))."
+          customer_title: "Objeto que contém os detalhes do cliente."
+          customer:
+            id: "Identificador único do cliente."
+            name: "Nome completo do cliente."
+            tax_id: "Número de documento fiscal do cliente (CPF, CNPJ, etc)."
+            dob:  "Data de nascimento do cliente no formato AAAA-MM-DD"
+            phone1: "Número de telefone principal do cliente."
+            phone2: "Número de telefone secundário do cliente."
+            email: "Endereço de e-mail do cliente."
+            new: "Flag indicando se o cliente usou uma conta recém-criada."
+            vip: "Flag indicando se é um cliente VIP ou comprador frequente."
+
+          payment_title: "Lista que contém os meios de pagamento."
+          payment:
+            type: "Meio de pagamento usado pelo cliente."
+            bin: "Os primeiros seis números do cartão de crédito."
+            last4: "Os últimos quatro dígitos do cartão de crédito."
+            expiration_date: "Data de validade do cartão no formato MMAAAA"
+            status: "O status do pagamento da operadora de cartão."
+
+          billing_title: "Objeto que contém o endereço de cobrança."
+          billing:
+            name: "Nome do titular do cartão."
+            address1: "Endereço da fatura do cliente com o banco."
+            address2: "Complemento do endereço de fatura."
+            city: "Cidade do titular do cartão."
+            state: "Estado do titular do cartão."
+            zip: "CEP do titular do cartão."
+            country: "Código do país do titular do cartão."
+
+          shipping_title: "Objeto que contém o endereço de entrega."
+          shipping:
+            name: "Nome do destinatário do cartão."
+            address1: "Endereço de entrega do destinatário."
+            address2: "Complemento do endereço de fatura."
+            city: "Cidade do destinatário."
+            state: "Estado do destinatário."
+            zip: "CEP do destinatário."
+            country: "Código do país do destinatário."
+
+          shopping_cart_title: "Lista que contém os itens comprados."
+          shopping_cart:
+            sku:
+              "[SKU](https://pt.wikipedia.org/wiki/Stock_Keeping_Unit) ou
+              número de inventário do produto ou serviço."
+            product_code:
+              "Código de barras ou [UPC]
+              (https://pt.wikipedia.org/wiki/C%C3%B3digo_de_barras) do produto
+              ou serviço."
+            category:
+              "Código da categoria do produto comprado.<br />Veja nossa [lista
+              de categorias](#) para mais informações."
+            name: "Nome do produto ou serviço.<br>**Max. 100 chars, string.**"
+            description: "Descrição de detalhada do produto ou serviço."
+            unit_cost: "Custo unitário deste produto ou serviço."
+            quantity: "Quantidade de unidades compradas."
+            discount: "Valor de desconto do produto."
+
+          travel_title: "Objeto que contém os dados de viagem e passageiros."
+          travel_leg: "Objeto que contém os dados de viagem (cada trecho)"
+          travel_passengers: Objeto que contém os dados dos passageiros.
+          travel:
+            type: "Tipo de viagem."
+            departure: "Objeto com as informações do viagem de **ida**."
+            return: "Objeto com as informações do viagem de **volta**."
+            passengers: "Array de objetos com os dados dos passegeiros"
+            origin_city: "Cidade de origem."
+            destination_city: "Cidade de destino."
+            origin_airport:
+              "[Código IATA]
+              (https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA)
+              para o aeroporto de origem."
+            destination_airport:
+              "[Código IATA]
+              (https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA)
+              para o aeroporto de destino."
+            date:
+              "Date e hora do embarque em UTC no formato YYYY-MM-DDThh:mmZ
+              ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))"
+            number_of_connections: "Número de conexões"
+            class:
+              "Nome da classe, como `economy`, `business` e `first`"
+            fare_basis:
+              "[Código da classe]
+              (https://pt.wikipedia.org/wiki/C%C3%B3digos_de_classes_da_IATA)."
+            name: "Nome completo do passangeiro."
+            document: "Número do documento."
+            document_type: "Tipo do documento. Pode ser `passport` ou `id`."
+            dob:
+              "Data de nascimento do passageiro no formato YYYY-MM-DD ([ISO 8601]
+              (https://en.wikipedia.org/wiki/ISO_8601))."
+            nationality:
+              "País de nascimento do passageniro ([ISO 3166-2]
+              (https://en.wikipedia.org/wiki/ISO_3166-2))"
+            loyalty: "Objeto contendo os detalhes do programa de fidelidade"
+            loyalty_program: "Nome do programa de fidelidade."
+            loyalty_category: "Categoria do programa."
+            frequent_passenger: "Flag de viajante frequente."
+            special_needs: "Passageiro com necessidades especiais."
+
+          device_title: "Objeto contendo os dados coletados da máquina."
+          device:
+            user_id: "Identificador único do visitante."
+            fingerprint: "Identificação do navegador."
+            platform: "Tipo de dispositivo pelo cliente."
+            browser: "Navegador do cliente."
+            language: "Idioma do navegador do cliente."
+            timezone: "Fuso horário do cliente em GMT."
+            cookie: "Flag indicando se o cliente tem Cookies habilitados."
+            javascript:
+              "Flag indicando se o cliente tem JavaScript habilitados."
+            flash: "Flag indicando se o cliente tem Flash habilitados."
+            ip: "Endereço de IP do cliente."
+
+          geolocation_title:
+            "Objeto contendo os dados de geolocalização do cliente."
+          geolocation:
+            city: "Cidade detectada na geolocalização."
+            state: "Estado detectado na geolocalização."
+            country: "País detectado na geolocalização."
+
+          navigation_title: "Objeto contento os resumo de navegação do cliente."
+          navigation:
+            session_time: "Tempo da última sessão, em minutos."
+            referrer: "Origem da visita."
+            time_site_1d: 
+              "Tempo gasto no site pelo usuário no último dia, em minutos."
+            new_accounts_1d:
+              "Quantidade de contas criadas pelo usuário no último dia."
+            password_resets_1d:
+              "Quantidade de redefinições de senha do usuário no último dia."
+            sales_declined_1d:
+              "Quantidade de pedidos negados feitos pelo cliente no último dia."
+            sessions_1d: "Número de visitas do usuário no último dia."
+            time_since_last_sale:
+              "Tempo desde a última compra do usuário, em minutos."
+            time_site_7d:
+              "Tempo gasto no site pelo usuário nos últimos 7 dias,
+              em minutos."
+            time_per_page_7d:
+              "Tempo médio por página gasto pelo usuário nos últimos 7 dias,
+              em minutos"
+            new_accounts_7d:
+              "Quantidade de contas criadas pelo usuário na última semana."
+            password_resets_7d:
+              "Quantidade de redefinições de senha do usuário na última
+              semana."
+            checkout_count_7d:
+              "Visualizações do carrinho de compras feitas pelo usuário na
+              última semana."
+            sales_declined_7d:
+              "Quantidade de pedidos negados feitos pelo cliente na última
+              semana."
+            sessions_7d:  "Número de visitas do usuário na última semana."
+
+
+    blacklist:
+      title: Resposta da API de Blacklist
+      content: |
+        A resposta da API de Blacklist traz a confirmação da operação feita
+        naquele registro, seja ela uma **inserção**, **atualização**,
+        **consulta** ou **remoção**. Abaixo temos os detalhes de cada resposta.
+
+      table:
+        status: "Status da solicitação. Pode ser `ok` ou `error`."
+        uri:
+          "Endereço do recurso que foi criado na Blacklist, para uso futuro."
+        expires_at: "Data em que a entrada será removida da Blacklist."
+        message: "Mensagem de confirmação de remoção do registro."
+        email_address: "Endereço de email."
+        days_to_expire:
+          "Dias para que esta entrada seja removida automaticamente da
+          Blacklist."
+        address_identifier:
+          "Identificador **único** do endereço. Será utilizado para referenciar
+          este registro na Blacklist no futuro."
+        address_line_1: "Endereço de entrega do destinatário."
+        address_line_2: "Complemento do endereço de fatura."
+        city: "Cidade do destinatário."
+        state: "Estado do destinatário"
+        zip: "CEP do destinatário."
+        country: 
+          "Código do país do destinatário [ISO 3166-2]
+          (https://pt.wikipedia.org/wiki/ISO_3166-2)"
+
+      post:
+        title: Resposta da inserção
+
+      put:
+        title: Resposta da atualização
+
+      get:
+        title: Resposta da consulta
+
+
+      delete:
+        title: Resposta da remoção
+
+      code:
+        email_example: "Exemplo de resposta de consulta de email"
+        address_example: "Exemplo de resposta de consulta de endereço"
+
+    table:
+      code: Código
+      details: Descrição
+      ok: Chamada é válida e temos uma resposta.
+      created: Item enviado foi adicionado à lista.
+      badrequest:
+        "Houve um problema com a requisição enviada. O **corpo da
+        resposta** tem mais informações sobre a causa do erro."
+      unauthorized: 
+        "A chave de API enviada não é válida. Verificar o [formato da chave]
+        (#autenticação-da-api) e o seu conteúdo no [portal]
+        (https://sandbox.konduto.com)."
+      forbidden:
+        "Há algum problema com a sua conta. Por favor [entre em contato com o
+        nosso Suporte](mailto:oi@konduto.com) para mais informações."
+      notfound: O número de pedido não foi encontrado na nossa base.
+      method: O método HTTP enviado não é permitido para este recurso.
+      toomany: 
+        "Você atingiu o limite de requisições permitidas. [Entre em contato com
+        o nosso Suporte](mailto:oi@konduto.com) para mais informações."
+      invalid:
+        "O endereço da requisição é inválida e o servidor cortou a conexão.
+        Por favor, verifique a URL de envio da transação."
+      server:
+        "Houve algum erro no processamento interno da Konduto. [Entre em
+        contato com o nosso Suporte](mailto:oi@konduto.com) para mais
+        informações."
+
+    code:
+      ok: Sucesso
+      created: Item criado
+      badrequest: Erro na requisição
+      unauthorized: Problema na autenticação da chave
+      forbidden: Problema no cadastro da loja
+      notfound: Não encontrado
+      method: Método inexistente
+      toomany: Limite de requisições atingido
+      invalid: Sem resposta
+      server: Erro interno do servidor
+
+  testing: 
+    title: Como fazer os seus testes
+    content: |
+      Nosso ambiente de teste permite que você integre com a nossa API e
+      obtenha respostas previsíveis, podendo assim **simular** todos os
+      cenários de uma operação real.
+
+      A `recommendation` do ambiente de teste varia de acordo com os
+      **centavos** do valor da transação (campo `total_amount`), seguindo a
+      tabela abaixo. Já o `score` retornado será o valor dos centavos.
+
+    table:
+      amount: Centavos do valor
+      response: Resposta simulada
+
+  webhook: 
+    title: Notificações (Webhooks)
+    content: |
+      A notificação (*webhook*) é um serviço auxiliar que permite automatizar
+      fluxos que dependem de mudanças no status de um pedido. Sempre que o
+      pedido muda de status nós enviaremos um **POST** para uma URL
+      especificada pela loja.
+
+      A partir desta notificação a loja pode seguir com o seu fluxo
+      operacional, sem a necessidade de consultar um a um o status de pedidos
+      pendentes.
+
+      Esta automação é feita para integrar o nosso sistema com a sua aplicação.
+      As notificações por email podem ser configuradas diretamente no nosso
+      Portal.
+
+
+    send:
+      title: Parâmetros da notificação
+      content: |
+        O *webhook* envia um **JSON** que contém o número do pedido, a hora da
+        mudança de status, o novo status que o pedido entrou e uma assinatura
+        de validação.
+
+    receive:
+      title: Recibo da notificação
+      content: |
+        Nós esperamos que a resposta da notificação confirme que o evento foi
+        recebido. Caso este recibo não seja enviado, nós tentaremos entregar o
+        *webhook* novamente.
+
+        Você deve imprimir um **JSON** no corpo da resposta `HTTP 200` que
+        contém apenas um valor: `{"status":"ok"}`.
+
+        Ao ver esta mensagem nós entenderemos que a
+        notificação foi recebida corretamente e não tentaremos outras entregas.
+
+    signature:
+      title: Calculando a assinatura
+      content: |
+        A assinatura de validação do webhook serve para garantir a integridade
+        da mensagem, evitando casos de *spoofing*. É **altamente recomendado**
+        que você calcule e valide a assinatura de cada webhook recebido.
+
+        Cada webhook contém um [HMAC-SHA-256]
+        (https://pt.wikipedia.org/wiki/HMAC) no campo `signature`, formado pela
+        concatenação dos campos enviados na notificação, e usando a chave
+        privada da API como segredo.
+
+        Os campos devem ser concatenados da seguinte forma:<br />
+        **order_id** + **#** + **timestamp** + **#** + **status**
+
+    code:
+      private_key: Define a chave privada
+      webhook: JSON original recebido no webhook
+      arr: Transforma JSON em array
+      signature: Passa assinatura do webhook para variável $signature
+      unset: Remove a assinatura do array
+      to_hash: "Transforma o array em string concatenada por #"
+      my_hash: Calcula o HMAC com os dados do webhook
+
+
+    table:
+      order_id: "Identificador único do pedido, enviado pelo lojista." 
+      timestamp:
+        "Date e hora da notificação em milisegundos ([Era Unix]
+        (https://pt.wikipedia.org/wiki/Era_Unix))."
+      status:
+        "Novo status do pedido, ao qual a notificação está se referindo. <br />
+        Pode ser `APPROVED`, `PENDING`, `DECLINED`, `NOT_AUTHORIZED` e
+        `NOT_ANALYZED`."
+      signature:
+        "Assinatura de validação da notificação. É um [HMAC-SHA-256]
+        (https://pt.wikipedia.org/wiki/HMAC) dos campos da notificação.
+        <br />_**Veja abaixo como calcular a assinatura do webhook**_."
+
+  examples:
+    name: "Júlia da Silva"
+    tax_id: "12345678909"
+    address1: "Rua Primeiro de Abril, 123"
+    address2: "Apto. 45"
+    phone1: "11-1234-5678"
+    phone2: "21-2143-6578"
+    email: "jsilva@exemplo.com.br"
+    city: "São Paulo"
+    state: "SP"
+    country: "BR"
+    zip: " 01001-001"
+    ip: "189.68.156.100"
+    product1: "Camiseta Verde"
+    description1: "Camiseta masculina verde tamanho M"
+    product2: "Par de meias amarelas"
+    description2: "Par de meias amarelas tamanho único"
+    gmt: "GMT -3"
+    lang: "pt_BR"
+    currency: "BRL"
+    passenger2: "Carlos Siqueira"
+    airport1: GRU
+    airport2: SFO
+    city1: São Paulo
+    city2: San Francisco
+    comments: "Documentos e endereço de entrega confirmados"
+
+
+  tables:
+    title: Tabelas de referência
+    content: |
+      Abaixo você encontrará as tabelas de referência que contém informações
+      adicionais sobre a lista de moedas (campo `currency`) a de categorias de
+      produtos (`category`).
+
+    currency:
+      title: Moedas mais comuns
+      code:
+        title: "Lista completa de moedas<br /><br />"
+        content:
+          "Aqui nós listamos apenas as moedas mais usadas. Você pode encontrar
+          a [lista completa de códigos de moeda aqui]
+          (https://pt.wikipedia.org/wiki/ISO_4217)"
+    
+      table:
+        code: Código
+        currency: Moeda
+        usd: "Dólar Americano ($)"
+        brl: "Real Brasileiro (R$)"
+        ars: "Peso Argentino ($)"
+        aud: "Dólar Australiano ($)"
+        cad: "Dólar Canadense ($)"
+        clp: "Peso Chileno ($)"
+        eur: "Euro (€)"
+        gbp: "Libra Esterlina (£)"
+        jpy: "Iene Japonês (¥)"
+        mxp: "Peso Mexicano ($)"
+
+    categories:
+      title: Categorias de produtos
+
+      code:
+        title: "O que são as categorias?<br /><br />"
+        content: 
+          "Categorias de produto são importantes pois elas nos dizem o tipo de
+          produto que está sendo comprado (sapatos, jóias ou um GPS). Comprar
+          uma TV é muito diferente de comprar um livro, então as categorias
+          fazem diferença para nós.
+          <br /><br />
+          Esta lista foi baseada na [taxonomia de produtos do
+          Google](https://support.google.com/merchants/answer/160081) e elas
+          representam os principais agrupamentos de produtos.
+          <br /><br />
+          Se você acha que há alguma categoria faltando fique à vontade para
+          nos contactar no <oi@konduto.com> e nos avisar!"
+
+
+      table:
+        description: Descrição
+        code: Código
+        others: Outros
+        others_not_specified: Outras categorias não especificadas
+        animals: "Animais & Bichos de Estimação"
+        clothing:
+          title: "Roupas e Acessórios"
+          main: "Roupas em Geral"
+          accessories: "Accessórios em Geral"
+          costumes: "Fantasias e Acessórios"
+          handbags: "Bolsas, Carteiras e Malas"
+          handbags_accessories: "Acessórios para Bolsas e Carteiras"
+          jewelry: "Joias"
+          shoe_accessories: "Acessórios para Sapatos"
+          shoes: "Sapatos"
+          others: "Outros"
+        arts: "Arte e Entretenimento"
+        baby: "Bebês e Recém-nascidos"
+        business:
+          title: "Negócios e Indústria"
+          advertising: "Propaganda e Marketing"
+          agriculture: "Agricultura"
+          construction: "Construção"
+          film: "Filme e Televisão"
+          finance: "Finanças e Seguros"
+          food: "Serviços de Alimentação"
+          forestry: "Madeireiras"
+          machinery: "Maquinário Pesado"
+          hotel: "Hotel e Hospedagem"
+          storage: "Armazém Industrial"
+          law: "Equipamentos Militares"
+          manufacturing: "Manufatura"
+          handling: "Movimentação de Material"
+          medical: "Medicina"
+          mining: "Mineração"
+          tattoo: "Piercing e tatuagem"
+          retail: "Varejo"
+          science: "Ciência e Laboratórios"
+          signage: "Placas e Sinais"
+          safety: "Equipamentos de Segurança do Trabalho"
+          others: "Outros"
+        cameras:
+          title: "Câmeras e Óticas"
+          main: "Câmeras"
+          accessories: "Acessórios de câmeras"
+          photography: "Fotografia"
+          others: "Outros"
+        electronics:
+          title: "Eletrônicos"
+          3d: "Impressoras 3D"
+          audio: "Áudio"
+          circuit: "Componentes de Circuito"
+          comm: "Comunicação"
+          components: "Componentes"
+          computers: "Computadores"
+          accessories: "Acessórios Eletrônicos"
+          gps: "Aparelho GPS"
+          gps_accessories: "Acessórios de GPS"
+          networking: "Redes"
+          print: "Impressão, Cópia, Scanner e Fax"
+          print_accessories: "Acessórios de Impressão, Cópia, Scanner e Fax"
+          video: "Vídeo"
+          consoles: "Consoles de Vídeo Game"
+          consoles_accessories: "Acessórios de Vídeo Game"
+          others: "Outros"
+        food: "Comidas, Bebidas e Cigarro"
+        furniture: "Móveis"
+        hardware: "Ferramentas"
+        health: "Saúde e Beleza"
+        garden: "Casa e Jardim"
+        luggage: "Malas e Bagagens"
+        adult: "Adulto"
+        weapons: "Armas e Munição"
+        office: "Materiais de Escritório"
+        religious: "Religião e Cerimoniais"
+        software:
+          title: "Software"
+          computer: "Software de Computador"
+          digital: "Bens e Moedas Digitais"
+          services: "Serviços Digitais"
+          games: "Jogos de Vídeo Games"
+          others: "Outros"
+        sport: "Equipamento de Esporte"
+        toys: "Brinquedos e Jogos"
+        vehicles: "Veículos e Peças"
+        books: "Livros"
+        dvds: "DVDs e Vídeos"
+        magazines: "Revistas e Jornais"
+        music:
+          title: "Música"
+          cds: "CDs e Vinil"
+          instruments: "Instrumentos Musicais"
+          digital: "Música Digital"
+          others: "Outros"
+        others: "Outros"
