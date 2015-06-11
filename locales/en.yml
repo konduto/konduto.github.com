@@ -67,6 +67,18 @@ en:
 
       It is **highly recommended** you tag your pages if you can.
 
+    table:
+      home: Website home
+      product: Product view page
+      search: Search results
+      account: Customer account page
+      password_reset: Reset password page
+      account_creation: New account creation page
+      category: Product category
+      basket: Shopping cart view
+      checkout: Checkout step
+      kdt_product: Product details
+
     basic:
       title: Using meta tags (preferred)
       content: |     

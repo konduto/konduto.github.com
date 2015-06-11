@@ -69,6 +69,19 @@ pt:
 
       **Recomendamos sempre** marcar suas páginas quando possível.
 
+    table:
+      home: Página inicial do site
+      product: Página de produto
+      search: Resultado de busca
+      account: Painel de conta do cliente
+      password_reset: Página de redefinição de senha
+      account_creation: Página de criação de nova conta
+      category: Página de categoria de produtos
+      basket: Visão do carrinho de compras
+      checkout: Página do processo de checkout
+      kdt_product: Detalhe do produto
+
+
     basic:
       title: Usando meta tags (preferível)
       content: |

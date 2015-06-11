@@ -80,6 +80,19 @@ search: false
 # <%= t("tags.title") %>
 <%= t("tags.content") %>
 
+Tag | <%= t("parameter") %> | <%= t("description") %>
+-------------- | -------------- | --------------
+page | home | <%= t("tags.table.home") %>
+ | product | <%= t("tags.table.product") %>
+ | search | <%= t("tags.table.search") %>
+ | account | <%= t("tags.table.account") %>
+ | password_reset | <%= t("tags.table.password_reset") %>
+ | account_creation | <%= t("tags.table.account_creation") %>
+ | category | <%= t("tags.table.category") %>
+ | basket | <%= t("tags.table.basket") %>
+ | checkout | <%= t("tags.table.checkout") %>
+product | id=\<sku\>,<br />name=\<name\> | <%= t("tags.table.kdt_product") %>
+
 ## <%= t("tags.basic.title") %>
 
 ```html
@@ -134,11 +147,19 @@ search: false
 ```
 
 ```html
+<!-- <%= t("tags.code.product") %> -->
+<script type="text/javascript">
+  Konduto.sendEvent('page','product');
+</script>
+```
+
+```html
 <!-- <%= t("tags.code.password") %> -->
 <script type="text/javascript">
   Konduto.sendEvent('page','password-reset');
 </script>
 ```
+
 
 
 <%= t("tags.advanced.content") %>
