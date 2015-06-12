@@ -1,5 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+#
 bundle exec rake build
 find . -type d ! -name 'build' -delete
-mv build/* .
-rm -rf build/
+cp -r build/* .
+rm -rf build/ source/
