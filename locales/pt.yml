@@ -1129,6 +1129,7 @@ pt:
     city1: São Paulo
     city2: San Francisco
     comments: "Documentos e endereço de entrega confirmados"
+    seller_name: "Loja do João"
 
 
   tables:

@@ -1112,6 +1112,7 @@ en:
     city1: Sao Paulo
     city2: San Francisco
     comments: "Shipping address confirmed by cardholder."
+    seller_name: "Joe's Store"
 
 
   tables:
