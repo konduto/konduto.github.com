@@ -125,7 +125,7 @@ product | id=\<sku\>,<br />name=\<name\> | <%= t("tags.table.kdt_product") %>
   var __kdt = __kdt || [];
   __kdt.push({"public_key": "TEE973BEC88"});
   // <%= t("tags.code.advanced_comment") %>
-  __kdt.push({"post_on_load": "false"});
+  __kdt.push({"post_on_load": false});
   (function() {
   var kdt = document.createElement('script');
   kdt.id = 'kdtjs'; kdt.type = 'text/javascript';
@@ -242,13 +242,17 @@ GET  https://api.konduto.com/v1/orders/{order_id}
   "currency":"<%= t("examples.currency") %>",
   "installments":2,
   "ip":"<%= t("examples.ip") %>",
+  "first_message":"2018-12-20T15:59:01Z",
+  "messages_exchanged":30,
+  "purchased_at":"2018-12-25T12:00:25Z",
   "analyze":true,
   "customer":{ },
   "payment":[ ],
   "billing":{ },
   "shipping":{  },
   "shopping_cart":[ ],
-  "travel":{ }
+  "travel":{ },
+  "seller":{ }
 }
 ```
 
@@ -264,6 +268,9 @@ tax_amount | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.tax_amo
 currency | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.currency") %>
 installments | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.installments") %>
 ip | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.ip") %>
+first_message | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.first_message") %>
+messages_exchanged | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.messages_exchanged") %>
+purchased_at | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.purchased_at") %>
 analyze | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.analyze") %>
 customer | *<%= t("required") %>* <br /> <%= t("orders.post.root.table.customer") %>
 payment | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.payment") %>
@@ -273,7 +280,7 @@ shopping_cart | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.shop
 travel | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.travel") %>
 
 
-### <%= t("orders.post.customer.title") %>
+### <%= t("orders.post.customer.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `customer`
 
 ```shell
 {
@@ -285,6 +292,7 @@ travel | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.travel") %>
     "phone1":"<%= t("examples.phone1") %>",
     "phone2":"<%= t("examples.phone2") %>",
     "email":"<%= t("examples.email") %>",
+    "created_at":"2010-12-25",
     "new":false,
     "vip":false
   }
@@ -302,11 +310,12 @@ dob | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.dob") %>
 tax_id | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.tax_id") %> 
 phone1 | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.phone1") %> 
 phone2 | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.phone2") %> 
+created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.created_at") %>
 new | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.new") %> 
 vip | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.vip") %> 
 
 
-### <%= t("orders.post.payment.title") %>
+### <%= t("orders.post.payment.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `payment`
 
 ```shell
 {  
@@ -340,7 +349,7 @@ last4 | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table.last4") %
 expiration_date | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table.expiration_date") %> 
 
 
-### <%= t("orders.post.billing.title") %>
+### <%= t("orders.post.billing.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `billing`
 
 ```
 {  
@@ -369,7 +378,7 @@ zip | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.zip") %>
 country | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.country") %> 
 
 
-### <%= t("orders.post.shipping.title") %>
+### <%= t("orders.post.shipping.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `shipping`
 
 ```
 {  
@@ -397,7 +406,7 @@ state | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.state") 
 zip | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.zip") %> 
 country | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.country") %> 
 
-### <%= t("orders.post.shopping_cart.title") %>
+### <%= t("orders.post.shopping_cart.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `shopping_cart`
 
 ```shell
 {  
@@ -409,7 +418,8 @@ country | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.countr
       "name":"<%= t("examples.product1") %>",
       "description":"<%= t("examples.description1") %>",
       "unit_cost":29.99,
-      "quantity":1
+      "quantity":1,
+      "created_at":"2008-12-25"
     },
     {  
       "sku":"0017273",
@@ -436,8 +446,9 @@ description | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.tab
 unit_cost | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.unit_cost") %> 
 quantity | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.quantity") %> 
 discount | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.discount") %> 
+created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.table.created_at") %>
 
-### <%= t("orders.post.travel.title") %>
+### <%= t("orders.post.travel.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `travel`
 
 ```shell
 {  
@@ -525,6 +536,24 @@ nationality | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.nati
 frequent_passenger | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.frequent_passenger") %> 
 special_needs | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.special_needs") %> 
 
+
+### <%= t("orders.post.seller.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `seller`
+
+```shell
+{ 
+  "id":"",
+  "name":"",
+  "created_at":""
+}
+```
+
+<%= t("orders.post.seller.content") %>
+
+<%= t("parameter") %> | <%= t("description") %>
+-------------- | --------------
+id | *<%= t("required") %>* <br /> <%= t("orders.post.seller.table.id") %> 
+name | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.name") %> 
+created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.created_at") %> 
 
 
 <%# %>
@@ -938,6 +967,9 @@ new_status | <%= t("responses.orders.put.table.new_status") %>
     "tax_amount":3.04,
     "shipping_amount":6.57,
     "currency":"<%= t("examples.currency") %>",
+    "first_message":"2018-12-20T15:59:01Z",
+    "messages_exchanged":30,
+    "purchased_at":"2018-12-25T12:00:25Z",
     "device":{  
       "user_id": "405961fab293600daeed93ae561",
       "fingerprint": "e4f2c690951038a8f77aa583847",
