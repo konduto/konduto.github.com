@@ -209,7 +209,7 @@ qual produto ou categoria de produto estão sendo mostrados.</p>
   <span class="kd">var</span> <span class="nx">__kdt</span> <span class="o">=</span> <span class="nx">__kdt</span> <span class="o">||</span> <span class="p">[];</span>
   <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"public_key"</span><span class="p">:</span> <span class="s2">"TEE973BEC88"</span><span class="p">});</span>
   <span class="c1">// Envio automático desativado</span>
-  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"post_on_load"</span><span class="p">:</span> <span class="s2">"false"</span><span class="p">});</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"post_on_load"</span><span class="p">:</span> <span class="kc">false</span><span class="p">});</span>
   <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">kdt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
   <span class="nx">kdt</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="s1">'kdtjs'</span><span class="p">;</span> <span class="nx">kdt</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text/javascript'</span><span class="p">;</span>
@@ -342,13 +342,17 @@ relacionadas ao pedido, bem como os objetos <code class="prettyprint">customer</
   <span class="s2">"currency"</span>:<span class="s2">"BRL"</span>,
   <span class="s2">"installments"</span>:2,
   <span class="s2">"ip"</span>:<span class="s2">"189.68.156.100"</span>,
+  <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+  <span class="s2">"messages_exchanged"</span>:30,
+  <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
   <span class="s2">"analyze"</span>:true,
   <span class="s2">"customer"</span>:<span class="o">{</span> <span class="o">}</span>,
   <span class="s2">"payment"</span>:[ <span class="o">]</span>,
   <span class="s2">"billing"</span>:<span class="o">{</span> <span class="o">}</span>,
   <span class="s2">"shipping"</span>:<span class="o">{</span>  <span class="o">}</span>,
   <span class="s2">"shopping_cart"</span>:[ <span class="o">]</span>,
-  <span class="s2">"travel"</span>:<span class="o">{</span> <span class="o">}</span>
+  <span class="s2">"travel"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"seller"</span>:<span class="o">{</span> <span class="o">}</span>
 <span class="o">}</span>
 </code></pre>
 
@@ -394,6 +398,18 @@ valor e moeda.</p>
 <td><em>(opcional)</em> <br /> Endereço IPv4 do cliente<br><strong>Max. 15 chars, string</strong></td>
 </tr>
 <tr>
+<td>first_message</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, traz a data e hora da primeira mensagem trocada entre comprador e vendedor. Formato AAAA-MM-DDTHH:mm:ssZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 20 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>messages_exchanged</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, deve trazer o número de mensagens trocadas entre comprador e vendedor até o momento da transação.<br /> <strong>Número</strong>.</td>
+</tr>
+<tr>
+<td>purchased_at</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, traz a data e hora do fechamento do pedido no site. Formato AAAA-MM-DDTHH:mm:ssZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 20 chars, string</strong>.</td>
+</tr>
+<tr>
 <td>analyze</td>
 <td><em>(opcional)</em> <br /> Se <code class="prettyprint">false</code> o sistema levará em conta a transação nas próximas análises mas não devolve uma recomendação e você não é cobrado. <br /><strong>Boolean. Se não enviado o padrão é <code class="prettyprint">true</code></strong></td>
 </tr>
@@ -433,6 +449,7 @@ valor e moeda.</p>
     <span class="s2">"phone1"</span>:<span class="s2">"11-1234-5678"</span>,
     <span class="s2">"phone2"</span>:<span class="s2">"21-2143-6578"</span>,
     <span class="s2">"email"</span>:<span class="s2">"jsilva@exemplo.com.br"</span>,
+    <span class="s2">"created_at"</span>:<span class="s2">"2010-12-25"</span>,
     <span class="s2">"new"</span>:false,
     <span class="s2">"vip"</span>:false
   <span class="o">}</span>
@@ -480,6 +497,10 @@ respectivamente.</p>
 <tr>
 <td>phone2</td>
 <td><em>(opcional)</em> <br /> Número de telefone secundário do cliente. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de criação da conta ou cadastro do cliente no site, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exatamente 10 chars, string</strong>.</td>
 </tr>
 <tr>
 <td>new</td>
@@ -667,7 +688,8 @@ serviço ou download de software.</p>
       <span class="s2">"name"</span>:<span class="s2">"Camiseta Verde"</span>,
       <span class="s2">"description"</span>:<span class="s2">"Camiseta masculina verde tamanho M"</span>,
       <span class="s2">"unit_cost"</span>:29.99,
-      <span class="s2">"quantity"</span>:1
+      <span class="s2">"quantity"</span>:1,
+      <span class="s2">"created_at"</span>:<span class="s2">"2008-12-25"</span>
     <span class="o">}</span>,
     <span class="o">{</span>  
       <span class="s2">"sku"</span>:<span class="s2">"0017273"</span>,
@@ -723,6 +745,10 @@ objetos que esta lista aceita.</p>
 <tr>
 <td>discount</td>
 <td><em>(opcional)</em> <br /> Valor de desconto do produto.<br /><strong>Max. 10 dígitos, número.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de publicação do produto no site, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exatamente 10 chars, string</strong>.</td>
 </tr>
 </tbody></table>
 
@@ -883,6 +909,37 @@ no array <code class="prettyprint">passengers</code>.</p>
 <tr>
 <td>special_needs</td>
 <td><em>(opcional)</em> <br /> Passageiro com necessidades especiais. <br /><strong>Boolean, padrão é <code class="prettyprint">false</code>.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="vendedor-&nbsp;-&nbsp;-&nbsp;-&nbsp;-seller">Vendedor &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">seller</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span> 
+  <span class="s2">"id"</span>:<span class="s2">"37"</span>,
+  <span class="s2">"name"</span>:<span class="s2">"Loja do João"</span>,
+  <span class="s2">"created_at"</span>:<span class="s2">"2009-11-25"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>No <strong>Marketplace</strong>, são os campos destinados aos dados do Vendedor do
+produto.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(obrigatório)</em> <br /> Identificador único do vendedor dentro do Marketplace.<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(opcional)</em> <br /> Nome da loja ou do vendedor<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de criação da loja no Marketplace, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 10 chars, string</strong>.</td>
 </tr>
 </tbody></table>
 
@@ -1578,6 +1635,9 @@ houve atualização.</p>
     <span class="s2">"tax_amount"</span>:3.04,
     <span class="s2">"shipping_amount"</span>:6.57,
     <span class="s2">"currency"</span>:<span class="s2">"BRL"</span>,
+    <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+    <span class="s2">"messages_exchanged"</span>:30,
+    <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
     <span class="s2">"device"</span>:<span class="o">{</span>  
       <span class="s2">"user_id"</span>: <span class="s2">"405961fab293600daeed93ae561"</span>,
       <span class="s2">"fingerprint"</span>: <span class="s2">"e4f2c690951038a8f77aa583847"</span>,

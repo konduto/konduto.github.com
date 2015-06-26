@@ -219,15 +219,30 @@ pt:
             "Se `false` o sistema levará em conta a transação nas próximas
             análises mas não devolve uma recomendação e você não é cobrado.
             <br />**Boolean. Se não enviado o padrão é `true`**"
+          first_message:
+            "No **Marketplace**, traz a data e hora da primeira mensagem
+            trocada entre comprador e vendedor. Formato AAAA-MM-DDTHH:mm:ssZ
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))<br />
+            **Exatamente 20 chars, string**."
+          messages_exchanged:
+            "No **Marketplace**, deve trazer o número de mensagens trocadas
+            entre comprador e vendedor até o momento da transação.<br />
+            **Número**."
+          purchased_at:
+            "No **Marketplace**, traz a data e hora do fechamento do pedido no
+            site. Formato AAAA-MM-DDTHH:mm:ssZ ([ISO 8601]
+            (https://pt.wikipedia.org/wiki/ISO_8601))<br />
+            **Exatamente 20 chars, string**."
           customer: "Objeto que contém os detalhes do cliente."
           payment: "Lista que contém os meios de pagamento."
           billing: "Objeto que contém o endereço de cobrança."
           shipping: "Objeto que contém o endereço de entrega."
           shopping_cart: "Lista que contém os itens comprados."
           travel: "Objeto que contém os dados de viagem e passageiros."
+          seller: "Objeto que contém os dados do vendedor no Marketplace."
 
       customer:
-        title: Comprador &nbsp; &nbsp; &nbsp; &nbsp; `customer`
+        title: Comprador
         content: |
           Este objeto deve ser usado para enviar informações sobre a pessoa que
           está fazendo a compra, que na maioria dos casos é aquele que está
@@ -264,9 +279,14 @@ pt:
           vip:
             "Flag indicando se este é um cliente VIP ou comprador frequente.
             <br />**Boolean.**"
+          created_at:
+            "Data de criação da conta ou cadastro do cliente no site, em
+            formato AAAA-MM-DD ([ISO 8601]
+            (https://pt.wikipedia.org/wiki/ISO_8601)).<br />
+            **Exatamente 10 chars, string**."
 
       billing:
-        title: Endereço de Cobrança &nbsp; &nbsp; &nbsp; &nbsp; `billing`
+        title: Endereço de Cobrança
         content: |
           Este objeto deve conter informações do titular do cartão. É o mesmo
           nome e endereço que consta na fatura.
@@ -289,7 +309,7 @@ pt:
 
 
       shipping:
-        title: Endereço de Entrega &nbsp; &nbsp; &nbsp; &nbsp; `shipping`
+        title: Endereço de Entrega
         content: |
           Este objeto deve conter informações do destinatário que vai receber
           os produtos. Não há necessidade de enviá-lo caso você forneça um
@@ -314,7 +334,7 @@ pt:
 
 
       payment:
-        title: Meios de Pagamento &nbsp; &nbsp; &nbsp; &nbsp; `payment`
+        title: Meios de Pagamento
         content: |
           Esta lista de objetos deve ser usado para enviar informações sobre os
           meios de pagamentos usados na compra.
@@ -348,7 +368,7 @@ pt:
 
 
       shopping_cart:
-        title: Carrinho de Compras &nbsp; &nbsp; &nbsp; &nbsp; `shopping_cart`
+        title: Carrinho de Compras
         content: |
           Esta lista de objetos contém uma lista dos produtos que foram
           comprados neste pedido. Não existe limite para a quantidade de
@@ -379,10 +399,13 @@ pt:
             <br />**Max. 10 dígitos, número.**"
           discount:
             "Valor de desconto do produto.<br />**Max. 10 dígitos, número.**"
-          image: "URL da imagem do produto.<br />**Max. 255 chars, string.**"
+          created_at:
+            "Data de publicação do produto no site, em formato AAAA-MM-DD
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601)).<br />
+            **Exatamente 10 chars, string**."
 
       travel:
-        title: Viagem &nbsp; &nbsp; &nbsp; &nbsp; `travel`
+        title: Viagem
         travel: Informações da viagem
         passengers: Informações dos passageiros
         content: |
@@ -441,6 +464,24 @@ pt:
           special_needs:
             "Passageiro com necessidades especiais.
             <br />**Boolean, padrão é `false`.**"
+
+      seller:
+        title: Vendedor
+        content: |
+          No **Marketplace**, são os campos destinados aos dados do Vendedor do
+          produto.
+
+        table:
+          id:
+            "Identificador único do vendedor dentro do Marketplace.<br />
+            **Max. 100 chars, string**."
+          name:
+            "Nome da loja ou do vendedor<br />
+            **Max. 100 chars, string**."
+          created_at:
+            "Data de criação da loja no Marketplace, em formato AAAA-MM-DD
+            ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))<br />
+            **Exatamente 10 chars, string**."
 
 
     put:
@@ -1088,6 +1129,7 @@ pt:
     city1: São Paulo
     city2: San Francisco
     comments: "Documentos e endereço de entrega confirmados"
+    seller_name: "Loja do João"
 
 
   tables:

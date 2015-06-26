@@ -219,12 +219,27 @@ en:
             "If `false` we take the transaction into account in future analyses
             but we don't reply with a recommendation and you are not billed.
             <br />**Boolean, defaults to true.**"
+          first_message:
+            "In **Marketplaces**, it's the date and time of the first message
+            exchanged between buyer and seller. YYYY-MM-DDTHH:mm:ssZ format
+            ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))<br />
+            **Exactly 20 chars, string**."
+          messages_exchanged:
+            "In **Marketplaces**, should contain the number of messages
+            exchanged between buyer and seller up until the order was placed.
+            <br />**Number**."
+          purchased_at:
+            "In **Marketplaces**, it's the date and time the order was closed.
+            YYYY-MM-DDTHH:mm:ssZ format ([ISO 8601]
+            (https://en.wikipedia.org/wiki/ISO_8601))<br />
+            **Exactly 20 chars, string**."
           customer: "Object containing the customer details."
           payment: "Array containing the payment methods."
           billing: "Object containing the billing information."
           shipping: "Object containing the shipping information."
           shopping_cart: "Array containing the items purchased."
           travel: "Object containing the travel and passenger information."
+          seller: "Object containing the Marketplace seller information."
 
 
 
@@ -261,6 +276,10 @@ en:
           vip:
             "Flag indicating if the customer is a VIP or frequent buyer.<br
             />**Boolean.**"
+          created_at:
+            "Customer account creation date, in YYYY-MM-DD format ([ISO 8601]
+            (https://en.wikipedia.org/wiki/ISO_8601)).<br />
+            **Exactly 10 chars, string**."
 
 
       billing:
@@ -374,8 +393,10 @@ en:
             "Number of units purchased.<br />**Max. 10 digits, number.**"
           discount:
             "Discounted amount for this item.<br />**Max. 10 digits, number.**"
-          image:
-            "URL of this item's image.<br />**Max. 255 chars, string.**"
+          created_at:
+            "Date the product was first posted, in YYYY-MM-DD format ([ISO 8601]
+            (https://en.wikipedia.org/wiki/ISO_8601)).<br />
+            **Exactly 10 chars, string**."
 
       travel:
         title: Travel
@@ -441,6 +462,25 @@ en:
           special_needs:
             "Passenger with special needs.
             <br />**Boolean, defaults to `false`.**"
+
+
+      seller:
+        title: Seller
+        content: |
+          For **Marketplaces**, these fields are used to pass data about the
+          Seller.
+
+        table:
+          id:
+            "Seller unique identifier within the Marketplace.<br />
+            **Max. 100 chars, string**."
+          name:
+            "Merchant or seller name<br />
+            **Max. 100 chars, string**."
+          created_at:
+            "Seller creation date within the Marketplace, in YYYY-MM-DD format
+            ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))<br />
+            **Exatamente 10 chars, string**."
 
 
     put:
@@ -1072,6 +1112,7 @@ en:
     city1: Sao Paulo
     city2: San Francisco
     comments: "Shipping address confirmed by cardholder."
+    seller_name: "Joe's Store"
 
 
   tables:
