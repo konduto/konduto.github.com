@@ -1078,8 +1078,8 @@ en:
         (https://en.wikipedia.org/wiki/Unix_time))."
       status:
         "New status for the order.<br />
-        Either `APPROVED`, `PENDING`, `DECLINED`, `NOT_AUTHORIZED` or
-        `NOT_ANALYZED`."
+        Either `APPROVED`, `PENDING`, `DECLINED`, `CANCELED`, 
+        `NOT_AUTHORIZED` or `NOT_ANALYZED`."
       signature:
         "Webhook validation signature. An [HMAC-SHA-256]
         (https://en.wikipedia.org/wiki/Hash-based_message_authentication_code)

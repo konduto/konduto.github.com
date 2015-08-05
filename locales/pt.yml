@@ -1096,8 +1096,8 @@ pt:
         (https://pt.wikipedia.org/wiki/Era_Unix))."
       status:
         "Novo status do pedido, ao qual a notificação está se referindo. <br />
-        Pode ser `APPROVED`, `PENDING`, `DECLINED`, `NOT_AUTHORIZED` e
-        `NOT_ANALYZED`."
+        Pode ser `APPROVED`, `PENDING`, `DECLINED`, `CANCELED`,
+        `NOT_AUTHORIZED` e `NOT_ANALYZED`."
       signature:
         "Assinatura de validação da notificação. É um [HMAC-SHA-256]
         (https://pt.wikipedia.org/wiki/HMAC) dos campos da notificação.
