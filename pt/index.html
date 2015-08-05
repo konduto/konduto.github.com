@@ -1,0 +1,3060 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API | Konduto</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Droid+Sans+Mono|Droid+Sans:400,700" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="../javascripts/all.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="pt pt_index">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <p align="center">
+        <a href="https://www.konduto.com">
+          <img src="../images/logo.png" />
+        </a>
+      </p>
+      <div id="toc">
+      </div>
+        <ul class="toc-footer">
+            <li><a href='https://www.konduto.com'>HOME</a></li>
+            <li><a href='#'>-</a></li>
+            <li><a href='/pt'>PORTUGUÊS</a></li>
+            <li><a href='/en'>ENGLISH</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="introdução">Introdução</h1>
+
+<p>Olá! Este documento explica como integrar com o serviço de antifraude da
+<strong>Konduto</strong> para que você comece a detectar as fraudes no seu e-commerce.</p>
+
+<p>Nosso serviço usa o comportamento do visitante para analisar padrões de
+navegação e detectar fraudes. Você precisará adicionar um código
+<strong>JavaScript</strong> ao seu site e marcar suas páginas, para que possamos ver
+os seus visitantes, e deverá enviar pedidos para nossa <strong>API REST</strong>, para
+que nós possamos fazer a análise.</p>
+
+<p>Nós estamos melhorando constantemente este documento e agradecemos
+qualquer sugestão enviada. Você pode mandar uma mensagem para
+<a href="mailto:oi@konduto.com">oi@konduto.com</a> com suas perguntas e sugestões de como melhora-lo.</p>
+
+<h1 id="coletor-de-eventos">Coletor de eventos</h1>
+
+<blockquote>
+<p>Cole o código abaixo do fechamento do <code class="prettyprint">&lt;/body&gt;</code>:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">__kdt</span> <span class="o">=</span> <span class="nx">__kdt</span> <span class="o">||</span> <span class="p">[];</span>
+  <span class="c1">// A chave pública identifica a sua loja</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"public_key"</span><span class="p">:</span> <span class="s2">"TEE973BEC88"</span><span class="p">});</span>
+  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">kdt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="s1">'kdtjs'</span><span class="p">;</span> <span class="nx">kdt</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text/javascript'</span><span class="p">;</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://i.k-analytix.com/k.js'</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="nx">s</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">kdt</span><span class="p">,</span> <span class="nx">s</span><span class="p">);</span>
+  <span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>Nós capturamos o comportamento de compra do cliente para detectar
+atividades fraudulentas. Para habilitar esta funcionalidade você deve
+colar um código JavaScript no rodapé do seu site para que nós possamos
+receber os dados de navegação e analisa-los.</p>
+
+<p>Este código <strong>não afeta a performance</strong> do seu site e é <strong>invisível</strong>
+para o seu visitante.</p>
+
+<h2 id="identificando-o-visitante">Identificando o visitante</h2>
+
+<blockquote>
+<p>Para enviar o seu próprio ID de cliente:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">setCustomerID</span><span class="p">(</span><span class="s1">'customer.id'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<blockquote>
+<p>Para recuperar o nosso ID do visitante:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">visitor_id</span> <span class="o">=</span> <span class="nx">Konduto</span><span class="p">.</span><span class="nx">getVisitorID</span><span class="p">();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>Há duas formas de ligar uma visita anônima a uma venda analisada. A
+primeira é utilizando o nosso <strong>ID de visitante</strong>, criado por nós para
+a sessão daquele usuário. A outra é através do <strong>ID de cliente</strong>, um
+identificador único do cliente e que é definido pela loja.</p>
+
+<p>Você pode optar pelas duas formas de identificação, de acordo com a sua
+preferência e com as restrições da sua aplicação.</p>
+
+<h1 id="marcação-de-páginas">Marcação de páginas</h1>
+
+<p>A marcação de páginas (<em>page tagging</em>) nos permite ter um entendimento
+mais profundo do conteúdo mostrado em seu site. Isto nos ajuda a
+determinar o que o visitante está vendo e fazendo na sua página, e
+aumenta consideravelmente a precisão de nosso algoritmo.</p>
+
+<p><strong>Recomendamos sempre</strong> marcar suas páginas quando possível.</p>
+
+<table><thead>
+<tr>
+<th>Tag</th>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td>home</td>
+<td>Página inicial do site</td>
+</tr>
+<tr>
+<td></td>
+<td>product</td>
+<td>Página de produto</td>
+</tr>
+<tr>
+<td></td>
+<td>search</td>
+<td>Resultado de busca</td>
+</tr>
+<tr>
+<td></td>
+<td>account</td>
+<td>Painel de conta do cliente</td>
+</tr>
+<tr>
+<td></td>
+<td>password_reset</td>
+<td>Página de redefinição de senha</td>
+</tr>
+<tr>
+<td></td>
+<td>account_creation</td>
+<td>Página de criação de nova conta</td>
+</tr>
+<tr>
+<td></td>
+<td>category</td>
+<td>Página de categoria de produtos</td>
+</tr>
+<tr>
+<td></td>
+<td>basket</td>
+<td>Visão do carrinho de compras</td>
+</tr>
+<tr>
+<td></td>
+<td>checkout</td>
+<td>Página do processo de checkout</td>
+</tr>
+<tr>
+<td>product</td>
+<td>id=&lt;sku&gt;,<br />name=&lt;name&gt;</td>
+<td>Detalhe do produto</td>
+</tr>
+</tbody></table>
+
+<h2 id="usando-meta-tags-(preferível)">Usando meta tags (preferível)</h2>
+<pre class="highlight html"><code><span class="c">&lt;!-- Página de 'Esqueci minha senha' --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"password-reset"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Processo de checkout --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"checkout"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Detalhe de produto --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"product"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:product"</span> <span class="na">content=</span><span class="s">"sku=123, name=Camiseta Verde"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Busca de passagens (voo, ônibus) --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"search"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:departure"</span> <span class="na">content=</span><span class="s">"GRU-SFO"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:departure-date"</span> <span class="na">content=</span><span class="s">"2020-12-25"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:return"</span> <span class="na">content=</span><span class="s">"SFO-GRU"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:return-date"</span> <span class="na">content=</span><span class="s">"2021-01-25"</span><span class="nt">&gt;</span>
+</code></pre>
+
+<p>Para marcar uma página adicione nossas <code class="prettyprint">&lt;meta&gt;</code> tags no seu header.
+Elas nos dirão que tipo de página você está servindo e, opcionalmente,
+qual produto ou categoria de produto estão sendo mostrados.</p>
+
+<h2 id="usando-javascript-(avançado)">Usando JavaScript (avançado)</h2>
+
+<blockquote>
+<p>Snippet com envio automático desligado</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">__kdt</span> <span class="o">=</span> <span class="nx">__kdt</span> <span class="o">||</span> <span class="p">[];</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"public_key"</span><span class="p">:</span> <span class="s2">"TEE973BEC88"</span><span class="p">});</span>
+  <span class="c1">// Envio automático desativado</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"post_on_load"</span><span class="p">:</span> <span class="kc">false</span><span class="p">});</span>
+  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">kdt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="s1">'kdtjs'</span><span class="p">;</span> <span class="nx">kdt</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text/javascript'</span><span class="p">;</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://i.k-analytix.com/k.js'</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="nx">s</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">kdt</span><span class="p">,</span> <span class="nx">s</span><span class="p">);</span>
+  <span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<blockquote>
+<p>Envio de evento com contexto de página</p>
+</blockquote>
+<pre class="highlight html"><code><span class="c">&lt;!-- Processo de checkout --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'checkout'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="c">&lt;!-- Detalhe de produto --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'product'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="c">&lt;!-- Página de 'Esqueci minha senha' --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'password-reset'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>Há casos onde não é possível usar a marcação por <meta> tags, como 
+quando as tags são inseridas usando o <a href="http://www.google.com/tagmanager/">Google Tag Manager</a>.</p>
+
+<p>Para estes cenários você pode usar o nosso próprio JavaScript para
+disparar os eventos de navegação. <strong>Esta é uma implementação
+avançada</strong>, então estude com cuidado se é a melhor opção para a sua
+loja.</p>
+
+<h3 id="como-ativar-o-modo-avançado">Como ativar o modo avançado</h3>
+
+<p>Neste modo o nosso JavaScript <strong>não envia a navegação automaticamente</strong>
+e espera que <strong>você</strong> faça o envio quando a página carregar. Para isso
+é preciso:
+<br /><br /><br />
+<strong>1. Desabilitar o envio automático</strong></p>
+
+<p>Você deve definir a variável <code class="prettyprint">post_on_load</code> como <code class="prettyprint">false</code> dentro do seu
+snippet, como mostra o exemplo.
+<br /><br /><br />
+<strong>2. Enviar o evento via método JavaScript</strong></p>
+
+<p>Quando souber o contexto da página (<em>home</em>, <em>checkout</em>, <em>account</em>) é
+preciso chamar o método <code class="prettyprint">Konduto.sendEvent()</code>, passando as tags como
+parâmetro.</p>
+
+<h1 id="bibliotecas-de-integração">Bibliotecas de integração</h1>
+
+<blockquote>
+<p><a href="https://github.com/konduto/php-sdk">php-sdk</a> - PHP helper<br>
+<a href="https://github.com/konduto/java-sdk">java-sdk</a> - Java helper<br>
+<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper<br>
+<a href="https://github.com/konduto/konduto.js">konduto.js</a> - JS client</p>
+</blockquote>
+
+<p>Nós disponibilizamos bibliotecas para ajudar com o desenvolvimento, bem
+como plugins para as plataformas mais comuns de e-commerce. Você
+encontrará ao lado uma lista com as integrações disponíveis até o
+momento, que estão hospedadas em nosso <a href="https://github.com/konduto">Github</a>.</p>
+
+<p>Se você não vê a biblioteca da sua linguagem ou o seu plugin, por favor
+entre em contato através do email <a href="mailto:oi@konduto.com">oi@konduto.com</a>.</p>
+
+<h1 id="autenticação-da-api">Autenticação da API</h1>
+<pre class="highlight conf"><code><span class="c"># Como montar
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T738D516F09CAB3A2C1EE</span>:)
+
+<span class="c"># Resultado
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg</span>==
+</code></pre>
+
+<p>Nós usamos padrão <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic Auth</a>
+para autenticar os lojistas na nossa API.</p>
+
+<p>Neste tipo de autenticação, você deve enviar um header HTTP chamado
+<code class="prettyprint">Authorization</code> cujo valor é a palavra <strong>Basic</strong> seguida de um Base64 da
+sua chave privada.</p>
+
+<p>Se você utiliza um de nossos helpers então a própria biblioteca já faz
+este passo, e você precisa apenas definir a sua chave.</p>
+
+<h1 id="api-de-pedidos">API de Pedidos</h1>
+
+<blockquote>
+<p>URLs da API de Pedidos</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span> https://api.konduto.com/v1/orders
+<span class="ss">PUT</span>  https://api.konduto.com/v1/orders/{order_id}
+<span class="ss">GET</span>  https://api.konduto.com/v1/orders/{order_id}
+</code></pre>
+
+<p>Quando o cliente faz a compra você deve nos enviar os dados do pedido
+para nossa API REST para que possamos analisa-la. Nós fazemos uma análise
+em tempo real e devolvemos uma <strong>recomendação</strong> do que fazer com o
+pedido e um score, que é o grau de confiança que temos do pedido.</p>
+
+<p>Apesar de muitos dos parâmetros que aceitamos na API serem opcionais,
+nós recomendamos que você envie o quanto puder, pois cada ponto de dado
+faz diferença na análise.</p>
+
+<p>O endereço de cobrança e as informações de cartão de crédito são
+especialmente importantes, mas entendemos que há casos onde você não tem
+esta informação em seu sistema.</p>
+
+<h2 id="enviar-um-pedido">Enviar um pedido</h2>
+
+<p>Você pode mandar pedidos usando o método <strong>POST</strong> e passando um JSON no
+corpo da requisição.</p>
+
+<p>A chamada consiste em um objeto raiz que contém informações
+relacionadas ao pedido, bem como os objetos <code class="prettyprint">customer</code>, <code class="prettyprint">billing</code>,
+<code class="prettyprint">shipping</code> e <code class="prettyprint">travel</code> e as listas <code class="prettyprint">payment</code> e <code class="prettyprint">shopping_cart</code>.</p>
+
+<h3 id="pedido-&nbsp;-&nbsp;-&nbsp;-&nbsp;-order">Pedido &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">order</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"id"</span>:<span class="s2">"10000000001"</span>,
+  <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+  <span class="s2">"total_amount"</span>:100.00,
+  <span class="s2">"shipping_amount"</span>:20.00,
+  <span class="s2">"tax_amount"</span>:3.45,
+  <span class="s2">"currency"</span>:<span class="s2">"BRL"</span>,
+  <span class="s2">"installments"</span>:2,
+  <span class="s2">"ip"</span>:<span class="s2">"189.68.156.100"</span>,
+  <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+  <span class="s2">"messages_exchanged"</span>:30,
+  <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
+  <span class="s2">"analyze"</span>:true,
+  <span class="s2">"customer"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"payment"</span>:[ <span class="o">]</span>,
+  <span class="s2">"billing"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"shipping"</span>:<span class="o">{</span>  <span class="o">}</span>,
+  <span class="s2">"shopping_cart"</span>:[ <span class="o">]</span>,
+  <span class="s2">"travel"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"seller"</span>:<span class="o">{</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>A raíz do objeto contém os dados básicos do pedido, como número,
+valor e moeda.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(obrigatório)</em> <br /> Identificador único para cada pedido.<br /> <strong>Max. 100 chars, alpha-numérico</strong></td>
+</tr>
+<tr>
+<td>visitor</td>
+<td><em>(opcional)</em> <br /> Identificador do visitante obtido do nosso JavaScript.<br /> <strong>Exatamente 40 chars, alpha-numérico</strong></td>
+</tr>
+<tr>
+<td>total_amount</td>
+<td><em>(obrigatório)</em> <br /> Valor total do pedido.<br><strong>Max. 10 dígitos, número</strong></td>
+</tr>
+<tr>
+<td>shipping_amount</td>
+<td><em>(opcional)</em> <br /> Valor do frete<br><strong>Max. 10 dígitos, número</strong></td>
+</tr>
+<tr>
+<td>tax_amount</td>
+<td><em>(opcional)</em> <br /> Valor dos impostos.<br><strong>Max. 10 dígitos, número</strong></td>
+</tr>
+<tr>
+<td>currency</td>
+<td><em>(opcional)</em> <br /> Código da moeda com 3 letras (<a href="https://pt.wikipedia.org/wiki/ISO_4217">ISO-4712</a>). <br /><strong>Exatamente 3 chars, string</strong></td>
+</tr>
+<tr>
+<td>installments</td>
+<td><em>(opcional)</em> <br /> Número de parcelas do pagamento.<br /> <strong>Max. 3 dígitos, número</strong></td>
+</tr>
+<tr>
+<td>ip</td>
+<td><em>(opcional)</em> <br /> Endereço IPv4 do cliente<br><strong>Max. 15 chars, string</strong></td>
+</tr>
+<tr>
+<td>first_message</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, traz a data e hora da primeira mensagem trocada entre comprador e vendedor. Formato AAAA-MM-DDTHH:mm:ssZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 20 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>messages_exchanged</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, deve trazer o número de mensagens trocadas entre comprador e vendedor até o momento da transação.<br /> <strong>Número</strong>.</td>
+</tr>
+<tr>
+<td>purchased_at</td>
+<td><em>(opcional)</em> <br /> No <strong>Marketplace</strong>, traz a data e hora do fechamento do pedido no site. Formato AAAA-MM-DDTHH:mm:ssZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 20 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>analyze</td>
+<td><em>(opcional)</em> <br /> Se <code class="prettyprint">false</code> o sistema levará em conta a transação nas próximas análises mas não devolve uma recomendação e você não é cobrado. <br /><strong>Boolean. Se não enviado o padrão é <code class="prettyprint">true</code></strong></td>
+</tr>
+<tr>
+<td>customer</td>
+<td><em>(obrigatório)</em> <br /> Objeto que contém os detalhes do cliente.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><em>(opcional)</em> <br /> Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><em>(opcional)</em> <br /> Objeto que contém o endereço de cobrança.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><em>(opcional)</em> <br /> Objeto que contém o endereço de entrega.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><em>(opcional)</em> <br /> Lista que contém os itens comprados.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><em>(opcional)</em> <br /> Objeto que contém os dados de viagem e passageiros.</td>
+</tr>
+</tbody></table>
+
+<h3 id="comprador-&nbsp;-&nbsp;-&nbsp;-&nbsp;-customer">Comprador &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">customer</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"customer"</span>: <span class="o">{</span>
+    <span class="s2">"id"</span>:<span class="s2">"28372"</span>,
+    <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+    <span class="s2">"tax_id"</span>:<span class="s2">"12345678909"</span>,
+    <span class="s2">"dob"</span>:<span class="s2">"1970-12-25"</span>,
+    <span class="s2">"phone1"</span>:<span class="s2">"11-1234-5678"</span>,
+    <span class="s2">"phone2"</span>:<span class="s2">"21-2143-6578"</span>,
+    <span class="s2">"email"</span>:<span class="s2">"jsilva@exemplo.com.br"</span>,
+    <span class="s2">"created_at"</span>:<span class="s2">"2010-12-25"</span>,
+    <span class="s2">"new"</span>:false,
+    <span class="s2">"vip"</span>:false
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Este objeto deve ser usado para enviar informações sobre a pessoa que
+está fazendo a compra, que na maioria dos casos é aquele que está
+logado em seu sistema.</p>
+
+<p>Para passar informações sobre o portador do cartão ou o destinatário
+do produto você deve usar o objeto billing e shipping,
+respectivamente.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(obrigatório)</em> <br /> Identificador único do cliente. Pode ser qualquer valor (sequencial, documento, e-mail) desde que seja consistente em pedidos futuros.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(obrigatório)</em> <br /> Nome completo do cliente.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>email</td>
+<td><em>(obrigatório)</em> <br /> Endereço de e-mail do cliente.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>dob</td>
+<td><em>(opcional)</em> <br /> Data de nascimento do cliente no formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exatamente 10 chars, string.</strong></td>
+</tr>
+<tr>
+<td>tax_id</td>
+<td><em>(opcional)</em> <br /> Número de documento fiscal do cliente (CPF, CNPJ, etc). <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>phone1</td>
+<td><em>(opcional)</em> <br /> Número de telefone principal do cliente <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>phone2</td>
+<td><em>(opcional)</em> <br /> Número de telefone secundário do cliente. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de criação da conta ou cadastro do cliente no site, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exatamente 10 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>new</td>
+<td><em>(opcional)</em> <br /> Flag indicando se o cliente está usando uma conta recém-criada nesta compra.<br /><strong>Boolean.</strong></td>
+</tr>
+<tr>
+<td>vip</td>
+<td><em>(opcional)</em> <br /> Flag indicando se este é um cliente VIP ou comprador frequente. <br /><strong>Boolean.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="meios-de-pagamento-&nbsp;-&nbsp;-&nbsp;-&nbsp;-payment">Meios de Pagamento &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">payment</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"payment"</span>:[  
+    <span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+      <span class="s2">"bin"</span>:<span class="s2">"490172"</span>,
+      <span class="s2">"last4"</span>:<span class="s2">"0012"</span>,
+      <span class="s2">"expiration_date"</span>:<span class="s2">"072015"</span>,
+      <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+      <span class="s2">"bin"</span>:<span class="s2">"514800"</span>,
+      <span class="s2">"last4"</span>:<span class="s2">"3752"</span>,
+      <span class="s2">"expiration_date"</span>:<span class="s2">"082016"</span>,
+      <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Esta lista de objetos deve ser usado para enviar informações sobre os
+meios de pagamentos usados na compra.</p>
+
+<p>Você pode mandar um pedido que contém múltiplos meios de pagamento,
+como compras com dois cartões de crédito.</p>
+
+<p>Atualmente nós suportamos apenas compras com cartão de crédito.
+Consulte com o support a respeito de outros meios de pagamento para
+análise.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td><em>(obrigatório)</em> <br /> Meio de pagamento usado pelo cliente. Atualmente suportamos apenas credit<br /><strong>Max. 6 chars, string.</strong></td>
+</tr>
+<tr>
+<td>status</td>
+<td><em>(obrigatório)</em> <br /> O status do pagamento retornado pela operadora de cartão. <br />Pode ser approved (aprovado), declined (negado) ou pending (pendente), caso o pagamento não tenha sido feito ainda. <br /><strong>Max. 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>bin</td>
+<td><em>(opcional)</em> <br /> Os primeiros seis números do cartão de crédito. É usado para identificar o tipo de cartão usado. <br /><strong>Exatamente 6 chars, string.</strong></td>
+</tr>
+<tr>
+<td>last4</td>
+<td><em>(opcional)</em> <br /> Os últimos quatro dígitos do cartão de crédito. <br /><strong>Exatamente 4 chars, string.</strong></td>
+</tr>
+<tr>
+<td>expiration_date</td>
+<td><em>(opcional)</em> <br /> Data de validade do cartão no formato MMAAAA <br /><strong>Exatamente 6 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="endereço-de-cobrança-&nbsp;-&nbsp;-&nbsp;-&nbsp;-billing">Endereço de Cobrança &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">billing</code></h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"billing"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"Júlia da Silva"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address1"</span><span class="p">:</span><span class="s2">"Rua Primeiro de Abril, 123"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address2"</span><span class="p">:</span><span class="s2">"Apto. 45"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"São Paulo"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="s2">"SP"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"zip"</span><span class="p">:</span><span class="s2">" 01001-001"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"country"</span><span class="p">:</span><span class="s2">"BR"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Este objeto deve conter informações do titular do cartão. É o mesmo
+nome e endereço que consta na fatura.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(opcional)</em> <br /> Nome do titular do cartão.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address1</td>
+<td><em>(opcional)</em> <br /> Endereço da fatura do cliente com o banco. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address2</td>
+<td><em>(opcional)</em> <br /> Complemento do endereço de fatura. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(opcional)</em> <br /> Cidade do titular.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(opcional)</em> <br /> Estado do titular<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(opcional)</em> <br /> CEP do titular.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(opcional)</em> <br /> Código do país do titular (<a href="https://pt.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exatamente 2 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="endereço-de-entrega-&nbsp;-&nbsp;-&nbsp;-&nbsp;-shipping">Endereço de Entrega &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">shipping</code></h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"shipping"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"Júlia da Silva"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address1"</span><span class="p">:</span><span class="s2">"Rua Primeiro de Abril, 123"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address2"</span><span class="p">:</span><span class="s2">"Apto. 45"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"São Paulo"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="s2">"SP"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"zip"</span><span class="p">:</span><span class="s2">" 01001-001"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"country"</span><span class="p">:</span><span class="s2">"BR"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Este objeto deve conter informações do destinatário que vai receber
+os produtos. Não há necessidade de enviá-lo caso você forneça um
+serviço ou download de software.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(opcional)</em> <br /> Nome do destinatário do cartão.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address1</td>
+<td><em>(opcional)</em> <br /> Endereço de entrega do destinatário. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address2</td>
+<td><em>(opcional)</em> <br /> Complemento do endereço de fatura. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(opcional)</em> <br /> Cidade do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(opcional)</em> <br /> Estado do destinatário<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(opcional)</em> <br /> CEP do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(opcional)</em> <br /> Código do país do destinatário (<a href="https://pt.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exatamente 2 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="carrinho-de-compras-&nbsp;-&nbsp;-&nbsp;-&nbsp;-shopping_cart">Carrinho de Compras &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">shopping_cart</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"shopping_cart"</span>:[  
+    <span class="o">{</span>  
+      <span class="s2">"sku"</span>:<span class="s2">"9919023"</span>,
+      <span class="s2">"product_code"</span>:<span class="s2">"123456789999"</span>,
+      <span class="s2">"category"</span>:201,
+      <span class="s2">"name"</span>:<span class="s2">"Camiseta Verde"</span>,
+      <span class="s2">"description"</span>:<span class="s2">"Camiseta masculina verde tamanho M"</span>,
+      <span class="s2">"unit_cost"</span>:29.99,
+      <span class="s2">"quantity"</span>:1,
+      <span class="s2">"created_at"</span>:<span class="s2">"2008-12-25"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>  
+      <span class="s2">"sku"</span>:<span class="s2">"0017273"</span>,
+      <span class="s2">"category"</span>:202,
+      <span class="s2">"name"</span>:<span class="s2">"Par de meias amarelas"</span>,
+      <span class="s2">"description"</span>:<span class="s2">"Par de meias amarelas tamanho único"</span>,
+      <span class="s2">"unit_cost"</span>:7.50,
+      <span class="s2">"quantity"</span>:2,
+      <span class="s2">"discount"</span>:1.00
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Esta lista de objetos contém uma lista dos produtos que foram
+comprados neste pedido. Não existe limite para a quantidade de
+objetos que esta lista aceita.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>sku</td>
+<td><em>(opcional)</em> <br /> <a href="https://pt.wikipedia.org/wiki/Stock_Keeping_Unit">SKU</a> ou número de inventário do produto ou serviço. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>product_code</td>
+<td><em>(opcional)</em> <br /> Código de barras ou <a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_de_barras">UPC</a> do produto ou serviço.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>category</td>
+<td><em>(opcional)</em> <br /> Código da categoria do produto comprado.<br />Veja nossa <a href="#">lista de categorias</a> para mais informações. <br /><strong>Max. 4 dígitos, número.</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(opcional)</em> <br /> Nome do produto ou serviço.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>description</td>
+<td><em>(opcional)</em> <br /> Descrição de detalhada do produto ou serviço. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>unit_cost</td>
+<td><em>(opcional)</em> <br /> Custo unitário deste produto ou serviço. <br /><strong>Max. 10 dígitos, número.</strong></td>
+</tr>
+<tr>
+<td>quantity</td>
+<td><em>(opcional)</em> <br /> Quantidade de unidades compradas. <br /><strong>Max. 10 dígitos, número.</strong></td>
+</tr>
+<tr>
+<td>discount</td>
+<td><em>(opcional)</em> <br /> Valor de desconto do produto.<br /><strong>Max. 10 dígitos, número.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de publicação do produto no site, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exatamente 10 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="viagem-&nbsp;-&nbsp;-&nbsp;-&nbsp;-travel">Viagem &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">travel</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"travel"</span>:<span class="o">{</span>  
+    <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+    <span class="s2">"departure"</span>:<span class="o">{</span>  
+      <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
+      <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
+      <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+      <span class="s2">"number_of_connections"</span>:1,
+      <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
+      <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
+    <span class="o">}</span>,
+    <span class="s2">"return"</span>:<span class="o">{</span>  
+      <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
+      <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
+      <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+      <span class="s2">"number_of_connections"</span>:1,
+      <span class="s2">"class"</span>:<span class="s2">"business"</span>
+    <span class="o">}</span>,
+    <span class="s2">"passengers"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+        <span class="s2">"document"</span>:<span class="s2">"12345678909"</span>,
+        <span class="s2">"document_type"</span>:<span class="s2">"id"</span>,
+        <span class="s2">"dob"</span>:<span class="s2">"1970-01-01"</span>,
+        <span class="s2">"nationality"</span>:<span class="s2">"BR"</span>,
+        <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+          <span class="s2">"program"</span>:<span class="s2">"smiles"</span>,
+          <span class="s2">"category"</span>:<span class="s2">"gold"</span>
+        <span class="o">}</span>,
+        <span class="s2">"frequent_traveler"</span>:true,
+        <span class="s2">"special_needs"</span>:false
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"name"</span>:<span class="s2">"Carlos Siqueira"</span>,
+        <span class="s2">"document"</span>:<span class="s2">"XYZ1234"</span>,
+        <span class="s2">"document_type"</span>:<span class="s2">"passport"</span>,
+        <span class="s2">"dob"</span>:<span class="s2">"1970-12-01"</span>,
+        <span class="s2">"nationality"</span>:<span class="s2">"US"</span>,
+        <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+          <span class="s2">"program"</span>:<span class="s2">"multiplus"</span>,
+          <span class="s2">"category"</span>:<span class="s2">"silver"</span>
+        <span class="o">}</span>,
+        <span class="s2">"frequent_traveler"</span>:false,
+        <span class="s2">"special_needs"</span>:true
+      <span class="o">}</span>
+    <span class="o">]</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Contém informações de viagem e dos passageiros desta compra. Dados de
+viagem estão divididos em objetos de ida (<code class="prettyprint">departure</code>) e volta
+(<code class="prettyprint">return</code>), além do tipo de transporte. Dados dos passageiros ficam
+no array <code class="prettyprint">passengers</code>.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td><em>(obrigatório)</em> <br /> Tipo de viagem. Atualmente são suportados <code class="prettyprint">flight</code> ou <code class="prettyprint">bus</code>.</td>
+</tr>
+<tr>
+<td>departure</td>
+<td><em>(obrigatório)</em> <br /> Objeto com as informações do viagem de <strong>ida</strong>.</td>
+</tr>
+<tr>
+<td>return</td>
+<td><em>(opcional)</em> <br /> Objeto com as informações do viagem de <strong>volta</strong>.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><em>(obrigatório)</em> <br /> Array de objetos com os dados dos passegeiros</td>
+</tr>
+</tbody></table>
+
+<h4 id="informações-da-viagem">Informações da viagem<br /><br /></h4>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>origin_city</td>
+<td><em>(obrigatório se type=bus)</em> <br /> Cidade de origem.<br/><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>destination_city</td>
+<td><em>(obrigatório se type=bus)</em> <br /> Cidade de destino.<br/><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>origin_airport</td>
+<td><em>(obrigatório se type=flight)</em> <br /> <a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA">Código IATA</a> para o aeroporto de origem<br /><strong>Exatamente 3 chars, string.</strong></td>
+</tr>
+<tr>
+<td>destination_airport</td>
+<td><em>(obrigatório se type=flight)</em> <br /> <a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA">Código IATA</a> para o aeroporto de destino<br /><strong>Exatamente 3 chars, string.</strong></td>
+</tr>
+<tr>
+<td>date</td>
+<td><em>(obrigatório)</em> <br /> Date e hora do embarque em UTC no formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exatamente 17 chars, string.</strong></td>
+</tr>
+<tr>
+<td>number_of_connections</td>
+<td><em>(opcional)</em> <br /> Número de conexões</td>
+</tr>
+<tr>
+<td>class</td>
+<td><em>(opcional)</em> <br /> Nome da classe, como <code class="prettyprint">economy</code>, <code class="prettyprint">business</code> e <code class="prettyprint">first</code> <br /><strong>Max. 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>fare_basis</td>
+<td><em>(opcional)</em> <br /> <a href="https://pt.wikipedia.org/wiki/C%C3%B3digos_de_classes_da_IATA">Código da classe</a>. <br /><strong>Max 20 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h4 id="informações-dos-passageiros">Informações dos passageiros<br /><br /></h4>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(obrigatório)</em> <br /> Nome completo do passangeiro<br><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>document</td>
+<td><em>(obrigatório)</em> <br /> Número do documento<br><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>document_type</td>
+<td><em>(opcional)</em> <br /> Tipo do documento. Pode ser <code class="prettyprint">passport</code> ou <code class="prettyprint">id</code>. <br /><strong>Max 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>dob</td>
+<td><em>(obrigatório)</em> <br /> Data de nascimento do passageiro no formato YYYY-MM-DD (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>). <br /><strong>Exatamente 10 chars, string.</strong></td>
+</tr>
+<tr>
+<td>nationality</td>
+<td><em>(opcional)</em> <br /> País de nascimento do passageniro (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exatamente 2 chars, string.</strong></td>
+</tr>
+<tr>
+<td>frequent_passenger</td>
+<td><em>(opcional)</em> <br /> Flag de viajante frequente.<br /><strong>Boolean, padrão é <code class="prettyprint">false</code>.</strong></td>
+</tr>
+<tr>
+<td>special_needs</td>
+<td><em>(opcional)</em> <br /> Passageiro com necessidades especiais. <br /><strong>Boolean, padrão é <code class="prettyprint">false</code>.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="vendedor-&nbsp;-&nbsp;-&nbsp;-&nbsp;-seller">Vendedor &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">seller</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span> 
+  <span class="s2">"id"</span>:<span class="s2">""</span>,
+  <span class="s2">"name"</span>:<span class="s2">""</span>,
+  <span class="s2">"created_at"</span>:<span class="s2">""</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>No <strong>Marketplace</strong>, são os campos destinados aos dados do Vendedor do
+produto.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(obrigatório)</em> <br /> Identificador único do vendedor dentro do Marketplace.<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(opcional)</em> <br /> Nome da loja ou do vendedor<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(opcional)</em> <br /> Data de criação da loja no Marketplace, em formato AAAA-MM-DD (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 10 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="atualizar-status-de-um-pedido">Atualizar status de um pedido</h2>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"approve"</span>,
+  <span class="s2">"comments"</span>:<span class="s2">"Documentos e endereço de entrega confirmados"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Você pode atualizar o status de um pedido através do método <strong>PUT</strong> e
+passando um JSON no corpo da requisição.</p>
+
+<p>A chamada consiste em um objeto simples que contém dois campos,
+<code class="prettyprint">status</code> e <code class="prettyprint">comments</code>.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td><em>(obrigatório)</em> <br /> Novo status deste pedido. Pode ser <code class="prettyprint">approved</code>, <code class="prettyprint">declined</code> ou <code class="prettyprint">fraud</code>, quando você identificar uma fraude ou chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>comments</td>
+<td><em>(obrigatório)</em> <br /> Razão ou comentários sobre a atualização do pedido. <br /><strong>Max. 255 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="consultar-um-pedido">Consultar um pedido</h2>
+<pre class="highlight shell"><code>GET https://api.konduto.com/v1/orders/ORD1837213
+</code></pre>
+
+<p>Você pode buscar os dados de um pedido usando o método <strong>GET</strong>. A
+resposta será um JSON com todos os dados que temos sobre o pedido,
+incluindo <code class="prettyprint">recommendation</code>, <code class="prettyprint">score</code> e o <code class="prettyprint">status</code> atual.</p>
+
+<h1 id="api-de-blacklist">API de Blacklist</h1>
+
+<blockquote>
+<p>URLs da Blacklist de Email</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/email/{email}
+</code></pre>
+
+<blockquote>
+<p>URLs da Blacklist de Email</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/address/{id}
+</code></pre>
+
+<p>A Blacklist é um recurso que lhe permite bloquear pedidos que contém
+certos dados. Compras feitas com estas informações serão <strong>negadas
+automaticamente</strong> pelo nosso sistema. Você pode adicionar uma entrada à
+Blacklist permanentemente ou até uma certa data de expiração.</p>
+
+<p>Com a API de Blacklist você pode <strong>adicionar</strong>, <strong>atualizar</strong>,
+<strong>consultar</strong> e <strong>remover</strong> itens da lista. Atualmente é possível
+bloquear <strong>emails</strong> e <strong>endereços</strong>.</p>
+
+<p>Note que para gerenciar um <strong>endereço</strong> você precisa associar um
+identificador único para aquela entrada.</p>
+
+<h2 id="adicionar-item">Adicionar item</h2>
+
+<blockquote>
+<p>Exemplo de adição de email à Blacklist</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"email_address"</span>:<span class="s2">"jsilva@exemplo.com.br"</span>,
+  <span class="s2">"days_to_expire"</span>:180
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Exemplo de adição de endereço à Blacklist</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
+  <span class="s2">"address_line_1"</span>:<span class="s2">"Rua Primeiro de Abril, 123"</span>,
+  <span class="s2">"address_line_2"</span>:<span class="s2">"Apto. 45"</span>,
+  <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+  <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+  <span class="s2">"zip"</span>:<span class="s2">" 01001-001"</span>,
+  <span class="s2">"country"</span>:<span class="s2">"BR"</span>,
+  <span class="s2">"days_to_expire"</span>:180
+<span class="o">}</span>
+</code></pre>
+
+<p>Para adicionar uma entrada você deve usar o método <strong>POST</strong>. Os
+resultados são <strong>imediatos</strong>, então o próximo pedido analisado já
+levará em conta este item da Blacklist.</p>
+
+<p>O tempo de expiração é opcional. Se definido, a entrada será removida
+automaticamente ao vencer o prazo. Se não, o registro permanecerá na
+Blacklist indefinidamente.</p>
+
+<h4 id="parâmetros-para-adicionar-um-email">Parâmetros para adicionar um email</h4>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>email_address</td>
+<td><em>(obrigatório)</em> <br /> Endereço de email<br /><strong>Max. 100 chars, string</strong></td>
+</tr>
+<tr>
+<td>days_to_expire</td>
+<td><em>(opcional)</em> <br /> Dias para que esta entrada seja removida automaticamente da Blacklist<br /><strong>Número.</strong></td>
+</tr>
+</tbody></table>
+
+<h4 id="parâmetros-para-adicionar-um-endereço">Parâmetros para adicionar um endereço</h4>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>address_identifier</td>
+<td><em>(obrigatório)</em> <br /> Identificador <strong>único</strong> do endereço. Será utilizado para referenciar este registro na Blacklist no futuro.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address_line_1</td>
+<td><em>(opcional)</em> <br /> Endereço de entrega do destinatário.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address_line_2</td>
+<td><em>(opcional)</em> <br /> Complemento do endereço de fatura.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(opcional)</em> <br /> Cidade do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(opcional)</em> <br /> Estado do destinatário<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(opcional)</em> <br /> CEP do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(opcional)</em> <br /> Código do país do destinatário <a href="https://pt.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a> <br /><strong>Exatamente 2 chars, string.</strong></td>
+</tr>
+<tr>
+<td>days_to_expire</td>
+<td><em>(opcional)</em> <br /> Dias para que esta entrada seja removida automaticamente da Blacklist<br /><strong>Número.</strong></td>
+</tr>
+</tbody></table>
+
+<h2 id="atualizar-a-expiração">Atualizar a expiração</h2>
+
+<blockquote>
+<p>Examplo de atualização de expiração</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"days_to_expire"</span>: 360
+<span class="o">}</span>
+</code></pre>
+
+<p>A atualização de um item da Blacklist serve <strong>unicamente</strong> para trocar
+a sua data de expiração. Você pode adiar ou adiantar a remoção
+automática de uma entrada. Ela é feita utilizando o método <strong>PUT</strong>.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>days_to_expire</td>
+<td><em>(obrigatório)</em> <br /> Dias para que esta entrada seja removida automaticamente da Blacklist<br /><strong>Número.</strong></td>
+</tr>
+</tbody></table>
+
+<h2 id="consultar-uma-entrada">Consultar uma entrada</h2>
+<pre class="highlight shell"><code>GET https://api.konduto.com/v1/blacklist/email/jsilva@exemplo.com.br
+</code></pre>
+
+<p>Você pode consultar se uma entrada já existe na Blacklist usando o
+método <strong>GET</strong>. Se ela tiver uma data de expiração este valor também
+será retornado na consulta.</p>
+
+<h2 id="remover-item">Remover item</h2>
+<pre class="highlight shell"><code>DELETE https://api.konduto.com/v1/blacklist/email/jsilva@exemplo.com.br
+</code></pre>
+
+<p>Para retirar uma entrada da Blacklist você deve usar o método
+<strong>DELETE</strong>.</p>
+
+<h1 id="respostas">Respostas</h1>
+
+<h2 id="códigos-http">Códigos HTTP</h2>
+<pre class="highlight conf"><code><span class="m">200</span> <span class="n">OK</span> <span class="c"># Sucesso
+</span><span class="m">201</span> <span class="n">Created</span> <span class="c"># Item criado
+</span><span class="m">400</span> <span class="n">Bad</span> <span class="n">Request</span> <span class="c"># Erro na requisição
+</span><span class="m">401</span> <span class="n">Unauthorized</span> <span class="c"># Problema na autenticação da chave
+</span><span class="m">403</span> <span class="n">Forbidden</span> <span class="c"># Problema no cadastro da loja
+</span><span class="m">404</span> <span class="n">Not</span> <span class="n">Found</span> <span class="c"># Não encontrado
+</span><span class="m">405</span> <span class="n">Method</span> <span class="n">Not</span> <span class="n">Allowed</span> <span class="c"># Método inexistente
+</span><span class="m">429</span> <span class="n">Too</span> <span class="n">Many</span> <span class="n">Requests</span> <span class="c"># Limite de requisições atingido
+</span><span class="m">444</span> <span class="n">No</span> <span class="n">Response</span> <span class="c"># Sem resposta
+</span><span class="m">500</span> <span class="n">Server</span> <span class="n">Error</span> <span class="c"># Erro interno do servidor
+</span></code></pre>
+
+<p>Nossa API usa <a href="https://pt.wikipedia.org/wiki/Anexo:Lista_de_c%C3%B3digos_de_status_HTTP">códigos de resposta HTTP</a>
+para indicar o resultado de uma chamada.</p>
+
+<p>Uma resposta na casa dos <strong>2xx</strong> significa que a requisição foi
+processada e não continha erros. Já uma resposta com códigos na faixa
+dos <strong>4xx</strong> ou <strong>5xx</strong> indica algum erro.</p>
+
+<table><thead>
+<tr>
+<th>Código</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Chamada é válida e temos uma resposta.</td>
+</tr>
+<tr>
+<td>201</td>
+<td>Item enviado foi adicionado à lista.</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Houve um problema com a requisição enviada. O <strong>corpo da resposta</strong> tem mais informações sobre a causa do erro.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>A chave de API enviada não é válida. Verificar o <a href="#autenticação-da-api">formato da chave</a> e o seu conteúdo no <a href="https://sandbox.konduto.com">portal</a>.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Há algum problema com a sua conta. Por favor <a href="mailto:oi@konduto.com">entre em contato com o nosso Suporte</a> para mais informações.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>O número de pedido não foi encontrado na nossa base.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>O método HTTP enviado não é permitido para este recurso.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Você atingiu o limite de requisições permitidas. <a href="mailto:oi@konduto.com">Entre em contato com o nosso Suporte</a> para mais informações.</td>
+</tr>
+<tr>
+<td>444</td>
+<td>O endereço da requisição é inválida e o servidor cortou a conexão. Por favor, verifique a URL de envio da transação.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Houve algum erro no processamento interno da Konduto. <a href="mailto:oi@konduto.com">Entre em contato com o nosso Suporte</a> para mais informações.</td>
+</tr>
+</tbody></table>
+
+<h2 id="respostas-de-erro">Respostas de erro</h2>
+
+<p>As respostas de erro da nossa API trazem sempre o motivo do erro e,
+quando possível, uma indicação de como e onde fazer a correção.</p>
+
+<p>A principal razão para uma chamada à API falhar é um <strong>problema na
+validação</strong>, seja na <strong>sintaxe</strong> ou nos <strong>valores passados</strong>. Se o
+erro for causado por algum problema interno na Konduto nós
+devolveremos um ID único que pode ser enviado para o <a href="mailto:oi@konduto.com">nosso suporte</a> para investigação.</p>
+
+<h3 id="resposta-com-erro-de-validação">Resposta com erro de validação</h3>
+
+<blockquote>
+<p>Exemplo de erro onde o valor foi enviado como string</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"where"</span><span class="p">:</span><span class="s2">"/total_amount"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"why"</span><span class="p">:{</span><span class="w">  
+      </span><span class="s2">"expected"</span><span class="p">:[</span><span class="w">  
+        </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"number"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="s2">"found"</span><span class="p">:</span><span class="s2">"string"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>where</td>
+<td>Campo ou objeto onde o erro aconteceu</td>
+</tr>
+<tr>
+<td>why</td>
+<td>Causas do erro de validação</td>
+</tr>
+<tr>
+<td>expected</td>
+<td>Tipo de dado esperado neste campo</td>
+</tr>
+<tr>
+<td>found</td>
+<td>Valor que foi recebido neste campo</td>
+</tr>
+<tr>
+<td>missing</td>
+<td>Campo obrigatório ausente</td>
+</tr>
+<tr>
+<td>unknown_field</td>
+<td>Campo não reconhecido</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>Exemplo de erro interno do processamento</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"notification"</span><span class="p">:</span><span class="s2">"We've been notified about this error and will investigate it. Please keep this error identifier"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"error_identifier"</span><span class="p">:</span><span class="s2">"09e1a98c-eada-4695-8864-bff8ba4707ba"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"where"</span><span class="p">:</span><span class="s2">"/"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"why"</span><span class="p">:{</span><span class="w">  
+      </span><span class="s2">"expected"</span><span class="p">:</span><span class="s2">"ok"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"found"</span><span class="p">:</span><span class="s2">"Internal error"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h3 id="resposta-com-erro-de-servidor">Resposta com erro de servidor</h3>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>notification</td>
+<td>Mensagem de erro do servidor</td>
+</tr>
+<tr>
+<td>error_identifier</td>
+<td>Identificador do erro, que pode ser enviado ao <a href="mailto:oi@konduto.com">nosso suporte</a> para investigação.</td>
+</tr>
+<tr>
+<td>where</td>
+<td>Campo ou objeto onde o erro aconteceu</td>
+</tr>
+<tr>
+<td>why</td>
+<td>Causas do erro de validação</td>
+</tr>
+<tr>
+<td>expected</td>
+<td>Tipo de dado esperado neste campo</td>
+</tr>
+<tr>
+<td>found</td>
+<td>Valor que foi recebido neste campo</td>
+</tr>
+</tbody></table>
+
+<h2 id="resposta-da-api-de-pedidos">Resposta da API de Pedidos</h2>
+
+<p>Uma resposta bem sucedida da API de pedidos retorna sempre dois
+objetos.</p>
+
+<p>O campo <code class="prettyprint">status</code> indica o resultado da chamada, e o campo <code class="prettyprint">order</code> traz
+o retorno do pedido que está sendo manipulado. O valor do objeto
+<code class="prettyprint">order</code> varia de acordo com a chamada que está sendo feita.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Mensagem de status da chamada. Retorna <code class="prettyprint">ok</code> quando bem sucedida e <code class="prettyprint">error</code> quando falhou.</td>
+</tr>
+<tr>
+<td>order</td>
+<td>Objeto contendo a resposta da análise.</td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-análise">Resposta da análise</h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>:<span class="o">{</span>  
+    <span class="s2">"id"</span>:<span class="s2">"ORD1837213"</span>,
+    <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+    <span class="s2">"score"</span>:0.07,
+    <span class="s2">"recommendation"</span>:<span class="s2">"APPROVE"</span>,
+    <span class="s2">"ip"</span>:<span class="s2">"189.68.156.100"</span>,
+    <span class="s2">"device"</span>:<span class="o">{</span>  
+      <span class="s2">"user_id"</span>: <span class="s2">"405961fab293600daeed93ae561"</span>,
+      <span class="s2">"fingerprint"</span>: <span class="s2">"e4f2c690951038a8f77aa583847"</span>,
+      <span class="s2">"platform"</span>: <span class="s2">"MacIntel"</span>,
+      <span class="s2">"browser"</span>: <span class="s2">"Chrome"</span>,
+      <span class="s2">"language"</span>: <span class="s2">"pt_BR"</span>,
+      <span class="s2">"timezone"</span>: <span class="s2">"GMT -3"</span>,
+      <span class="s2">"cookie"</span>: <span class="nb">true</span>,
+      <span class="s2">"javascript"</span>:  <span class="nb">true</span>,
+      <span class="s2">"flash"</span>: <span class="nb">true</span>
+    <span class="o">}</span>,
+    <span class="s2">"geolocation"</span>:<span class="o">{</span>  
+      <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"BR"</span>
+    <span class="o">}</span>,
+    <span class="s2">"navigation"</span>:<span class="o">{</span>  
+      <span class="s2">"time_site_7d"</span>:15.0,
+      <span class="s2">"time_per_page_7d"</span>:2.0,
+      <span class="s2">"new_accounts_7d"</span>:0,
+      <span class="s2">"password_resets_7d"</span>:1,
+      <span class="s2">"checkout_count_7d"</span>:0,
+      <span class="s2">"sales_declined_7d"</span>:0,
+      <span class="s2">"sessions_7d"</span>:3,
+      <span class="s2">"time_site_1d"</span>:45.0,
+      <span class="s2">"new_accounts_1d"</span>:0,
+      <span class="s2">"password_resets_1d"</span>:0,
+      <span class="s2">"sales_declined_1d"</span>:0,
+      <span class="s2">"sessions_1d"</span>:1,
+      <span class="s2">"session_time"</span>:45.0,
+      <span class="s2">"time_since_last_sale"</span>:121.0,
+      <span class="s2">"referrer"</span>: <span class="s2">"http://www.google.com/"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Na resposta da análise de um pedido os campos retornados dentro do
+objeto <code class="prettyprint">order</code> são:</p>
+
+<table><thead>
+<tr>
+<th>Objeto</th>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>-</td>
+<td><strong>id</strong></td>
+<td>Identificador único enviado na chamada</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>visitor</strong></td>
+<td>Identificador do visitante enviado na chamada</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>score</strong></td>
+<td>Score da transação entre <code class="prettyprint">0</code> e <code class="prettyprint">1</code>.<br/><br/> Para transações que não foram analisadas o valor <code class="prettyprint">-1</code> é retornado (ver parâmetro <strong>order.analyze</strong>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>recommendation</strong></td>
+<td>Ação recomendada para este pedido. Pode ser <code class="prettyprint">APPROVE</code>, <code class="prettyprint">REVIEW</code> ou <code class="prettyprint">DECLINE</code>.<br/><br/> Para transações que não foram analisadas o valor <code class="prettyprint">NONE</code> é retornado (ver parâmetro <strong>order.analyze</strong>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>device</strong></td>
+<td>Objeto contendo os dados coletados da máquina</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>user_id</strong></td>
+<td>Identificador único do visitante</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>fingerprint</strong></td>
+<td>Identificação do navegador</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>platform</strong></td>
+<td>Tipo de dispositivo pelo cliente</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>browser</strong></td>
+<td>Navegador do cliente</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>language</strong></td>
+<td>Idioma do navegador do cliente</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>timezone</strong></td>
+<td>Fuso horário do cliente em GMT</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>cookie</strong></td>
+<td>Flag indicando se o cliente tem Cookies habilitados</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>javascript</strong></td>
+<td>Flag indicando se o cliente tem JavaScript habilitados</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>flash</strong></td>
+<td>Flag indicando se o cliente tem Flash habilitados</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>ip</strong></td>
+<td>Endereço de IP do cliente</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>geolocation</strong></td>
+<td>Objeto contendo os dados de geolocalização do cliente</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>city</strong></td>
+<td>Cidade detectada</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>state</strong></td>
+<td>Estado detectado</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>country</strong></td>
+<td>País detectado</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>navigation</strong></td>
+<td>Objeto contento os resumo de navegação do cliente</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>session_time</strong></td>
+<td>Tempo da última sessão, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>referrer</strong></td>
+<td>Origem da visita.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_1d</strong></td>
+<td>Tempo gasto no site pelo usuário no último dia, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_1d</strong></td>
+<td>Quantidade de contas criadas pelo usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_1d</strong></td>
+<td>Quantidade de redefinições de senha do usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_1d</strong></td>
+<td>Quantidade de pedidos negados feitos pelo cliente no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_1d</strong></td>
+<td>Número de visitas do usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_since_last_sale</strong></td>
+<td>Tempo desde a última compra do usuário, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_7d</strong></td>
+<td>Tempo gasto no site pelo usuário nos últimos 7 dias, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_per_page_7d</strong></td>
+<td>Tempo médio por página gasto pelo usuário nos últimos 7 dias, em minutos</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_7d</strong></td>
+<td>Quantidade de contas criadas pelo usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_7d</strong></td>
+<td>Quantidade de redefinições de senha do usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>checkout_count_7d</strong></td>
+<td>Visualizações do carrinho de compras feitas pelo usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_7d</strong></td>
+<td>Quantidade de pedidos negados feitos pelo cliente na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_7d</strong></td>
+<td>Número de visitas do usuário na última semana.</td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-atualização">Resposta da atualização</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>: <span class="o">{</span>
+    <span class="s2">"old_status"</span>: <span class="s2">"pending"</span>,
+    <span class="s2">"new_status"</span>: <span class="s2">"approved"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>A resposta da atualização de status sempre retorna o status anterior
+e o status atual, o que acabou de ser mudado. Isto acontece mesmo
+quando o status antigo e o novo são o mesmo, ou seja, quando não
+houve atualização.</p>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>old_status</td>
+<td>Antigo status da transação.</td>
+</tr>
+<tr>
+<td>new_status</td>
+<td>Novo status da transação.</td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-consulta">Resposta da consulta</h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>:<span class="o">{</span>  
+    <span class="s2">"id"</span>:<span class="s2">"ORD1837213"</span>,
+    <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+    <span class="s2">"created_at"</span>:<span class="s2">"2028-03-13T21:48:30Z"</span>,
+    <span class="s2">"updated_at"</span>:<span class="s2">"2028-03-15T08:09:26Z"</span>,
+    <span class="s2">"score"</span>:0.07,
+    <span class="s2">"recommendation"</span>:<span class="s2">"approve"</span>,
+    <span class="s2">"status"</span>:<span class="s2">"approved"</span>,
+    <span class="s2">"ip"</span>:<span class="s2">"189.68.156.100"</span>,
+    <span class="s2">"total_amount"</span>:159.61,
+    <span class="s2">"tax_amount"</span>:3.04,
+    <span class="s2">"shipping_amount"</span>:6.57,
+    <span class="s2">"currency"</span>:<span class="s2">"BRL"</span>,
+    <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+    <span class="s2">"messages_exchanged"</span>:30,
+    <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
+    <span class="s2">"device"</span>:<span class="o">{</span>  
+      <span class="s2">"user_id"</span>: <span class="s2">"405961fab293600daeed93ae561"</span>,
+      <span class="s2">"fingerprint"</span>: <span class="s2">"e4f2c690951038a8f77aa583847"</span>,
+      <span class="s2">"platform"</span>: <span class="s2">"MacIntel"</span>,
+      <span class="s2">"browser"</span>: <span class="s2">"Chrome"</span>,
+      <span class="s2">"language"</span>: <span class="s2">"pt_BR"</span>,
+      <span class="s2">"timezone"</span>: <span class="s2">"GMT -3"</span>,
+      <span class="s2">"cookie"</span>: <span class="nb">true</span>,
+      <span class="s2">"javascript"</span>:  <span class="nb">true</span>,
+      <span class="s2">"flash"</span>: <span class="nb">true</span>
+    <span class="o">}</span>,
+    <span class="s2">"geolocation"</span>:<span class="o">{</span>  
+      <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"BR"</span>
+    <span class="o">}</span>,
+    <span class="s2">"billing"</span>:<span class="o">{</span>  
+      <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+      <span class="s2">"address1"</span>:<span class="s2">"Rua Primeiro de Abril, 123"</span>,
+      <span class="s2">"address2"</span>:<span class="s2">"Apto. 45"</span>,
+      <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+      <span class="s2">"zip"</span>:<span class="s2">" 01001-001"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"BR"</span>
+    <span class="o">}</span>,
+    <span class="s2">"shipping"</span>:<span class="o">{</span>  
+      <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+      <span class="s2">"address1"</span>:<span class="s2">"Rua Primeiro de Abril, 123"</span>,
+      <span class="s2">"address2"</span>:<span class="s2">"Apto. 45"</span>,
+      <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+      <span class="s2">"zip"</span>:<span class="s2">" 01001-001"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"BR"</span>
+    <span class="o">}</span>,
+    <span class="s2">"customer"</span>:<span class="o">{</span>  
+      <span class="s2">"id"</span>:<span class="s2">"28372"</span>,
+      <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+      <span class="s2">"tax_id"</span>:<span class="s2">"12345678909"</span>,
+      <span class="s2">"dob"</span>:<span class="s2">"1970-12-25"</span>,
+      <span class="s2">"phone1"</span>:<span class="s2">"11-1234-5678"</span>,
+      <span class="s2">"phone2"</span>:<span class="s2">"21-2143-6578"</span>,
+      <span class="s2">"email"</span>:<span class="s2">"jsilva@exemplo.com.br"</span>,
+      <span class="s2">"new"</span>:false,
+      <span class="s2">"vip"</span>:false
+    <span class="o">}</span>,
+    <span class="s2">"navigation"</span>:<span class="o">{</span>  
+      <span class="s2">"time_site_7d"</span>:15.0,
+      <span class="s2">"time_per_page_7d"</span>:2.0,
+      <span class="s2">"new_accounts_7d"</span>:0,
+      <span class="s2">"password_resets_7d"</span>:1,
+      <span class="s2">"checkout_count_7d"</span>:0,
+      <span class="s2">"sales_declined_7d"</span>:0,
+      <span class="s2">"sessions_7d"</span>:3,
+      <span class="s2">"time_site_1d"</span>:45.0,
+      <span class="s2">"new_accounts_1d"</span>:0,
+      <span class="s2">"password_resets_1d"</span>:0,
+      <span class="s2">"sales_declined_1d"</span>:0,
+      <span class="s2">"sessions_1d"</span>:1,
+      <span class="s2">"session_time"</span>:45.0,
+      <span class="s2">"time_since_last_sale"</span>:121.0,
+      <span class="s2">"referrer"</span>: <span class="s2">"http://www.google.com/"</span>
+    <span class="o">}</span>,
+    <span class="s2">"payment"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+        <span class="s2">"bin"</span>:<span class="s2">"490172"</span>,
+        <span class="s2">"last4"</span>:<span class="s2">"0012"</span>,
+        <span class="s2">"expiration_date"</span>:<span class="s2">"072015"</span>,
+        <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+        <span class="s2">"bin"</span>:<span class="s2">"514800"</span>,
+        <span class="s2">"last4"</span>:<span class="s2">"3752"</span>,
+        <span class="s2">"expiration_date"</span>:<span class="s2">"082016"</span>,
+        <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"shopping_cart"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"sku"</span>:<span class="s2">"9919023"</span>,
+        <span class="s2">"product_code"</span>:<span class="s2">"123456789999"</span>,
+        <span class="s2">"category"</span>:201,
+        <span class="s2">"name"</span>:<span class="s2">"Camiseta Verde"</span>,
+        <span class="s2">"description"</span>:<span class="s2">"Camiseta masculina verde tamanho M"</span>,
+        <span class="s2">"unit_cost"</span>:29.99,
+        <span class="s2">"quantity"</span>:1
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"sku"</span>:<span class="s2">"0017273"</span>,
+        <span class="s2">"category"</span>:202,
+        <span class="s2">"name"</span>:<span class="s2">"Par de meias amarelas"</span>,
+        <span class="s2">"description"</span>:<span class="s2">"Par de meias amarelas tamanho único"</span>,
+        <span class="s2">"unit_cost"</span>:7.50,
+        <span class="s2">"quantity"</span>:2,
+        <span class="s2">"discount"</span>:1.00
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"travel"</span>:<span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+      <span class="s2">"departure"</span>:<span class="o">{</span>  
+        <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
+        <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
+        <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+        <span class="s2">"number_of_connections"</span>:1,
+        <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
+        <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
+      <span class="o">}</span>,
+      <span class="s2">"return"</span>:<span class="o">{</span>  
+        <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
+        <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
+        <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+        <span class="s2">"number_of_connections"</span>:1,
+        <span class="s2">"class"</span>:<span class="s2">"business"</span>
+      <span class="o">}</span>,
+      <span class="s2">"passengers"</span>:[  
+        <span class="o">{</span>  
+          <span class="s2">"name"</span>:<span class="s2">"Júlia da Silva"</span>,
+          <span class="s2">"document"</span>:<span class="s2">"12345678909"</span>,
+          <span class="s2">"document_type"</span>:<span class="s2">"id"</span>,
+          <span class="s2">"dob"</span>:<span class="s2">"1970-01-01"</span>,
+          <span class="s2">"nationality"</span>:<span class="s2">"BR"</span>,
+          <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+            <span class="s2">"program"</span>:<span class="s2">"smiles"</span>,
+            <span class="s2">"category"</span>:<span class="s2">"gold"</span>
+          <span class="o">}</span>,
+          <span class="s2">"frequent_traveler"</span>:true,
+          <span class="s2">"special_needs"</span>:false
+        <span class="o">}</span>,
+        <span class="o">{</span>  
+          <span class="s2">"name"</span>:<span class="s2">"Carlos Siqueira"</span>,
+          <span class="s2">"document"</span>:<span class="s2">"XYZ1234"</span>,
+          <span class="s2">"document_type"</span>:<span class="s2">"passport"</span>,
+          <span class="s2">"dob"</span>:<span class="s2">"1970-12-01"</span>,
+          <span class="s2">"nationality"</span>:<span class="s2">"US"</span>,
+          <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+            <span class="s2">"program"</span>:<span class="s2">"multiplus"</span>,
+            <span class="s2">"category"</span>:<span class="s2">"silver"</span>
+          <span class="o">}</span>,
+          <span class="s2">"frequent_traveler"</span>:false,
+          <span class="s2">"special_needs"</span>:true
+        <span class="o">}</span>
+      <span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>A consulta de um pedido traz <strong>todos</strong> os dados relacionados aquela
+venda, que incluem tanto informações enviadas pela loja quanto da
+nossa análise.</p>
+
+<table><thead>
+<tr>
+<th>Objeto</th>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>-</td>
+<td><strong>id</strong></td>
+<td>Identificador único enviado na chamada</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>created_at</strong></td>
+<td>Date e hora do envio da transação, em formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>updated_at</strong></td>
+<td>Date e hora da última atualização da transação, em formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>visitor</strong></td>
+<td>Identificador do visitante enviado na chamada</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>score</strong></td>
+<td>Score da transação entre <code class="prettyprint">0</code> e <code class="prettyprint">1</code>.<br/><br/> Para transações que não foram analisadas o valor <code class="prettyprint">-1</code> é retornado.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>recommendation</strong></td>
+<td>Ação recomendada para este pedido. Pode ser <code class="prettyprint">APPROVE</code>, <code class="prettyprint">REVIEW</code> ou <code class="prettyprint">DECLINE</code>.<br/><br/> Para transações que não foram analisadas o valor <code class="prettyprint">NONE</code> é retornado.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>status</strong></td>
+<td>Mensagem de status da chamada. Retorna <code class="prettyprint">ok</code> quando bem sucedida e <code class="prettyprint">error</code> quando falhou.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>ip</strong></td>
+<td>Customer&rsquo;s IP address.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>total_amount</strong></td>
+<td>Valor total do pedido.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>tax_amount</strong></td>
+<td>Valor dos impostos.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shipping_amount</strong></td>
+<td>Valor do frete.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>installments</strong></td>
+<td>Número de parcelas do pagamento.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>currency</strong></td>
+<td>Código da moeda.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>payment</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>type</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>bin</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>last4</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>expiration_date</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>status</strong></td>
+<td>Lista que contém os meios de pagamento.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>customer</strong></td>
+<td>Objeto que contém os detalhes do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>id</strong></td>
+<td>Identificador único do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>name</strong></td>
+<td>Nome completo do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>email</strong></td>
+<td>Endereço de e-mail do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>dob</strong></td>
+<td>Data de nascimento do cliente no formato AAAA-MM-DD</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>tax_id</strong></td>
+<td>Número de documento fiscal do cliente (CPF, CNPJ, etc).</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>phone1</strong></td>
+<td>Número de telefone principal do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>phone2</strong></td>
+<td>Número de telefone secundário do cliente.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>new</strong></td>
+<td>Flag indicando se o cliente usou uma conta recém-criada.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>vip</strong></td>
+<td>Flag indicando se é um cliente VIP ou comprador frequente.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>billing</strong></td>
+<td>Objeto que contém o endereço de cobrança.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>name</strong></td>
+<td>Nome do titular do cartão.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>address1</strong></td>
+<td>Endereço da fatura do cliente com o banco.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>address2</strong></td>
+<td>Complemento do endereço de fatura.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>city</strong></td>
+<td>Cidade do titular do cartão.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>state</strong></td>
+<td>Estado do titular do cartão.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>zip</strong></td>
+<td>CEP do titular do cartão.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>country</strong></td>
+<td>Código do país do titular do cartão.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shipping</strong></td>
+<td>Objeto que contém o endereço de entrega.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>name</strong></td>
+<td>Nome do destinatário do cartão.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>address1</strong></td>
+<td>Endereço de entrega do destinatário.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>address2</strong></td>
+<td>Complemento do endereço de fatura.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>city</strong></td>
+<td>Cidade do destinatário.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>state</strong></td>
+<td>Estado do destinatário.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>zip</strong></td>
+<td>CEP do destinatário.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>country</strong></td>
+<td>Código do país do destinatário.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shopping_cart</strong></td>
+<td>Lista que contém os itens comprados.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>sku</strong></td>
+<td><a href="https://pt.wikipedia.org/wiki/Stock_Keeping_Unit">SKU</a> ou número de inventário do produto ou serviço.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>product_code</strong></td>
+<td>Código de barras ou <a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_de_barras">UPC</a> do produto ou serviço.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>category</strong></td>
+<td>Código da categoria do produto comprado.<br />Veja nossa <a href="#">lista de categorias</a> para mais informações.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>name</strong></td>
+<td>Nome do produto ou serviço.<br><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>description</strong></td>
+<td>Descrição de detalhada do produto ou serviço.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>unit_cost</strong></td>
+<td>Custo unitário deste produto ou serviço.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>quantity</strong></td>
+<td>Quantidade de unidades compradas.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>discount</strong></td>
+<td>Valor de desconto do produto.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>device</strong></td>
+<td>Objeto contendo os dados coletados da máquina.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>user_id</strong></td>
+<td>Identificador único do visitante.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>fingerprint</strong></td>
+<td>Identificação do navegador.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>platform</strong></td>
+<td>Tipo de dispositivo pelo cliente.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>browser</strong></td>
+<td>Navegador do cliente.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>language</strong></td>
+<td>Idioma do navegador do cliente.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>timezone</strong></td>
+<td>Fuso horário do cliente em GMT.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>cookie</strong></td>
+<td>Flag indicando se o cliente tem Cookies habilitados.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>javascript</strong></td>
+<td>Flag indicando se o cliente tem JavaScript habilitados.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>flash</strong></td>
+<td>Flag indicando se o cliente tem Flash habilitados.</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>ip</strong></td>
+<td>Endereço de IP do cliente.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>geolocation</strong></td>
+<td>Objeto contendo os dados de geolocalização do cliente.</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>city</strong></td>
+<td>Cidade detectada na geolocalização.</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>state</strong></td>
+<td>Estado detectado na geolocalização.</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>country</strong></td>
+<td>País detectado na geolocalização.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>navigation</strong></td>
+<td>Objeto contento os resumo de navegação do cliente.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>session_time</strong></td>
+<td>Tempo da última sessão, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>referrer</strong></td>
+<td>Origem da visita.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_1d</strong></td>
+<td>Tempo gasto no site pelo usuário no último dia, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_1d</strong></td>
+<td>Quantidade de contas criadas pelo usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_1d</strong></td>
+<td>Quantidade de redefinições de senha do usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_1d</strong></td>
+<td>Quantidade de pedidos negados feitos pelo cliente no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_1d</strong></td>
+<td>Número de visitas do usuário no último dia.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_since_last_sale</strong></td>
+<td>Tempo desde a última compra do usuário, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_7d</strong></td>
+<td>Tempo gasto no site pelo usuário nos últimos 7 dias, em minutos.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_per_page_7d</strong></td>
+<td>Tempo médio por página gasto pelo usuário nos últimos 7 dias, em minutos</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_7d</strong></td>
+<td>Quantidade de contas criadas pelo usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_7d</strong></td>
+<td>Quantidade de redefinições de senha do usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>checkout_count_7d</strong></td>
+<td>Visualizações do carrinho de compras feitas pelo usuário na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_7d</strong></td>
+<td>Quantidade de pedidos negados feitos pelo cliente na última semana.</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_7d</strong></td>
+<td>Número de visitas do usuário na última semana.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>travel</strong></td>
+<td>Objeto que contém os dados de viagem e passageiros.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>type</strong></td>
+<td>Tipo de viagem.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>departure</strong></td>
+<td>Objeto com as informações do viagem de <strong>ida</strong>.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>return</strong></td>
+<td>Objeto com as informações do viagem de <strong>volta</strong>.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>passengers</strong></td>
+<td>Array de objetos com os dados dos passegeiros</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>departure</strong>/<strong>return</strong></td>
+<td>Objeto que contém os dados de viagem (cada trecho)</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>origin_city</strong></td>
+<td>Cidade de origem.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>destination_city</strong></td>
+<td>Cidade de destino.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>origin_airport</strong></td>
+<td><a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA">Código IATA</a> para o aeroporto de origem.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>destination_airport</strong></td>
+<td><a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_aeroportu%C3%A1rio_IATA">Código IATA</a> para o aeroporto de destino.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>date</strong></td>
+<td>Date e hora do embarque em UTC no formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>number_of_connections</strong></td>
+<td>Número de conexões</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>class</strong></td>
+<td>Nome da classe, como <code class="prettyprint">economy</code>, <code class="prettyprint">business</code> e <code class="prettyprint">first</code></td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>fare_basis</strong></td>
+<td><a href="https://pt.wikipedia.org/wiki/C%C3%B3digos_de_classes_da_IATA">Código da classe</a>.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>passenger</strong></td>
+<td>Objeto que contém os dados dos passageiros.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>name</strong></td>
+<td>Nome completo do passangeiro.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>document</strong></td>
+<td>Número do documento.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>document_type</strong></td>
+<td>Tipo do documento. Pode ser <code class="prettyprint">passport</code> ou <code class="prettyprint">id</code>.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>dob</strong></td>
+<td>Data de nascimento do passageiro no formato YYYY-MM-DD (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>nationality</strong></td>
+<td>País de nascimento do passageniro (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>)</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>frequent_passenger</strong></td>
+<td>Flag de viajante frequente.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>special_needs</strong></td>
+<td>Passageiro com necessidades especiais.</td>
+</tr>
+</tbody></table>
+
+<h2 id="resposta-da-api-de-blacklist">Resposta da API de Blacklist</h2>
+
+<p>A resposta da API de Blacklist traz a confirmação da operação feita
+naquele registro, seja ela uma <strong>inserção</strong>, <strong>atualização</strong>,
+<strong>consulta</strong> ou <strong>remoção</strong>. Abaixo temos os detalhes de cada resposta.</p>
+
+<h3 id="resposta-da-inserção">Resposta da inserção</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"uri"</span>: <span class="s2">"/v1/blacklist/email/tom@tom.com"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-21"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Status da solicitação. Pode ser <code class="prettyprint">ok</code> ou <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>uri</td>
+<td>Endereço do recurso que foi criado na Blacklist, para uso futuro.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Data em que a entrada será removida da Blacklist.</td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-atualização">Resposta da atualização</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-22"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Status da solicitação. Pode ser <code class="prettyprint">ok</code> ou <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Data em que a entrada será removida da Blacklist.</td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-consulta">Resposta da consulta</h3>
+
+<blockquote>
+<p>Exemplo de resposta de consulta de email</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"email_address"</span>: <span class="s2">"tom@tom.com"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-21"</span>
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Exemplo de resposta de consulta de endereço</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
+  <span class="s2">"address_line_1"</span>:<span class="s2">"Rua Primeiro de Abril, 123"</span>,
+  <span class="s2">"address_line_2"</span>:<span class="s2">"Apto. 45"</span>,
+  <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
+  <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
+  <span class="s2">"zip"</span>:<span class="s2">" 01001-001"</span>,
+  <span class="s2">"country"</span>:<span class="s2">"BR"</span>,
+  <span class="s2">"expires_at"</span>:<span class="s2">"2017-11-22"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Status da solicitação. Pode ser <code class="prettyprint">ok</code> ou <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Data em que a entrada será removida da Blacklist.</td>
+</tr>
+<tr>
+<td>email_address</td>
+<td>Endereço de email.</td>
+</tr>
+<tr>
+<td>address_identifier</td>
+<td>Identificador <strong>único</strong> do endereço. Será utilizado para referenciar este registro na Blacklist no futuro.</td>
+</tr>
+<tr>
+<td>address_line_1</td>
+<td>Endereço de entrega do destinatário.</td>
+</tr>
+<tr>
+<td>address_line_2</td>
+<td>Complemento do endereço de fatura.</td>
+</tr>
+<tr>
+<td>city</td>
+<td>Cidade do destinatário.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>Estado do destinatário</td>
+</tr>
+<tr>
+<td>zip</td>
+<td>CEP do destinatário.</td>
+</tr>
+<tr>
+<td>country</td>
+<td>Código do país do destinatário <a href="https://pt.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a></td>
+</tr>
+</tbody></table>
+
+<h3 id="resposta-da-remoção">Resposta da remoção</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"deleted tom@tom.com from email blacklist"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Status da solicitação. Pode ser <code class="prettyprint">ok</code> ou <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>Mensagem de confirmação de remoção do registro.</td>
+</tr>
+</tbody></table>
+
+<h1 id="como-fazer-os-seus-testes">Como fazer os seus testes</h1>
+
+<p>Nosso ambiente de teste permite que você integre com a nossa API e
+obtenha respostas previsíveis, podendo assim <strong>simular</strong> todos os
+cenários de uma operação real.</p>
+
+<p>A <code class="prettyprint">recommendation</code> do ambiente de teste varia de acordo com os
+<strong>centavos</strong> do valor da transação (campo <code class="prettyprint">total_amount</code>), seguindo a
+tabela abaixo. Já o <code class="prettyprint">score</code> retornado será o valor dos centavos.</p>
+
+<table><thead>
+<tr>
+<th>Centavos do valor</th>
+<th>Resposta simulada</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>*.00 - *.29</td>
+<td>APPROVED</td>
+</tr>
+<tr>
+<td>*.30 - *.60</td>
+<td>REVIEW</td>
+</tr>
+<tr>
+<td>*.61 - *.99</td>
+<td>DECLINE</td>
+</tr>
+</tbody></table>
+
+<h1 id="notificações-(webhooks)">Notificações (Webhooks)</h1>
+
+<p>A notificação (<em>webhook</em>) é um serviço auxiliar que permite automatizar
+fluxos que dependem de mudanças no status de um pedido. Sempre que o
+pedido muda de status nós enviaremos um <strong>POST</strong> para uma URL
+especificada pela loja.</p>
+
+<p>A partir desta notificação a loja pode seguir com o seu fluxo
+operacional, sem a necessidade de consultar um a um o status de pedidos
+pendentes.</p>
+
+<p>Esta automação é feita para integrar o nosso sistema com a sua aplicação.
+As notificações por email podem ser configuradas diretamente no nosso
+Portal.</p>
+
+<h2 id="parâmetros-da-notificação">Parâmetros da notificação</h2>
+
+<p>O <em>webhook</em> envia um <strong>JSON</strong> que contém o número do pedido, a hora da
+mudança de status, o novo status que o pedido entrou e uma assinatura
+de validação.</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ORD1837213"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1608898332000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"APPROVED"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<table><thead>
+<tr>
+<th>Parâmetro</th>
+<th>Descrição</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_id</td>
+<td>Identificador único do pedido, enviado pelo lojista.</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>Date e hora da notificação em milisegundos (<a href="https://pt.wikipedia.org/wiki/Era_Unix">Era Unix</a>).</td>
+</tr>
+<tr>
+<td>status</td>
+<td>Novo status do pedido, ao qual a notificação está se referindo. <br /> Pode ser <code class="prettyprint">APPROVED</code>, <code class="prettyprint">PENDING</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">CANCELED</code>, <code class="prettyprint">NOT_AUTHORIZED</code> e <code class="prettyprint">NOT_ANALYZED</code>.</td>
+</tr>
+<tr>
+<td>signature</td>
+<td>Assinatura de validação da notificação. É um <a href="https://pt.wikipedia.org/wiki/HMAC">HMAC-SHA-256</a> dos campos da notificação. <br /><em><strong>Veja abaixo como calcular a assinatura do webhook</strong></em>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="recibo-da-notificação">Recibo da notificação</h2>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"ok"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Nós esperamos que a resposta da notificação confirme que o evento foi
+recebido. Caso este recibo não seja enviado, nós tentaremos entregar o
+<em>webhook</em> novamente.</p>
+
+<p>Você deve imprimir um <strong>JSON</strong> no corpo da resposta <code class="prettyprint">HTTP 200</code> que
+contém apenas um valor: <code class="prettyprint">{&quot;status&quot;:&quot;ok&quot;}</code>.</p>
+
+<p>Ao ver esta mensagem nós entenderemos que a
+notificação foi recebida corretamente e não tentaremos outras entregas.</p>
+
+<h2 id="calculando-a-assinatura">Calculando a assinatura</h2>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span> 
+<span class="c1">// Define a chave privada
+</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T738D516F09CAB3A2C1EE"</span><span class="p">;</span>
+
+<span class="c1">// JSON original recebido no webhook
+</span><span class="nv">$webhook</span> <span class="o">=</span> <span class="s1">'{
+  "order_id": "ORD1837213",
+  "timestamp": 1608898332000,
+  "status": "APPROVED",
+  "signature": "6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"
+}'</span><span class="p">;</span>
+
+<span class="c1">// Transforma JSON em array
+</span><span class="nv">$arr</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$webhook</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="c1">// Passa assinatura do webhook para variável $signature
+</span><span class="nv">$signature</span> <span class="o">=</span> <span class="nv">$arr</span><span class="p">[</span><span class="s2">"signature"</span><span class="p">];</span>
+
+<span class="c1">// Remove a assinatura do array
+</span><span class="nb">unset</span><span class="p">(</span><span class="nv">$arr</span><span class="p">[</span><span class="s2">"signature"</span><span class="p">]);</span>
+
+<span class="c1">// Transforma o array em string concatenada por #
+// ORD1837213#1608898332000#APPROVED
+</span><span class="nv">$to_hash</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"#"</span><span class="p">,</span> <span class="nv">$arr</span><span class="p">);</span>
+
+<span class="c1">// Calcula o HMAC com os dados do webhook
+</span><span class="nv">$my_hash</span> <span class="o">=</span> <span class="nb">hash_hmac</span><span class="p">(</span><span class="s2">"sha256"</span><span class="p">,</span> <span class="nv">$to_hash</span><span class="p">,</span> <span class="nv">$private_key</span><span class="p">);</span>
+
+<span class="c1">// 6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30
+</span><span class="k">echo</span> <span class="nv">$my_hash</span><span class="p">;</span>
+
+<span class="c1">// true
+</span><span class="k">echo</span> <span class="p">(</span><span class="nv">$my_hash</span> <span class="o">===</span> <span class="nv">$signature</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+
+<p>A assinatura de validação do webhook serve para garantir a integridade
+da mensagem, evitando casos de <em>spoofing</em>. É <strong>altamente recomendado</strong>
+que você calcule e valide a assinatura de cada webhook recebido.</p>
+
+<p>Cada webhook contém um <a href="https://pt.wikipedia.org/wiki/HMAC">HMAC-SHA-256</a> no campo <code class="prettyprint">signature</code>, formado pela
+concatenação dos campos enviados na notificação, e usando a chave
+privada da API como segredo.</p>
+
+<p>Os campos devem ser concatenados da seguinte forma:<br />
+<strong>order_id</strong> + <strong>#</strong> + <strong>timestamp</strong> + <strong>#</strong> + <strong>status</strong></p>
+
+<h1 id="tabelas-de-referência">Tabelas de referência</h1>
+
+<p>Abaixo você encontrará as tabelas de referência que contém informações
+adicionais sobre a lista de moedas (campo <code class="prettyprint">currency</code>) a de categorias de
+produtos (<code class="prettyprint">category</code>).</p>
+
+<h2 id="moedas-mais-comuns">Moedas mais comuns</h2>
+
+<blockquote>
+<h3 id="lista-completa-de-moedas">Lista completa de moedas<br /><br /></h3>
+
+<p>Aqui nós listamos apenas as moedas mais usadas. Você pode encontrar a <a href="https://pt.wikipedia.org/wiki/ISO_4217">lista completa de códigos de moeda aqui</a></p>
+</blockquote>
+
+<table><thead>
+<tr>
+<th>Código</th>
+<th>Moeda</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>USD</td>
+<td>Dólar Americano ($)</td>
+</tr>
+<tr>
+<td>BRL</td>
+<td>Real Brasileiro (R$)</td>
+</tr>
+<tr>
+<td>ARS</td>
+<td>Peso Argentino ($)</td>
+</tr>
+<tr>
+<td>AUD</td>
+<td>Dólar Australiano ($)</td>
+</tr>
+<tr>
+<td>CAD</td>
+<td>Dólar Canadense ($)</td>
+</tr>
+<tr>
+<td>CLP</td>
+<td>Peso Chileno ($)</td>
+</tr>
+<tr>
+<td>EUR</td>
+<td>Euro (€)</td>
+</tr>
+<tr>
+<td>GBP</td>
+<td>Libra Esterlina (£)</td>
+</tr>
+<tr>
+<td>JPY</td>
+<td>Iene Japonês (¥)</td>
+</tr>
+<tr>
+<td>MXP</td>
+<td>Peso Mexicano ($)</td>
+</tr>
+</tbody></table>
+
+<h2 id="categorias-de-produtos">Categorias de produtos</h2>
+
+<blockquote>
+<h3 id="o-que-são-as-categorias?">O que são as categorias?<br /><br /></h3>
+
+<p>Categorias de produto são importantes pois elas nos dizem o tipo de produto que está sendo comprado (sapatos, jóias ou um GPS). Comprar uma TV é muito diferente de comprar um livro, então as categorias fazem diferença para nós. <br /><br /> Esta lista foi baseada na <a href="https://support.google.com/merchants/answer/160081">taxonomia de produtos do Google</a> e elas representam os principais agrupamentos de produtos. <br /><br /> Se você acha que há alguma categoria faltando fique à vontade para nos contactar no <a href="mailto:oi@konduto.com">oi@konduto.com</a> e nos avisar!</p>
+</blockquote>
+
+<table><thead>
+<tr>
+<th>Descrição</th>
+<th>Código</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><strong>Animais &amp; Bichos de Estimação</strong></td>
+<td>100</td>
+</tr>
+<tr>
+<td><strong>Roupas e Acessórios</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Roupas em Geral</td>
+<td>201</td>
+</tr>
+<tr>
+<td>Accessórios em Geral</td>
+<td>202</td>
+</tr>
+<tr>
+<td>Fantasias e Acessórios</td>
+<td>203</td>
+</tr>
+<tr>
+<td>Acessórios para Bolsas e Carteiras</td>
+<td>204</td>
+</tr>
+<tr>
+<td>Bolsas, Carteiras e Malas</td>
+<td>205</td>
+</tr>
+<tr>
+<td>Joias</td>
+<td>206</td>
+</tr>
+<tr>
+<td>Acessórios para Sapatos</td>
+<td>207</td>
+</tr>
+<tr>
+<td>Sapatos</td>
+<td>208</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>299</td>
+</tr>
+<tr>
+<td>Arte e Entretenimento</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Bebês e Recém-nascidos</td>
+<td>400</td>
+</tr>
+<tr>
+<td><strong>Negócios e Indústria</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Propaganda e Marketing</td>
+<td>501</td>
+</tr>
+<tr>
+<td>Agricultura</td>
+<td>502</td>
+</tr>
+<tr>
+<td>Construção</td>
+<td>503</td>
+</tr>
+<tr>
+<td>Filme e Televisão</td>
+<td>504</td>
+</tr>
+<tr>
+<td>Finanças e Seguros</td>
+<td>505</td>
+</tr>
+<tr>
+<td>Serviços de Alimentação</td>
+<td>506</td>
+</tr>
+<tr>
+<td>Madeireiras</td>
+<td>507</td>
+</tr>
+<tr>
+<td>Maquinário Pesado</td>
+<td>508</td>
+</tr>
+<tr>
+<td>Hotel e Hospedagem</td>
+<td>509</td>
+</tr>
+<tr>
+<td>Armazém Industrial</td>
+<td>510</td>
+</tr>
+<tr>
+<td>Equipamentos Militares</td>
+<td>511</td>
+</tr>
+<tr>
+<td>Manufatura</td>
+<td>512</td>
+</tr>
+<tr>
+<td>Movimentação de Material</td>
+<td>513</td>
+</tr>
+<tr>
+<td>Medicina</td>
+<td>514</td>
+</tr>
+<tr>
+<td>Mineração</td>
+<td>515</td>
+</tr>
+<tr>
+<td>Piercing e tatuagem</td>
+<td>516</td>
+</tr>
+<tr>
+<td>Varejo</td>
+<td>517</td>
+</tr>
+<tr>
+<td>Ciência e Laboratórios</td>
+<td>518</td>
+</tr>
+<tr>
+<td>Placas e Sinais</td>
+<td>519</td>
+</tr>
+<tr>
+<td>Equipamentos de Segurança do Trabalho</td>
+<td>520</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>599</td>
+</tr>
+<tr>
+<td><strong>Câmeras e Óticas</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Câmeras</td>
+<td>601</td>
+</tr>
+<tr>
+<td>Acessórios de câmeras</td>
+<td>602</td>
+</tr>
+<tr>
+<td>Fotografia</td>
+<td>603</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>699</td>
+</tr>
+<tr>
+<td><strong>Eletrônicos</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Impressoras 3D</td>
+<td>701</td>
+</tr>
+<tr>
+<td>Áudio</td>
+<td>702</td>
+</tr>
+<tr>
+<td>Componentes de Circuito</td>
+<td>703</td>
+</tr>
+<tr>
+<td>Comunicação</td>
+<td>704</td>
+</tr>
+<tr>
+<td>Componentes</td>
+<td>705</td>
+</tr>
+<tr>
+<td>Computadores</td>
+<td>706</td>
+</tr>
+<tr>
+<td>Acessórios Eletrônicos</td>
+<td>707</td>
+</tr>
+<tr>
+<td>Aparelho GPS</td>
+<td>708</td>
+</tr>
+<tr>
+<td>Acessórios de GPS</td>
+<td>709</td>
+</tr>
+<tr>
+<td>Redes</td>
+<td>711</td>
+</tr>
+<tr>
+<td>Impressão, Cópia, Scanner e Fax</td>
+<td>712</td>
+</tr>
+<tr>
+<td>Acessórios de Impressão, Cópia, Scanner e Fax</td>
+<td>713</td>
+</tr>
+<tr>
+<td>Vídeo</td>
+<td>715</td>
+</tr>
+<tr>
+<td>Consoles de Vídeo Game</td>
+<td>716</td>
+</tr>
+<tr>
+<td>Acessórios de Vídeo Game</td>
+<td>717</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>799</td>
+</tr>
+<tr>
+<td><strong>Comidas, Bebidas e Cigarro</strong></td>
+<td>800</td>
+</tr>
+<tr>
+<td><strong>Móveis</strong></td>
+<td>900</td>
+</tr>
+<tr>
+<td><strong>Ferramentas</strong></td>
+<td>1000</td>
+</tr>
+<tr>
+<td><strong>Saúde e Beleza</strong></td>
+<td>1100</td>
+</tr>
+<tr>
+<td><strong>Casa e Jardim</strong></td>
+<td>1200</td>
+</tr>
+<tr>
+<td><strong>Malas e Bagagens</strong></td>
+<td>1300</td>
+</tr>
+<tr>
+<td><strong>Adulto</strong></td>
+<td>1400</td>
+</tr>
+<tr>
+<td><strong>Armas e Munição</strong></td>
+<td>1500</td>
+</tr>
+<tr>
+<td><strong>Materiais de Escritório</strong></td>
+<td>1600</td>
+</tr>
+<tr>
+<td><strong>Religião e Cerimoniais</strong></td>
+<td>1700</td>
+</tr>
+<tr>
+<td><strong>Software</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Software de Computador</td>
+<td>1801</td>
+</tr>
+<tr>
+<td>Bens e Moedas Digitais</td>
+<td>1802</td>
+</tr>
+<tr>
+<td>Serviços Digitais</td>
+<td>1803</td>
+</tr>
+<tr>
+<td>Jogos de Vídeo Games</td>
+<td>1804</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>1899</td>
+</tr>
+<tr>
+<td><strong>Equipamento de Esporte</strong></td>
+<td>1900</td>
+</tr>
+<tr>
+<td><strong>Brinquedos e Jogos</strong></td>
+<td>2000</td>
+</tr>
+<tr>
+<td><strong>Veículos e Peças</strong></td>
+<td>2100</td>
+</tr>
+<tr>
+<td><strong>Livros</strong></td>
+<td>2300</td>
+</tr>
+<tr>
+<td><strong>DVDs e Vídeos</strong></td>
+<td>2400</td>
+</tr>
+<tr>
+<td><strong>Revistas e Jornais</strong></td>
+<td>2500</td>
+</tr>
+<tr>
+<td><strong>Música</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>CDs e Vinil</td>
+<td>2601</td>
+</tr>
+<tr>
+<td>Instrumentos Musicais</td>
+<td>2602</td>
+</tr>
+<tr>
+<td>Música Digital</td>
+<td>2603</td>
+</tr>
+<tr>
+<td>Outros</td>
+<td>2699</td>
+</tr>
+<tr>
+<td><strong>Outras categorias não especificadas</strong></td>
+<td>9999</td>
+</tr>
+</tbody></table>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,3023 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>API | Konduto</title>
+
+    <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Droid+Sans+Mono|Droid+Sans:400,700" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="../javascripts/all.js" type="text/javascript"></script>
+
+  </head>
+
+  <body class="en en_index">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="../images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <p align="center">
+        <a href="https://www.konduto.com">
+          <img src="../images/logo.png" />
+        </a>
+      </p>
+      <div id="toc">
+      </div>
+        <ul class="toc-footer">
+            <li><a href='https://www.konduto.com'>HOME</a></li>
+            <li><a href='#'>-</a></li>
+            <li><a href='/pt'>PORTUGUÊS</a></li>
+            <li><a href='/en'>ENGLISH</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="introduction">Introduction</h1>
+
+<p>Welcome! This document will explain how to integrate with <strong>Konduto</strong>&rsquo;s
+anti-fraud service so you can begin to spot fraud on your e-commerce
+website.</p>
+
+<p>Our service uses the visitor&rsquo;s behavior to analyze browsing patterns and
+detect fraud. You will need to add a <strong>JavaScript</strong> snippet
+to your website and tag your pages, so we can see your visitors, and call
+our <strong>REST API</strong> to send purchases, so we can analyze them.</p>
+
+<p>We are constantly improving this document and we appreciate any feedback
+you have. You can drop us a line at <a href="mailto:hi@konduto.com">hi@konduto.com</a> with questions and
+suggestions about how to improve it.</p>
+
+<h1 id="event-collector">Event collector</h1>
+
+<blockquote>
+<p>Paste this just before your closing <strong><code class="prettyprint">&lt;/body&gt;</code></strong> tag:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">__kdt</span> <span class="o">=</span> <span class="nx">__kdt</span> <span class="o">||</span> <span class="p">[];</span>
+  <span class="c1">// Set your public key so we know it's you</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"public_key"</span><span class="p">:</span> <span class="s2">"TEE973BEC88"</span><span class="p">});</span>
+  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">kdt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="s1">'kdtjs'</span><span class="p">;</span> <span class="nx">kdt</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text/javascript'</span><span class="p">;</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://i.k-analytix.com/k.js'</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="nx">s</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">kdt</span><span class="p">,</span> <span class="nx">s</span><span class="p">);</span>
+  <span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>We capture the customer&rsquo;s buying behavior to spot fraudulent activities.
+You will need to paste a JavaScript snippet at the bottom of your website
+so we can receive this data and analyze it.</p>
+
+<p>This snippet <strong>does not</strong> affect the performance of your website and is
+invisible to your visitor.</p>
+
+<h2 id="identifying-a-visitor">Identifying a visitor</h2>
+
+<blockquote>
+<p>Send your own customer ID:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">setCustomerID</span><span class="p">(</span><span class="s1">'customer.id'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<blockquote>
+<p>Recover our visitor ID:</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">visitor_id</span> <span class="o">=</span> <span class="nx">Konduto</span><span class="p">.</span><span class="nx">getVisitorID</span><span class="p">();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>There are two ways of tying an anonymous visit with a purchase. The
+<em>preferred</em> way is to set your own <strong>customer ID</strong>, a unique identifier
+for each logged in customer. The other is through our <strong>visitor ID</strong>,
+generated by us for that session.</p>
+
+<p>You can choose either form of identification, according to your
+preference or requirements.</p>
+
+<h1 id="page-tags">Page tags</h1>
+
+<p>Page tagging allows us to have a deeper understanding of the content you
+are displaying on your website. This will help us determine what a visitor
+is seeing and doing on your page and will greatly increase our algorithms
+precision.</p>
+
+<p>It is <strong>highly recommended</strong> you tag your pages if you can.</p>
+
+<table><thead>
+<tr>
+<th>Tag</th>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td>home</td>
+<td>Website home</td>
+</tr>
+<tr>
+<td></td>
+<td>product</td>
+<td>Product view page</td>
+</tr>
+<tr>
+<td></td>
+<td>search</td>
+<td>Search results</td>
+</tr>
+<tr>
+<td></td>
+<td>account</td>
+<td>Customer account page</td>
+</tr>
+<tr>
+<td></td>
+<td>password_reset</td>
+<td>Reset password page</td>
+</tr>
+<tr>
+<td></td>
+<td>account_creation</td>
+<td>New account creation page</td>
+</tr>
+<tr>
+<td></td>
+<td>category</td>
+<td>Product category</td>
+</tr>
+<tr>
+<td></td>
+<td>basket</td>
+<td>Shopping cart view</td>
+</tr>
+<tr>
+<td></td>
+<td>checkout</td>
+<td>Checkout step</td>
+</tr>
+<tr>
+<td>product</td>
+<td>id=&lt;sku&gt;,<br />name=&lt;name&gt;</td>
+<td>Product details</td>
+</tr>
+</tbody></table>
+
+<h2 id="using-meta-tags-(preferred)">Using meta tags (preferred)</h2>
+<pre class="highlight html"><code><span class="c">&lt;!-- Password reset page --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"password-reset"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Checkout page --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"checkout"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Product detail page --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"product"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:product"</span> <span class="na">content=</span><span class="s">"sku=123, name=Camiseta Verde"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Air or bus ticket search --&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:page"</span> <span class="na">content=</span><span class="s">"search"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:departure"</span> <span class="na">content=</span><span class="s">"GRU-SFO"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:departure-date"</span> <span class="na">content=</span><span class="s">"2020-12-25"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:return"</span> <span class="na">content=</span><span class="s">"SFO-GRU"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"kdt:return-date"</span> <span class="na">content=</span><span class="s">"2021-01-25"</span><span class="nt">&gt;</span>
+</code></pre>
+
+<p>To tag a page add our <code class="prettyprint">&lt;meta&gt;</code> tags to your header. They will tell us
+what kind of page you are serving and, optionally, what product or
+category of products are displayed there.</p>
+
+<h2 id="using-javascript-(advanced)">Using JavaScript (advanced)</h2>
+
+<blockquote>
+<p>Snippet with automatic events disabled</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="kd">var</span> <span class="nx">__kdt</span> <span class="o">=</span> <span class="nx">__kdt</span> <span class="o">||</span> <span class="p">[];</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"public_key"</span><span class="p">:</span> <span class="s2">"TEE973BEC88"</span><span class="p">});</span>
+  <span class="c1">// Automatic events disabled</span>
+  <span class="nx">__kdt</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="s2">"post_on_load"</span><span class="p">:</span> <span class="kc">false</span><span class="p">});</span>
+  <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">kdt</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'script'</span><span class="p">);</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="s1">'kdtjs'</span><span class="p">;</span> <span class="nx">kdt</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s1">'text/javascript'</span><span class="p">;</span>
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> 
+  <span class="nx">kdt</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://i.k-analytix.com/k.js'</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s1">'body'</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="nx">s</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">kdt</span><span class="p">,</span> <span class="nx">s</span><span class="p">);</span>
+  <span class="p">})();</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<blockquote>
+<p>Event manually sent</p>
+</blockquote>
+<pre class="highlight html"><code><span class="c">&lt;!-- Checkout page --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'checkout'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="c">&lt;!-- Product detail page --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'product'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+<pre class="highlight html"><code><span class="c">&lt;!-- Password reset page --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+  <span class="nx">Konduto</span><span class="p">.</span><span class="nx">sendEvent</span><span class="p">(</span><span class="s1">'page'</span><span class="p">,</span><span class="s1">'password-reset'</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre>
+
+<p>There are cases where you don&rsquo;t have the ability to use <meta> tags,
+such as a <a href="http://www.google.com/tagmanager/">Google Tag Manager</a>
+implementation.</p>
+
+<p>For these cases you can use our own JavaScript to send navigation
+events. <strong>This is an advanced implementation</strong>, so make sure this is
+the right way for you.</p>
+
+<h3 id="how-to-enable-advanced-events">How to enable advanced events</h3>
+
+<p>In this mode our JavaScript <strong>does not send navigation events automatically</strong>. Instead it expects that <strong>you</strong> send the event when the page loads. You need to follow these steps to send events manually: <br /><br /><br /> <strong>1. Disable sending events automatically</strong> <br /><br /> You must set the <code class="prettyprint">post_on_load</code> variable to <code class="prettyprint">false</code> in our snippet, as the example shows. <br /><br /><br /> <strong>2. Send event via JavaScript</strong> <br /><br /> When the page is ready and you know it&rsquo;s context (<em>home</em>, <em>checkout</em>, <em>account</em>) you must send the <code class="prettyprint">Konduto.sendEvent()</code> method, passing the tags as parameters.</p>
+
+<h1 id="helper-libraries">Helper libraries</h1>
+
+<blockquote>
+<p><a href="https://github.com/konduto/php-sdk">php-sdk</a> - PHP helper<br>
+<a href="https://github.com/konduto/java-sdk">java-sdk</a> - Java helper<br>
+<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper<br>
+<a href="https://github.com/konduto/konduto.js">konduto.js</a> - JS client</p>
+</blockquote>
+
+<p>We offer SDKs to help with the development effort as well as plugin
+integrations with common e-commerce platforms. Below you will find a list
+of the integrations available to date, which are hosted on our
+<a href="https://github.com/konduto">Github</a> page.</p>
+
+<p>If you don&rsquo;t see your SDK or platform listed here please drop us a line at
+<a href="mailto:hi@konduto.com">hi@konduto.com</a>, we&rsquo;d love to hear from you!</p>
+
+<h1 id="api-authentication">API Authentication</h1>
+<pre class="highlight conf"><code><span class="c"># How to build
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T738D516F09CAB3A2C1EE</span>:)
+
+<span class="c"># Result
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg</span>==
+</code></pre>
+
+<p>We use the <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic Auth</a> standard to
+authenticate access to our API.</p>
+
+<p>In this type of authentication you must send an <code class="prettyprint">Authorization</code> HTTP
+header that contains the word <strong>Basic</strong> followed by a Base64 of your
+private key.</p>
+
+<p>If you use one of our helper libraries then this process is already
+covered and you just need to set your key.</p>
+
+<h1 id="orders-api">Orders API</h1>
+
+<blockquote>
+<p>Orders API Endpoints</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span> https://api.konduto.com/v1/orders
+<span class="ss">PUT</span>  https://api.konduto.com/v1/orders/{order_id}
+<span class="ss">GET</span>  https://api.konduto.com/v1/orders/{order_id}
+</code></pre>
+
+<p>When the customer places the order you must send us the purchase data to
+our REST API so we can analyze it. We respond in real time with a
+<strong>recommendation</strong> of what to do and a <strong>score</strong>, which is our confidence
+level.</p>
+
+<p>While many parameters are optional we recommend that you send as much as
+possible, because each data point makes a difference in the analysis.</p>
+
+<p>The billing address and credit card information are specially important,
+but we understand there are cases where you don&rsquo;t have it available.</p>
+
+<h2 id="send-an-order">Send an order</h2>
+
+<p>You can send new transactions using the <strong>POST</strong> method and passing
+a JSON in the request&rsquo;s body.</p>
+
+<p>The request consists of a root object containing
+information related to the order as well as a <code class="prettyprint">customer</code>,
+<code class="prettyprint">billing</code>, <code class="prettyprint">shipping</code> and <code class="prettyprint">travel</code> objects and the
+<code class="prettyprint">payment</code> and <code class="prettyprint">shopping_cart</code> arrays.</p>
+
+<h3 id="order">Order</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"id"</span>:<span class="s2">"10000000001"</span>,
+  <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+  <span class="s2">"total_amount"</span>:100.00,
+  <span class="s2">"shipping_amount"</span>:20.00,
+  <span class="s2">"tax_amount"</span>:3.45,
+  <span class="s2">"currency"</span>:<span class="s2">"USD"</span>,
+  <span class="s2">"installments"</span>:2,
+  <span class="s2">"ip"</span>:<span class="s2">"170.149.100.10"</span>,
+  <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+  <span class="s2">"messages_exchanged"</span>:30,
+  <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
+  <span class="s2">"analyze"</span>:true,
+  <span class="s2">"customer"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"payment"</span>:[ <span class="o">]</span>,
+  <span class="s2">"billing"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"shipping"</span>:<span class="o">{</span>  <span class="o">}</span>,
+  <span class="s2">"shopping_cart"</span>:[ <span class="o">]</span>,
+  <span class="s2">"travel"</span>:<span class="o">{</span> <span class="o">}</span>,
+  <span class="s2">"seller"</span>:<span class="o">{</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The root of the Order object contains basic information about the
+purchase, such as order number, amount and currency.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(required)</em> <br /> Unique identifier for each order.<br /> <strong>Max. 100 chars, alphanumeric.</strong></td>
+</tr>
+<tr>
+<td>visitor</td>
+<td><em>(optional)</em> <br /> Visitor identifier obtained from our JavaScript snippet.<br /> <strong>Exactly 40 chars, alphanumeric.</strong></td>
+</tr>
+<tr>
+<td>total_amount</td>
+<td><em>(required)</em> <br /> Total order amount.<br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>shipping_amount</td>
+<td><em>(optional)</em> <br /> Shipping and handling amount.<br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>tax_amount</td>
+<td><em>(optional)</em> <br /> Taxes amount.<br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>currency</td>
+<td><em>(optional)</em> <br /> Currency code with 3 letters (<a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4712</a>).<br /> <strong>Exactly 3 chars, string.</strong></td>
+</tr>
+<tr>
+<td>installments</td>
+<td><em>(optional)</em> <br /> Number of installments in the payment plan.<br /> <strong>Max. 3 digits, number.</strong></td>
+</tr>
+<tr>
+<td>ip</td>
+<td><em>(optional)</em> <br /> Customer&rsquo;s IPv4 address.<br /><strong>Max. 15 chars, string.</strong></td>
+</tr>
+<tr>
+<td>first_message</td>
+<td><em>(optional)</em> <br /> In <strong>Marketplaces</strong>, it&rsquo;s the date and time of the first message exchanged between buyer and seller. YYYY-MM-DDTHH:mm:ssZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exactly 20 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>messages_exchanged</td>
+<td><em>(optional)</em> <br /> In <strong>Marketplaces</strong>, should contain the number of messages exchanged between buyer and seller up until the order was placed. <br /><strong>Number</strong>.</td>
+</tr>
+<tr>
+<td>purchased_at</td>
+<td><em>(optional)</em> <br /> In <strong>Marketplaces</strong>, it&rsquo;s the date and time the order was closed. YYYY-MM-DDTHH:mm:ssZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exactly 20 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>analyze</td>
+<td><em>(optional)</em> <br /> If <code class="prettyprint">false</code> we take the transaction into account in future analyses but we don&rsquo;t reply with a recommendation and you are not billed. <br /><strong>Boolean, defaults to true.</strong></td>
+</tr>
+<tr>
+<td>customer</td>
+<td><em>(required)</em> <br /> Object containing the customer details.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><em>(optional)</em> <br /> Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><em>(optional)</em> <br /> Object containing the billing information.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><em>(optional)</em> <br /> Object containing the shipping information.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><em>(optional)</em> <br /> Array containing the items purchased.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><em>(optional)</em> <br /> Object containing the travel and passenger information.</td>
+</tr>
+</tbody></table>
+
+<h3 id="customer-&nbsp;-&nbsp;-&nbsp;-&nbsp;-customer">Customer &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">customer</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"customer"</span>: <span class="o">{</span>
+    <span class="s2">"id"</span>:<span class="s2">"28372"</span>,
+    <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+    <span class="s2">"tax_id"</span>:<span class="s2">"6253407"</span>,
+    <span class="s2">"dob"</span>:<span class="s2">"1970-12-25"</span>,
+    <span class="s2">"phone1"</span>:<span class="s2">"212-555-1234"</span>,
+    <span class="s2">"phone2"</span>:<span class="s2">"202-555-6789"</span>,
+    <span class="s2">"email"</span>:<span class="s2">"mary.jane@example.com"</span>,
+    <span class="s2">"created_at"</span>:<span class="s2">"2010-12-25"</span>,
+    <span class="s2">"new"</span>:false,
+    <span class="s2">"vip"</span>:false
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This object must be used to send information about the buyer, which
+in most cases is the person logged into your application.</p>
+
+<p>To send data about the cardholder or the product recipient you must
+use the <code class="prettyprint">billing</code> and <code class="prettyprint">shipping</code> objects respectively.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(required)</em> <br /> <strong>Unique</strong> identifier for each customer. Can be anything you like (counter, id, e-mail address) as long as it&rsquo;s consistent in future orders.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(required)</em> <br /> Customer&rsquo;s full name.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>email</td>
+<td><em>(required)</em> <br /> Customer&rsquo;s e-mail address<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>dob</td>
+<td><em>(optional)</em> <br /> Customer&rsquo;s date of birth in YYYY-MM-DD format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exactly 10 chars, string.</strong></td>
+</tr>
+<tr>
+<td>tax_id</td>
+<td><em>(optional)</em> <br /> Customer&rsquo;s tax id.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>phone1</td>
+<td><em>(optional)</em> <br /> Customer&rsquo;s primary phone number<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>phone2</td>
+<td><em>(optional)</em> <br /> Customer&rsquo;s secondary phone number<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(optional)</em> <br /> Customer account creation date, in YYYY-MM-DD format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exactly 10 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>new</td>
+<td><em>(optional)</em> <br /> Flag indicating if the customer is using a newly created account for this purchase.<br /><strong>Boolean.</strong></td>
+</tr>
+<tr>
+<td>vip</td>
+<td><em>(optional)</em> <br /> Flag indicating if the customer is a VIP or frequent buyer.<br /><strong>Boolean.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="payment-methods-&nbsp;-&nbsp;-&nbsp;-&nbsp;-payment">Payment Methods &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">payment</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"payment"</span>:[  
+    <span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+      <span class="s2">"bin"</span>:<span class="s2">"490172"</span>,
+      <span class="s2">"last4"</span>:<span class="s2">"0012"</span>,
+      <span class="s2">"expiration_date"</span>:<span class="s2">"072015"</span>,
+      <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+      <span class="s2">"bin"</span>:<span class="s2">"514800"</span>,
+      <span class="s2">"last4"</span>:<span class="s2">"3752"</span>,
+      <span class="s2">"expiration_date"</span>:<span class="s2">"082016"</span>,
+      <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This object contains the payment methods used for the purchase. This
+is an array, so if the order was paid using multiple payment methods
+you can send the list over to analysis.</p>
+
+<p>Currency we support purchases with credit cards, but other payment
+methods will be added in the future.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td><em>(required)</em> <br /> Payment type used by the customer. Currently only <code class="prettyprint">credit</code> is supported.<br /><strong>Max. 6 chars, string.</strong></td>
+</tr>
+<tr>
+<td>status</td>
+<td><em>(required)</em> <br /> The status of the transaction returned by the payment processor. Accepts <code class="prettyprint">approved</code>, <code class="prettyprint">declined</code> or <code class="prettyprint">pending</code> if the payment wasn&rsquo;t been processed yet.<br /><strong>Max. 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>bin</td>
+<td><em>(optional)</em> <br /> First six digits of the customer&rsquo;s credit card. Used to identify the type of card being sent.<br /><strong>Exactly 6 chars, string.</strong></td>
+</tr>
+<tr>
+<td>last4</td>
+<td><em>(optional)</em> <br /> Four last digits of the customer&rsquo;s credit card number. <br /><strong>Exactly 4 chars, string.</strong></td>
+</tr>
+<tr>
+<td>expiration_date</td>
+<td><em>(optional)</em> <br /> Card&rsquo;s expiration date under MMYYYY format. <br /><strong>Exactly 6 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="billing-address-&nbsp;-&nbsp;-&nbsp;-&nbsp;-billing">Billing Address &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">billing</code></h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"billing"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"Mary Jane"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address1"</span><span class="p">:</span><span class="s2">"123 Main St."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address2"</span><span class="p">:</span><span class="s2">"Apartment 4"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"New York City"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="s2">"NY"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"zip"</span><span class="p">:</span><span class="s2">"10460"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"country"</span><span class="p">:</span><span class="s2">"US"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>This object must containg the cardholder information.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s full name.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address1</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s billing address on file with the bank.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address2</td>
+<td><em>(optional)</em> <br /> Additional cardholder address information.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s city.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s state.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s ZIP code.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>)<br /> <strong>Exactly 2 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="shipping-address-&nbsp;-&nbsp;-&nbsp;-&nbsp;-shipping">Shipping Address &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">shipping</code></h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"shipping"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="s2">"Mary Jane"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address1"</span><span class="p">:</span><span class="s2">"123 Main St."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address2"</span><span class="p">:</span><span class="s2">"Apartment 4"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city"</span><span class="p">:</span><span class="s2">"New York City"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state"</span><span class="p">:</span><span class="s2">"NY"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"zip"</span><span class="p">:</span><span class="s2">"10460"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"country"</span><span class="p">:</span><span class="s2">"US"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>This object must contain the shipping information of the purchase.
+There is no need to send it if this is a service or software
+download.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s full name.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address1</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s shipping address.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address2</td>
+<td><em>(optional)</em> <br /> Additional recipient address information.<br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s city.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s state.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s ZIP code.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(optional)</em> <br /> Recipient&rsquo;s country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-">ISO 3166-2</a>)<br / ><strong>Exactly 2 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="shopping-cart-&nbsp;-&nbsp;-&nbsp;-&nbsp;-shopping_cart">Shopping Cart &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">shopping_cart</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"shopping_cart"</span>:[  
+    <span class="o">{</span>  
+      <span class="s2">"sku"</span>:<span class="s2">"9919023"</span>,
+      <span class="s2">"product_code"</span>:<span class="s2">"123456789999"</span>,
+      <span class="s2">"category"</span>:201,
+      <span class="s2">"name"</span>:<span class="s2">"Green T-Shirt"</span>,
+      <span class="s2">"description"</span>:<span class="s2">"Male Green T-Shirt V Neck"</span>,
+      <span class="s2">"unit_cost"</span>:29.99,
+      <span class="s2">"quantity"</span>:1,
+      <span class="s2">"created_at"</span>:<span class="s2">"2008-12-25"</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>  
+      <span class="s2">"sku"</span>:<span class="s2">"0017273"</span>,
+      <span class="s2">"category"</span>:202,
+      <span class="s2">"name"</span>:<span class="s2">"Yellow Socks"</span>,
+      <span class="s2">"description"</span>:<span class="s2">"Pair of Yellow Socks"</span>,
+      <span class="s2">"unit_cost"</span>:7.50,
+      <span class="s2">"quantity"</span>:2,
+      <span class="s2">"discount"</span>:1.00
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This list of objects contains the products added to the order and
+their details.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>sku</td>
+<td><em>(optional)</em> <br /> Product or service&rsquo;s <a href="https://en.wikipedia.org/wiki/Stock-keeping_unit">SKU</a> or inventory id. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>product_code</td>
+<td><em>(optional)</em> <br /> Product or service&rsquo;s <a href="https://en.wikipedia.org/wiki/Universal_Product_Code">UPC</a>, barcode or secondary id.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>category</td>
+<td><em>(optional)</em> <br /> Category code for the item purchased.<br /> See our <a href='#'>category codes</a> for more information .<br /><strong>Max. 4 digits, number.</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(optional)</em> <br /> Name of the product or service.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>description</td>
+<td><em>(optional)</em> <br /> Detailed description of the item. <br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>unit_cost</td>
+<td><em>(optional)</em> <br /> Cost of a single unit of this item. <br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>quantity</td>
+<td><em>(optional)</em> <br /> Number of units purchased.<br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>discount</td>
+<td><em>(optional)</em> <br /> Discounted amount for this item.<br /><strong>Max. 10 digits, number.</strong></td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(optional)</em> <br /> Date the product was first posted, in YYYY-MM-DD format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).<br /> <strong>Exactly 10 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="travel-&nbsp;-&nbsp;-&nbsp;-&nbsp;-travel">Travel &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">travel</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"travel"</span>:<span class="o">{</span>  
+    <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+    <span class="s2">"departure"</span>:<span class="o">{</span>  
+      <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
+      <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
+      <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+      <span class="s2">"number_of_connections"</span>:1,
+      <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
+      <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
+    <span class="o">}</span>,
+    <span class="s2">"return"</span>:<span class="o">{</span>  
+      <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
+      <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
+      <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+      <span class="s2">"number_of_connections"</span>:1,
+      <span class="s2">"class"</span>:<span class="s2">"business"</span>
+    <span class="o">}</span>,
+    <span class="s2">"passengers"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+        <span class="s2">"document"</span>:<span class="s2">"6253407"</span>,
+        <span class="s2">"document_type"</span>:<span class="s2">"id"</span>,
+        <span class="s2">"dob"</span>:<span class="s2">"1970-01-01"</span>,
+        <span class="s2">"nationality"</span>:<span class="s2">"BR"</span>,
+        <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+          <span class="s2">"program"</span>:<span class="s2">"smiles"</span>,
+          <span class="s2">"category"</span>:<span class="s2">"gold"</span>
+        <span class="o">}</span>,
+        <span class="s2">"frequent_traveler"</span>:true,
+        <span class="s2">"special_needs"</span>:false
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"name"</span>:<span class="s2">"John Smith"</span>,
+        <span class="s2">"document"</span>:<span class="s2">"XYZ1234"</span>,
+        <span class="s2">"document_type"</span>:<span class="s2">"passport"</span>,
+        <span class="s2">"dob"</span>:<span class="s2">"1970-12-01"</span>,
+        <span class="s2">"nationality"</span>:<span class="s2">"US"</span>,
+        <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+          <span class="s2">"program"</span>:<span class="s2">"multiplus"</span>,
+          <span class="s2">"category"</span>:<span class="s2">"silver"</span>
+        <span class="o">}</span>,
+        <span class="s2">"frequent_traveler"</span>:false,
+        <span class="s2">"special_needs"</span>:true
+      <span class="o">}</span>
+    <span class="o">]</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Holds data about the transportation and passengers. Travel data is divided between <code class="prettyprint">departure</code> and <code class="prettyprint">return</code> legs. Passenger data goes into the <code class="prettyprint">passengers</code> array.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>type</td>
+<td><em>(required)</em> <br /> Transportation type. Currently <code class="prettyprint">flight</code> or <code class="prettyprint">bus</code> are supported.</td>
+</tr>
+<tr>
+<td>departure</td>
+<td><em>(required)</em> <br /> Object with the <strong>departure</strong> information.</td>
+</tr>
+<tr>
+<td>return</td>
+<td><em>(optional)</em> <br /> Object with the <strong>return</strong> information.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><em>(required)</em> <br /> Array of objects with the passenger details.</td>
+</tr>
+</tbody></table>
+
+<h4 id="travel-information">Travel information<br /><br /></h4>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>origin_city</td>
+<td><em>(required if type=bus)</em> <br /> City of origin.<br /><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>destination_city</td>
+<td><em>(required if type=bus)</em> <br /> City of destination<br /><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>origin_airport</td>
+<td><em>(required if type=flight)</em> <br /> <a href="https://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code">IATA code</a> for airport of origin<br /><strong>Exactly 3 chars, string.</strong></td>
+</tr>
+<tr>
+<td>destination_airport</td>
+<td><em>(required if type=flight)</em> <br /> <a href="https://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code">IATA code</a> code for airport of destination<br /><strong>Exactly 3 chars, string.</strong></td>
+</tr>
+<tr>
+<td>date</td>
+<td><em>(required)</em> <br /> UTC date and time of departure in YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exactly 17 chars, string.</strong></td>
+</tr>
+<tr>
+<td>number_of_connections</td>
+<td><em>(optional)</em> <br /> Number of connections</td>
+</tr>
+<tr>
+<td>class</td>
+<td><em>(optional)</em> <br /> Travel class name, like <code class="prettyprint">economy</code>, <code class="prettyprint">business</code> and <code class="prettyprint">first</code> <br /><strong>Max. 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>fare_basis</td>
+<td><em>(optional)</em> <br /> <a href="https://en.wikipedia.org/wiki/Fare_basis_code">Fase basis code</a>. <br /><strong>Max 20 chars, string.</strong></td>
+</tr>
+</tbody></table>
+
+<h4 id="passenger-information">Passenger information<br /><br /></h4>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>name</td>
+<td><em>(required)</em> <br /> Passenger&rsquo;s full name<br /><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>document</td>
+<td><em>(required)</em> <br /> Document number<br /><strong>Max 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>document_type</td>
+<td><em>(optional)</em> <br /> Document type. Can be either <code class="prettyprint">passport</code> or <code class="prettyprint">id</code>. <br /><strong>Max 8 chars, string.</strong></td>
+</tr>
+<tr>
+<td>dob</td>
+<td><em>(required)</em> <br /> Passenger&rsquo;s date of birth in YYYY-MM-DD format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>). <br /><strong>Exactly 10 chars, string.</strong></td>
+</tr>
+<tr>
+<td>nationality</td>
+<td><em>(optional)</em> <br /> Passenger&rsquo;s country of birth (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exactly 2 chars, string.</strong></td>
+</tr>
+<tr>
+<td>frequent_passenger</td>
+<td><em>(optional)</em> <br /> Frequent flyer flag.<br /><strong>Boolean, defaults to <code class="prettyprint">false</code>.</strong></td>
+</tr>
+<tr>
+<td>special_needs</td>
+<td><em>(optional)</em> <br /> Passenger with special needs. <br /><strong>Boolean, defaults to <code class="prettyprint">false</code>.</strong></td>
+</tr>
+</tbody></table>
+
+<h3 id="seller-&nbsp;-&nbsp;-&nbsp;-&nbsp;-seller">Seller &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">seller</code></h3>
+<pre class="highlight shell"><code><span class="o">{</span> 
+  <span class="s2">"id"</span>:<span class="s2">""</span>,
+  <span class="s2">"name"</span>:<span class="s2">""</span>,
+  <span class="s2">"created_at"</span>:<span class="s2">""</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>For <strong>Marketplaces</strong>, these fields are used to pass data about the
+Seller.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td><em>(required)</em> <br /> Seller unique identifier within the Marketplace.<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>name</td>
+<td><em>(optional)</em> <br /> Merchant or seller name<br /> <strong>Max. 100 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td><em>(optional)</em> <br /> Seller creation date within the Marketplace, in YYYY-MM-DD format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>)<br /> <strong>Exatamente 10 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="update-order-status">Update order status</h2>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"approve"</span>,
+  <span class="s2">"comments"</span>:<span class="s2">"Shipping address confirmed by cardholder."</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>You can update the status of an order using the <strong>PUT</strong> method and
+passing a new <code class="prettyprint">status</code> and <code class="prettyprint">comments</code> on the change.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td><em>(required)</em> <br /> New status for this transaction. Either <code class="prettyprint">approved</code>, <code class="prettyprint">declined</code> or <code class="prettyprint">fraud</code>, when you have identified a fraud or chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
+</tr>
+<tr>
+<td>comments</td>
+<td><em>(required)</em> <br /> Reason or comments about the status update. <br /><strong>Max. 255 chars, string</strong>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="query-an-order">Query an order</h2>
+<pre class="highlight shell"><code>GET https://api.konduto.com/v1/orders/ORD1837213
+</code></pre>
+
+<p>You can retrieve all the data for an order using the <strong>GET</strong> method.
+The response will include all transactional data about the order,
+including <code class="prettyprint">recommendation</code>, <code class="prettyprint">score</code> and current <code class="prettyprint">status</code>.</p>
+
+<h1 id="blacklist-api">Blacklist API</h1>
+
+<blockquote>
+<p>Email Blacklist URLs</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/email/{email}
+<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/email/{email}
+</code></pre>
+
+<blockquote>
+<p>Email Blacklist URLs</p>
+</blockquote>
+<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/address/{id}
+<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/address/{id}
+</code></pre>
+
+<p>The Blacklist is a resource that allows you to block orders that contain
+certain data. Purchases made with this information will be <strong>declined
+automatically</strong> by our platform. You can add an entry to the Blacklist
+permanently or until a certain expiration date.</p>
+
+<p>With the Blacklist API you can <strong>add</strong>, <strong>update</strong>, <strong>query</strong> and
+<strong>remove</strong> items from the list. Currently you can block <strong>emails</strong> and
+<strong>addresses</strong>.</p>
+
+<p>Please note that to manage an <strong>address</strong> you need to give it a
+unique id.</p>
+
+<h2 id="add-an-item">Add an item</h2>
+
+<blockquote>
+<p>Example of adding an email to the Blacklist</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"email_address"</span>:<span class="s2">"mary.jane@example.com"</span>,
+  <span class="s2">"days_to_expire"</span>:180
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Example of adding an address to the Blacklist</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
+  <span class="s2">"address_line_1"</span>:<span class="s2">"123 Main St."</span>,
+  <span class="s2">"address_line_2"</span>:<span class="s2">"Apartment 4"</span>,
+  <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+  <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+  <span class="s2">"zip"</span>:<span class="s2">"10460"</span>,
+  <span class="s2">"country"</span>:<span class="s2">"US"</span>,
+  <span class="s2">"days_to_expire"</span>:180
+<span class="o">}</span>
+</code></pre>
+
+<p>To add an entry you must use the <code class="prettyprint">POST</code> method. Once you add an entry,
+the next transaction will take the new data intro account.</p>
+
+<p>Expiration date is optional. If set, the entry will be removed
+automatically once the deadline is reached. If not, the entry will
+remain in the Blacklist indefinitely.</p>
+
+<h4 id="parameters-to-add-an-email">Parameters to add an email</h4>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>email_address</td>
+<td><em>(required)</em> <br /> Customer&rsquo;s e-mail address<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>days_to_expire</td>
+<td><em>(optional)</em> <br /> Days for this entry to be automatically removed from the Blacklist <br /><strong>Number.</strong></td>
+</tr>
+</tbody></table>
+
+<h4 id="parameters-to-add-an-address">Parameters to add an address</h4>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>address_identifier</td>
+<td><em>(required)</em> <br /> <strong>Unique</strong> ID for this address. Is used to reference this record in the Blacklist.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address_line_1</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s billing address on file with the bank. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>address_line_2</td>
+<td><em>(optional)</em> <br /> Additional cardholder address information. <br /><strong>Max. 255 chars, string.</strong></td>
+</tr>
+<tr>
+<td>city</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s city.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>state</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s state.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>zip</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s ZIP code.<br /><strong>Max. 100 chars, string.</strong></td>
+</tr>
+<tr>
+<td>country</td>
+<td><em>(optional)</em> <br /> Cardholder&rsquo;s country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exactly 2 chars, string.</strong></td>
+</tr>
+<tr>
+<td>days_to_expire</td>
+<td><em>(optional)</em> <br /> Days for this entry to be automatically removed from the Blacklist <br /><strong>Number.</strong></td>
+</tr>
+</tbody></table>
+
+<h2 id="update-an-expiration-date">Update an expiration date</h2>
+
+<blockquote>
+<p>Example of an update to the expiration date</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"days_to_expire"</span>: 360
+<span class="o">}</span>
+</code></pre>
+
+<p>Updating an item means changing it&rsquo;s <strong>expiration date</strong>. You can move
+up or postpone the expiration date of an entry. It&rsquo;s done through the
+<code class="prettyprint">PUT</code> method.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>days_to_expire</td>
+<td><em>(required)</em> <br /> Days for this entry to be automatically removed from the Blacklist <br /><strong>Number.</strong></td>
+</tr>
+</tbody></table>
+
+<h2 id="retrieve-an-item">Retrieve an item</h2>
+<pre class="highlight shell"><code>GET https://api.konduto.com/v1/blacklist/email/mary.jane@example.com
+</code></pre>
+
+<p>You can query if an entry is already in the Blacklist. If it has an
+expiration date this value is also returned in the query.</p>
+
+<h2 id="remove-an-item">Remove an item</h2>
+<pre class="highlight shell"><code>DELETE https://api.konduto.com/v1/blacklist/email/mary.jane@example.com
+</code></pre>
+
+<p>To remove an entry from the Blacklist you must use the <code class="prettyprint">DELETE</code> method.</p>
+
+<h1 id="responses">Responses</h1>
+
+<h2 id="http-codes">HTTP Codes</h2>
+<pre class="highlight conf"><code><span class="m">200</span> <span class="n">OK</span> <span class="c"># Success
+</span><span class="m">201</span> <span class="n">Created</span> <span class="c"># Item was created
+</span><span class="m">400</span> <span class="n">Bad</span> <span class="n">Request</span> <span class="c"># Error in request
+</span><span class="m">401</span> <span class="n">Unauthorized</span> <span class="c"># Problem with key authentication
+</span><span class="m">403</span> <span class="n">Forbidden</span> <span class="c"># Problem with the account
+</span><span class="m">404</span> <span class="n">Not</span> <span class="n">Found</span> <span class="c"># Not found
+</span><span class="m">405</span> <span class="n">Method</span> <span class="n">Not</span> <span class="n">Allowed</span> <span class="c"># Method does not exist
+</span><span class="m">429</span> <span class="n">Too</span> <span class="n">Many</span> <span class="n">Requests</span> <span class="c"># Request limit reached
+</span><span class="m">444</span> <span class="n">No</span> <span class="n">Response</span> <span class="c"># No response
+</span><span class="m">500</span> <span class="n">Server</span> <span class="n">Error</span> <span class="c"># Internal server error
+</span></code></pre>
+
+<p>Our API uses <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">HTTP response codes</a> to
+indicate the result of a request. Successful requests will be replied
+with a <code class="prettyprint">200 OK</code> code while failed requests will contain <code class="prettyprint">400</code> or <code class="prettyprint">5xx</code>
+response codes.</p>
+
+<p>There is also a <code class="prettyprint">status</code> parameter is the response body indicating
+whether a request was successful or not.</p>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Request is valid and we have a response.</td>
+</tr>
+<tr>
+<td>201</td>
+<td>Item was added to the list.</td>
+</tr>
+<tr>
+<td>400</td>
+<td>There was a problem with request. The <strong>response body</strong> contains more information about the cause., most likely a syntax issue.</td>
+</tr>
+<tr>
+<td>401</td>
+<td>The API that was used is not valid. Please check the <a href="#">key format</a> and it&rsquo;s value in your dashboard.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>There is a problem with your account. Please <a href="mailto:hi@konduto.com">get in touch with us</a> for more information.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>The order was not found in our database.</td>
+</tr>
+<tr>
+<td>405</td>
+<td>The HTTP method used is not allowed for this resource.</td>
+</tr>
+<tr>
+<td>429</td>
+<td>You have reached the limit of permitted requests. Please <a href="mailto:hi@konduto.com">get in touch with us</a> for more information.</td>
+</tr>
+<tr>
+<td>444</td>
+<td>The address for the request is invalid and the server has closed the connection. Please check the URL you are using to send requests.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>There was an internal error when processing your request. You should <a href="mailto:hi@konduto.com">get in touch with us</a> for more information.</td>
+</tr>
+</tbody></table>
+
+<h2 id="error-responses">Error responses</h2>
+
+<p>Our API&rsquo;s error responses always show you the reason behind the error
+and, when possible, an indication of how to fix it.</p>
+
+<p>The main reason for an API call to fail is a <strong>validation problem</strong>,
+meaning either <strong>syntax</strong> or the content of the <strong>values</strong>. If it&rsquo;s an
+internal error within Konduto we will reply with a unique ID that can
+be sent to <a href="mailto:hi@konduto.com">our support team</a> for
+investigation.</p>
+
+<h3 id="validation-error-response">Validation error response</h3>
+
+<blockquote>
+<p>Example where value was sent as a string</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"where"</span><span class="p">:</span><span class="s2">"/total_amount"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"why"</span><span class="p">:{</span><span class="w">  
+      </span><span class="s2">"expected"</span><span class="p">:[</span><span class="w">  
+        </span><span class="s2">"integer"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"number"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="s2">"found"</span><span class="p">:</span><span class="s2">"string"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>where</td>
+<td>Field or object where the error ocurred.</td>
+</tr>
+<tr>
+<td>why</td>
+<td>Causes of the validation error.</td>
+</tr>
+<tr>
+<td>expected</td>
+<td>Expected data.</td>
+</tr>
+<tr>
+<td>found</td>
+<td>Actual received data.</td>
+</tr>
+<tr>
+<td>missing</td>
+<td>Required field missing.</td>
+</tr>
+<tr>
+<td>unknown_field</td>
+<td>Unknown field.</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>Example of internal error</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">  
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"message"</span><span class="p">:{</span><span class="w">  
+    </span><span class="s2">"notification"</span><span class="p">:</span><span class="s2">"We've been notified about this error and will investigate it. Please keep this error identifier"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"error_identifier"</span><span class="p">:</span><span class="s2">"09e1a98c-eada-4695-8864-bff8ba4707ba"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"where"</span><span class="p">:</span><span class="s2">"/"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"why"</span><span class="p">:{</span><span class="w">  
+      </span><span class="s2">"expected"</span><span class="p">:</span><span class="s2">"ok"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"found"</span><span class="p">:</span><span class="s2">"Internal error"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h3 id="internal-error-response">Internal error response</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>notification</td>
+<td>Server error message</td>
+</tr>
+<tr>
+<td>error_identifier</td>
+<td>Error unique ID, which can be sent to <a href="mailto:hi@konduto.com">our support team</a> for investigation.</td>
+</tr>
+<tr>
+<td>where</td>
+<td>Field or object where the error ocurred.</td>
+</tr>
+<tr>
+<td>why</td>
+<td>Causes of the validation error.</td>
+</tr>
+<tr>
+<td>expected</td>
+<td>Expected data.</td>
+</tr>
+<tr>
+<td>found</td>
+<td>Actual received data.</td>
+</tr>
+</tbody></table>
+
+<h2 id="orders-api-response">Orders API response</h2>
+
+<p>A successful response from the Orders API always returns two objects.</p>
+
+<p>The <code class="prettyprint">status</code> field indicates the success or failure of the request, and
+the <code class="prettyprint">order</code> object contains the data of the order being handled. The
+contents of this object varies accoring to what request is being made.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Request status message. Responds <code class="prettyprint">ok</code> for successful or <code class="prettyprint">error</code> for failed requests.</td>
+</tr>
+<tr>
+<td>order</td>
+<td>Object containing the analysis respose.</td>
+</tr>
+</tbody></table>
+
+<h3 id="analysis-response">Analysis response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>:<span class="o">{</span>  
+    <span class="s2">"id"</span>:<span class="s2">"ORD1837213"</span>,
+    <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+    <span class="s2">"score"</span>:0.07,
+    <span class="s2">"recommendation"</span>:<span class="s2">"APPROVE"</span>,
+    <span class="s2">"ip"</span>:<span class="s2">"170.149.100.10"</span>,
+    <span class="s2">"device"</span>:<span class="o">{</span>  
+      <span class="s2">"user_id"</span>: <span class="s2">"405961fab293600daeed93ae561"</span>,
+      <span class="s2">"fingerprint"</span>: <span class="s2">"e4f2c690951038a8f77aa583847"</span>,
+      <span class="s2">"platform"</span>: <span class="s2">"MacIntel"</span>,
+      <span class="s2">"browser"</span>: <span class="s2">"Chrome"</span>,
+      <span class="s2">"language"</span>: <span class="s2">"en_US"</span>,
+      <span class="s2">"timezone"</span>: <span class="s2">"GMT -1"</span>,
+      <span class="s2">"cookie"</span>: <span class="nb">true</span>,
+      <span class="s2">"javascript"</span>:  <span class="nb">true</span>,
+      <span class="s2">"flash"</span>: <span class="nb">true</span>
+    <span class="o">}</span>,
+    <span class="s2">"geolocation"</span>:<span class="o">{</span>  
+      <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"US"</span>
+    <span class="o">}</span>,
+    <span class="s2">"navigation"</span>:<span class="o">{</span>  
+      <span class="s2">"time_site_7d"</span>:15.0,
+      <span class="s2">"time_per_page_7d"</span>:2.0,
+      <span class="s2">"new_accounts_7d"</span>:0,
+      <span class="s2">"password_resets_7d"</span>:1,
+      <span class="s2">"checkout_count_7d"</span>:0,
+      <span class="s2">"sales_declined_7d"</span>:0,
+      <span class="s2">"sessions_7d"</span>:3,
+      <span class="s2">"time_site_1d"</span>:45.0,
+      <span class="s2">"new_accounts_1d"</span>:0,
+      <span class="s2">"password_resets_1d"</span>:0,
+      <span class="s2">"sales_declined_1d"</span>:0,
+      <span class="s2">"sessions_1d"</span>:1,
+      <span class="s2">"session_time"</span>:45.0,
+      <span class="s2">"time_since_last_sale"</span>:121.0,
+      <span class="s2">"referrer"</span>: <span class="s2">"http://www.google.com/"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The response from our fraud engine returns the following fields inside the <code class="prettyprint">order</code> object:</p>
+
+<table><thead>
+<tr>
+<th>Object</th>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>-</td>
+<td><strong>id</strong></td>
+<td>Unique identifier sent in the request</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>visitor</strong></td>
+<td>Visitor identifier sent in the request</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>score</strong></td>
+<td>Transaction score between <code class="prettyprint">0</code> and <code class="prettyprint">1</code>.<br /><br /> For transactions that were not analyzed the value <code class="prettyprint">-1</code> will be returned (see <strong>order.analyze</strong> parameter).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>recommendation</strong></td>
+<td>Recommended action to be taken on the order. Can be <code class="prettyprint">APPROVE</code>, <code class="prettyprint">REVIEW</code> or <code class="prettyprint">DECLINE</code>.<br /><br /> For transactions that were not analyzed the value <code class="prettyprint">NONE</code> will be returned (see <strong>order.analyze</strong> parameter).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>device</strong></td>
+<td>Object containing the device information collected</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>user_id</strong></td>
+<td>Unique user id for this visitor</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>fingerprint</strong></td>
+<td>Browser fingerprint</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>platform</strong></td>
+<td>Customer&rsquo;s device type</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>browser</strong></td>
+<td>Customer&rsquo;s browser</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>language</strong></td>
+<td>Customer&rsquo;s browser language</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>timezone</strong></td>
+<td>Customer&rsquo;s time zone in GMT</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>cookie</strong></td>
+<td>Flag indicating if customer has Cookies enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>javascript</strong></td>
+<td>Flag indicating if customer has JavaScript enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>flash</strong></td>
+<td>Flag indicating if customer has Java enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>ip</strong></td>
+<td>Customer&rsquo;s IP address</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>geolocation</strong></td>
+<td>Object containing the customer&rsquo;s geolocation data</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>city</strong></td>
+<td>Detected city</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>state</strong></td>
+<td>Detected state</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>country</strong></td>
+<td>Detected country</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>navigation</strong></td>
+<td>Object containing the customer&rsquo;s navigation summary</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>session_time</strong></td>
+<td>Time of last session (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>referrer</strong></td>
+<td>Source of the visit</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_1d</strong></td>
+<td>Time user spent on the website in the past day (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_1d</strong></td>
+<td>Accounts created by the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_1d</strong></td>
+<td>Password resets in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_1d</strong></td>
+<td>Orders declined linked to the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_1d</strong></td>
+<td>User visits (sessions) by the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_since_last_sale</strong></td>
+<td>Time since the last successul order (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_7d</strong></td>
+<td>Time user spent on the website in the past week (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_per_page_7d</strong></td>
+<td>Avg. time per page in the past week (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_7d</strong></td>
+<td>Accounts created by the user in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_7d</strong></td>
+<td>Password resets in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>checkout_count_7d</strong></td>
+<td>Shopping cart views in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_7d</strong></td>
+<td>Orders declined linked to the user in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_7d</strong></td>
+<td>User visits (sessions) by the user in the past week</td>
+</tr>
+</tbody></table>
+
+<h3 id="update-response">Update response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>: <span class="o">{</span>
+    <span class="s2">"old_status"</span>: <span class="s2">"pending"</span>,
+    <span class="s2">"new_status"</span>: <span class="s2">"approved"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>When you update the status of an order you get a response that
+contains the previous e current order status, i.e. what has just been
+changed. This happens even if the old and the new status are the
+same.</p>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>old_status</td>
+<td>Old order status.</td>
+</tr>
+<tr>
+<td>new_status</td>
+<td>New order status.</td>
+</tr>
+</tbody></table>
+
+<h3 id="query-response">Query response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>  
+  <span class="s2">"status"</span>:<span class="s2">"ok"</span>,
+  <span class="s2">"order"</span>:<span class="o">{</span>  
+    <span class="s2">"id"</span>:<span class="s2">"ORD1837213"</span>,
+    <span class="s2">"visitor"</span>:<span class="s2">"da39a3ee5e6b4b0d3255bfef95601890afd80709"</span>,
+    <span class="s2">"created_at"</span>:<span class="s2">"2028-03-13T21:48:30Z"</span>,
+    <span class="s2">"updated_at"</span>:<span class="s2">"2028-03-15T08:09:26Z"</span>,
+    <span class="s2">"score"</span>:0.07,
+    <span class="s2">"recommendation"</span>:<span class="s2">"approve"</span>,
+    <span class="s2">"status"</span>:<span class="s2">"approved"</span>,
+    <span class="s2">"ip"</span>:<span class="s2">"170.149.100.10"</span>,
+    <span class="s2">"total_amount"</span>:159.61,
+    <span class="s2">"tax_amount"</span>:3.04,
+    <span class="s2">"shipping_amount"</span>:6.57,
+    <span class="s2">"currency"</span>:<span class="s2">"USD"</span>,
+    <span class="s2">"first_message"</span>:<span class="s2">"2018-12-20T15:59:01Z"</span>,
+    <span class="s2">"messages_exchanged"</span>:30,
+    <span class="s2">"purchased_at"</span>:<span class="s2">"2018-12-25T12:00:25Z"</span>,
+    <span class="s2">"device"</span>:<span class="o">{</span>  
+      <span class="s2">"user_id"</span>: <span class="s2">"405961fab293600daeed93ae561"</span>,
+      <span class="s2">"fingerprint"</span>: <span class="s2">"e4f2c690951038a8f77aa583847"</span>,
+      <span class="s2">"platform"</span>: <span class="s2">"MacIntel"</span>,
+      <span class="s2">"browser"</span>: <span class="s2">"Chrome"</span>,
+      <span class="s2">"language"</span>: <span class="s2">"en_US"</span>,
+      <span class="s2">"timezone"</span>: <span class="s2">"GMT -1"</span>,
+      <span class="s2">"cookie"</span>: <span class="nb">true</span>,
+      <span class="s2">"javascript"</span>:  <span class="nb">true</span>,
+      <span class="s2">"flash"</span>: <span class="nb">true</span>
+    <span class="o">}</span>,
+    <span class="s2">"geolocation"</span>:<span class="o">{</span>  
+      <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"US"</span>
+    <span class="o">}</span>,
+    <span class="s2">"billing"</span>:<span class="o">{</span>  
+      <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+      <span class="s2">"address1"</span>:<span class="s2">"123 Main St."</span>,
+      <span class="s2">"address2"</span>:<span class="s2">"Apartment 4"</span>,
+      <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+      <span class="s2">"zip"</span>:<span class="s2">"10460"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"US"</span>
+    <span class="o">}</span>,
+    <span class="s2">"shipping"</span>:<span class="o">{</span>  
+      <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+      <span class="s2">"address1"</span>:<span class="s2">"123 Main St."</span>,
+      <span class="s2">"address2"</span>:<span class="s2">"Apartment 4"</span>,
+      <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+      <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+      <span class="s2">"zip"</span>:<span class="s2">"10460"</span>,
+      <span class="s2">"country"</span>:<span class="s2">"US"</span>
+    <span class="o">}</span>,
+    <span class="s2">"customer"</span>:<span class="o">{</span>  
+      <span class="s2">"id"</span>:<span class="s2">"28372"</span>,
+      <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+      <span class="s2">"tax_id"</span>:<span class="s2">"6253407"</span>,
+      <span class="s2">"dob"</span>:<span class="s2">"1970-12-25"</span>,
+      <span class="s2">"phone1"</span>:<span class="s2">"212-555-1234"</span>,
+      <span class="s2">"phone2"</span>:<span class="s2">"202-555-6789"</span>,
+      <span class="s2">"email"</span>:<span class="s2">"mary.jane@example.com"</span>,
+      <span class="s2">"new"</span>:false,
+      <span class="s2">"vip"</span>:false
+    <span class="o">}</span>,
+    <span class="s2">"navigation"</span>:<span class="o">{</span>  
+      <span class="s2">"time_site_7d"</span>:15.0,
+      <span class="s2">"time_per_page_7d"</span>:2.0,
+      <span class="s2">"new_accounts_7d"</span>:0,
+      <span class="s2">"password_resets_7d"</span>:1,
+      <span class="s2">"checkout_count_7d"</span>:0,
+      <span class="s2">"sales_declined_7d"</span>:0,
+      <span class="s2">"sessions_7d"</span>:3,
+      <span class="s2">"time_site_1d"</span>:45.0,
+      <span class="s2">"new_accounts_1d"</span>:0,
+      <span class="s2">"password_resets_1d"</span>:0,
+      <span class="s2">"sales_declined_1d"</span>:0,
+      <span class="s2">"sessions_1d"</span>:1,
+      <span class="s2">"session_time"</span>:45.0,
+      <span class="s2">"time_since_last_sale"</span>:121.0,
+      <span class="s2">"referrer"</span>: <span class="s2">"http://www.google.com/"</span>
+    <span class="o">}</span>,
+    <span class="s2">"payment"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+        <span class="s2">"bin"</span>:<span class="s2">"490172"</span>,
+        <span class="s2">"last4"</span>:<span class="s2">"0012"</span>,
+        <span class="s2">"expiration_date"</span>:<span class="s2">"072015"</span>,
+        <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"type"</span>:<span class="s2">"credit"</span>,
+        <span class="s2">"bin"</span>:<span class="s2">"514800"</span>,
+        <span class="s2">"last4"</span>:<span class="s2">"3752"</span>,
+        <span class="s2">"expiration_date"</span>:<span class="s2">"082016"</span>,
+        <span class="s2">"status"</span>:<span class="s2">"approved"</span>
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"shopping_cart"</span>:[  
+      <span class="o">{</span>  
+        <span class="s2">"sku"</span>:<span class="s2">"9919023"</span>,
+        <span class="s2">"product_code"</span>:<span class="s2">"123456789999"</span>,
+        <span class="s2">"category"</span>:201,
+        <span class="s2">"name"</span>:<span class="s2">"Green T-Shirt"</span>,
+        <span class="s2">"description"</span>:<span class="s2">"Male Green T-Shirt V Neck"</span>,
+        <span class="s2">"unit_cost"</span>:29.99,
+        <span class="s2">"quantity"</span>:1
+      <span class="o">}</span>,
+      <span class="o">{</span>  
+        <span class="s2">"sku"</span>:<span class="s2">"0017273"</span>,
+        <span class="s2">"category"</span>:202,
+        <span class="s2">"name"</span>:<span class="s2">"Yellow Socks"</span>,
+        <span class="s2">"description"</span>:<span class="s2">"Pair of Yellow Socks"</span>,
+        <span class="s2">"unit_cost"</span>:7.50,
+        <span class="s2">"quantity"</span>:2,
+        <span class="s2">"discount"</span>:1.00
+      <span class="o">}</span>
+    <span class="o">]</span>,
+    <span class="s2">"travel"</span>:<span class="o">{</span>  
+      <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+      <span class="s2">"departure"</span>:<span class="o">{</span>  
+        <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
+        <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
+        <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+        <span class="s2">"number_of_connections"</span>:1,
+        <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
+        <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
+      <span class="o">}</span>,
+      <span class="s2">"return"</span>:<span class="o">{</span>  
+        <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
+        <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
+        <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+        <span class="s2">"number_of_connections"</span>:1,
+        <span class="s2">"class"</span>:<span class="s2">"business"</span>
+      <span class="o">}</span>,
+      <span class="s2">"passengers"</span>:[  
+        <span class="o">{</span>  
+          <span class="s2">"name"</span>:<span class="s2">"Mary Jane"</span>,
+          <span class="s2">"document"</span>:<span class="s2">"6253407"</span>,
+          <span class="s2">"document_type"</span>:<span class="s2">"id"</span>,
+          <span class="s2">"dob"</span>:<span class="s2">"1970-01-01"</span>,
+          <span class="s2">"nationality"</span>:<span class="s2">"BR"</span>,
+          <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+            <span class="s2">"program"</span>:<span class="s2">"smiles"</span>,
+            <span class="s2">"category"</span>:<span class="s2">"gold"</span>
+          <span class="o">}</span>,
+          <span class="s2">"frequent_traveler"</span>:true,
+          <span class="s2">"special_needs"</span>:false
+        <span class="o">}</span>,
+        <span class="o">{</span>  
+          <span class="s2">"name"</span>:<span class="s2">"John Smith"</span>,
+          <span class="s2">"document"</span>:<span class="s2">"XYZ1234"</span>,
+          <span class="s2">"document_type"</span>:<span class="s2">"passport"</span>,
+          <span class="s2">"dob"</span>:<span class="s2">"1970-12-01"</span>,
+          <span class="s2">"nationality"</span>:<span class="s2">"US"</span>,
+          <span class="s2">"loyalty"</span>:<span class="o">{</span>  
+            <span class="s2">"program"</span>:<span class="s2">"multiplus"</span>,
+            <span class="s2">"category"</span>:<span class="s2">"silver"</span>
+          <span class="o">}</span>,
+          <span class="s2">"frequent_traveler"</span>:false,
+          <span class="s2">"special_needs"</span>:true
+        <span class="o">}</span>
+      <span class="o">]</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>When you query an order you get <strong>all</strong> the data related to that
+purchase, including data sent by the merchant and our analysis.</p>
+
+<table><thead>
+<tr>
+<th>Object</th>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>-</td>
+<td><strong>id</strong></td>
+<td>Unique identifier sent in the request</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>created_at</strong></td>
+<td>Date and time of the transaction in YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>updated_at</strong></td>
+<td>Date and time of the last update on the transaction in YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>visitor</strong></td>
+<td>Visitor identifier sent in the request</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>score</strong></td>
+<td>Transaction score between <code class="prettyprint">0</code> and <code class="prettyprint">1</code>.<br /><br /> For transactions that were not analyzed the value <code class="prettyprint">-1</code> will be returned (see <strong>order.analyze</strong> parameter).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>recommendation</strong></td>
+<td>Recommended action to be taken on the order. Can be <code class="prettyprint">APPROVE</code>, <code class="prettyprint">REVIEW</code> or <code class="prettyprint">DECLINE</code>.<br /><br /> For transactions that were not analyzed the value <code class="prettyprint">NONE</code> will be returned (see <strong>order.analyze</strong> parameter).</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>status</strong></td>
+<td>Request status message. Responds <code class="prettyprint">ok</code> for successful or <code class="prettyprint">error</code> for failed requests.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>ip</strong></td>
+<td>Customer&rsquo;s IP address.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>total_amount</strong></td>
+<td>Total order amount.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>tax_amount</strong></td>
+<td>Taxes amount.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shipping_amount</strong></td>
+<td>Shipping and handling amount.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>installments</strong></td>
+<td>Number of installments in the payment plan.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>currency</strong></td>
+<td>Currency code.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>payment</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>type</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>bin</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>last4</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>expiration_date</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>payment</td>
+<td><strong>status</strong></td>
+<td>Array containing the payment methods.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>customer</strong></td>
+<td>Object containing the customer details.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>id</strong></td>
+<td><strong>Unique</strong> identifier for each customer.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>name</strong></td>
+<td>Customer&rsquo;s full name.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>email</strong></td>
+<td>Customer&rsquo;s e-mail address</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>dob</strong></td>
+<td>Customer&rsquo;s date of birth in YYYY-MM-DD format.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>tax_id</strong></td>
+<td>Customer&rsquo;s tax id.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>phone1</strong></td>
+<td>Customer&rsquo;s primary phone number.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>phone2</strong></td>
+<td>Customer&rsquo;s secondary phone number.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>new</strong></td>
+<td>Flag indicating if the customer is using a newly created account for this purchase.</td>
+</tr>
+<tr>
+<td>customer</td>
+<td><strong>vip</strong></td>
+<td>Flag indicating if the customer is a VIP or frequent buyer.*</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>billing</strong></td>
+<td>Object containing the billing information.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>name</strong></td>
+<td>Cardholder&rsquo;s full name.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>address1</strong></td>
+<td>Cardholder&rsquo;s billing address on file with the bank.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>address2</strong></td>
+<td>Additional cardholder address information.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>city</strong></td>
+<td>Cardholder&rsquo;s city.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>state</strong></td>
+<td>Cardholder&rsquo;s state.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>zip</strong></td>
+<td>Cardholder&rsquo;s ZIP code.</td>
+</tr>
+<tr>
+<td>billing</td>
+<td><strong>country</strong></td>
+<td>Cardholder&rsquo;s country code.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shipping</strong></td>
+<td>Object containing the shipping information.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>name</strong></td>
+<td>Recipient&rsquo;s full name.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>address1</strong></td>
+<td>Recipient&rsquo;s shipping address.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>address2</strong></td>
+<td>Additional recipient address information.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>city</strong></td>
+<td>Recipient&rsquo;s city.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>state</strong></td>
+<td>Recipient&rsquo;s state.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>zip</strong></td>
+<td>Recipient&rsquo;s ZIP code.</td>
+</tr>
+<tr>
+<td>shipping</td>
+<td><strong>country</strong></td>
+<td>Recipient&rsquo;s country code.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>shopping_cart</strong></td>
+<td>Array containing the items purchased.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>sku</strong></td>
+<td>Product or service&rsquo;s SKU.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>product_code</strong></td>
+<td>Product or service&rsquo;s UPC</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>category</strong></td>
+<td>Category code for the item purchased.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>name</strong></td>
+<td>Name of the product or service.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>description</strong></td>
+<td>Detailed description of the item.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>unit_cost</strong></td>
+<td>Cost of a single unit of this item.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>quantity</strong></td>
+<td>Number of units purchased.</td>
+</tr>
+<tr>
+<td>shopping_cart</td>
+<td><strong>discount</strong></td>
+<td>Discounted amount for this item.</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>device</strong></td>
+<td>Object containing the device information collected</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>user_id</strong></td>
+<td>Unique user id for this visitor</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>fingerprint</strong></td>
+<td>Browser fingerprint</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>platform</strong></td>
+<td>Customer&rsquo;s device type</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>browser</strong></td>
+<td>Customer&rsquo;s browser</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>language</strong></td>
+<td>Customer&rsquo;s browser language</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>timezone</strong></td>
+<td>Customer&rsquo;s time zone in GMT</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>cookie</strong></td>
+<td>Flag indicating if customer has Cookies enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>javascript</strong></td>
+<td>Flag indicating if customer has JavaScript enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>flash</strong></td>
+<td>Flag indicating if customer has Java enabled</td>
+</tr>
+<tr>
+<td>device</td>
+<td><strong>ip</strong></td>
+<td>Customer&rsquo;s IP address</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>geolocation</strong></td>
+<td>Object containing the customer&rsquo;s geolocation data</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>city</strong></td>
+<td>Detected city</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>state</strong></td>
+<td>Detected state</td>
+</tr>
+<tr>
+<td>geolocation</td>
+<td><strong>country</strong></td>
+<td>Detected country</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>navigation</strong></td>
+<td>Object containing the customer&rsquo;s navigation summary</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>session_time</strong></td>
+<td>Time of last session (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>referrer</strong></td>
+<td>Source of the visit</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_1d</strong></td>
+<td>Time user spent on the website in the past day (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_1d</strong></td>
+<td>Accounts created by the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_1d</strong></td>
+<td>Password resets in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_1d</strong></td>
+<td>Orders declined linked to the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_1d</strong></td>
+<td>User visits (sessions) by the user in the past day</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_since_last_sale</strong></td>
+<td>Time since the last successul order (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_site_7d</strong></td>
+<td>Time user spent on the website in the past week (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>time_per_page_7d</strong></td>
+<td>Avg. time per page in the past week (in minutes)</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>new_accounts_7d</strong></td>
+<td>Accounts created by the user in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>password_resets_7d</strong></td>
+<td>Password resets in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>checkout_count_7d</strong></td>
+<td>Shopping cart views in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sales_declined_7d</strong></td>
+<td>Orders declined linked to the user in the past week</td>
+</tr>
+<tr>
+<td>navigation</td>
+<td><strong>sessions_7d</strong></td>
+<td>User visits (sessions) by the user in the past week</td>
+</tr>
+<tr>
+<td>-</td>
+<td><strong>travel</strong></td>
+<td>Object containing the travel and passenger information.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>type</strong></td>
+<td>Transportation type. Currently <code class="prettyprint">flight</code> or <code class="prettyprint">bus</code> are supported.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>departure</strong></td>
+<td>Object with the <strong>departure</strong> information.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>return</strong></td>
+<td>Object with the <strong>return</strong> information.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>passengers</strong></td>
+<td>Array of objects with the passenger details.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>departure</strong>/<strong>return</strong></td>
+<td>Object containing travel data (each leg)</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>origin_city</strong></td>
+<td>City of origin.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>destination_city</strong></td>
+<td>City of destination</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>origin_airport</strong></td>
+<td><a href="https://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code">IATA code</a> for airport of origin.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>destination_airport</strong></td>
+<td><a href="https://en.wikipedia.org/wiki/International_Air_Transport_Association_airport_code">IATA code</a> code for airport of destination.</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>date</strong></td>
+<td>UTC date and time of departure in YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>).</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>number_of_connections</strong></td>
+<td>Number of connections</td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>class</strong></td>
+<td>Travel class name, like <code class="prettyprint">economy</code>, <code class="prettyprint">business</code> and <code class="prettyprint">first</code></td>
+</tr>
+<tr>
+<td>departure<br />return</td>
+<td><strong>fare_basis</strong></td>
+<td><a href="https://en.wikipedia.org/wiki/Fare_basis_code">Fase basis code</a>.</td>
+</tr>
+<tr>
+<td>travel</td>
+<td><strong>passenger</strong></td>
+<td>Object containing passenger data.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>name</strong></td>
+<td>Passenger&rsquo;s full name.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>document</strong></td>
+<td>Document number.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>document_type</strong></td>
+<td>Document type. Can be either <code class="prettyprint">passport</code> or <code class="prettyprint">id</code>.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>dob</strong></td>
+<td>Passenger&rsquo;s date of birth in YYYY-MM-DD format.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>nationality</strong></td>
+<td>Passenger&rsquo;s country of birth.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>frequent_passenger</strong></td>
+<td>Frequent flyer flag.</td>
+</tr>
+<tr>
+<td>passengers</td>
+<td><strong>special_needs</strong></td>
+<td>Passenger with special needs.</td>
+</tr>
+</tbody></table>
+
+<h2 id="blacklist-api-response">Blacklist API response</h2>
+
+<p>The Blacklist API response returns the confirmation of the operation
+made in that entry, be it an <strong>addition</strong>, <strong>update</strong>, <strong>query</strong> or
+<strong>removal</strong>. Below you will find the details of each response.</p>
+
+<h3 id="addition-response">Addition response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"uri"</span>: <span class="s2">"/v1/blacklist/email/tom@tom.com"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-21"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Request status. Either <code class="prettyprint">ok</code> or <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>uri</td>
+<td>New resource&rsquo;s address in the Blacklist, for future use.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Date when the entry will be automatically removed from the Blacklist.</td>
+</tr>
+</tbody></table>
+
+<h3 id="update-response">Update response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-22"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Request status. Either <code class="prettyprint">ok</code> or <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Date when the entry will be automatically removed from the Blacklist.</td>
+</tr>
+</tbody></table>
+
+<h3 id="query-response">Query response</h3>
+
+<blockquote>
+<p>Email query response example</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"email_address"</span>: <span class="s2">"tom@tom.com"</span>,
+  <span class="s2">"expires_at"</span>: <span class="s2">"2015-11-21"</span>
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Address query response example</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
+  <span class="s2">"address_line_1"</span>:<span class="s2">"123 Main St."</span>,
+  <span class="s2">"address_line_2"</span>:<span class="s2">"Apartment 4"</span>,
+  <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
+  <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
+  <span class="s2">"zip"</span>:<span class="s2">"10460"</span>,
+  <span class="s2">"country"</span>:<span class="s2">"US"</span>,
+  <span class="s2">"expires_at"</span>:<span class="s2">"2017-11-22"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Request status. Either <code class="prettyprint">ok</code> or <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>Date when the entry will be automatically removed from the Blacklist.</td>
+</tr>
+<tr>
+<td>email_address</td>
+<td>Email address.</td>
+</tr>
+<tr>
+<td>address_identifier</td>
+<td><strong>Unique</strong> address identifier. Will be used to reference this entry in future actions.</td>
+</tr>
+<tr>
+<td>address_line_1</td>
+<td>Cardholder&rsquo;s billing address on file with the bank.</td>
+</tr>
+<tr>
+<td>address_line_2</td>
+<td>Additional cardholder address information.</td>
+</tr>
+<tr>
+<td>city</td>
+<td>Cardholder&rsquo;s city.</td>
+</tr>
+<tr>
+<td>state</td>
+<td>Cardholder&rsquo;s state.</td>
+</tr>
+<tr>
+<td>zip</td>
+<td>Cardholder&rsquo;s ZIP code.</td>
+</tr>
+<tr>
+<td>country</td>
+<td>Cardholder&rsquo;s country code.</td>
+</tr>
+</tbody></table>
+
+<h3 id="removal-response">Removal response</h3>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"ok"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"deleted tom@tom.com from email blacklist"</span>
+<span class="o">}</span>
+</code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>Request status. Either <code class="prettyprint">ok</code> or <code class="prettyprint">error</code>.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>Removal confirmation message.</td>
+</tr>
+</tbody></table>
+
+<h1 id="how-to-test">How to test</h1>
+
+<p>Our Sandbox environment allows you to get predictable responses from our
+API, so you are able to <strong>simulate</strong> all the scenarios of the integration.</p>
+
+<p>In Sandbox, the <code class="prettyprint">recommendation</code> changes according to the <strong>cents</strong> of
+the <code class="prettyprint">total_amount</code>, following the table below. The <code class="prettyprint">score</code> will be the
+cents value.</p>
+
+<table><thead>
+<tr>
+<th>Value of the cents</th>
+<th>Simulated response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>*.00 - *.29</td>
+<td>APPROVED</td>
+</tr>
+<tr>
+<td>*.30 - *.60</td>
+<td>REVIEW</td>
+</tr>
+<tr>
+<td>*.61 - *.99</td>
+<td>DECLINE</td>
+</tr>
+</tbody></table>
+
+<h1 id="notifications-(webhooks)">Notifications (Webhooks)</h1>
+
+<p>Webhook notifications are an auxiliary service that allows you to
+automate workflows that depend on changes to the order status. Whenever
+an order changes status we will send a <strong>POST</strong> to a URL specified by
+the merchant.</p>
+
+<p>From this notification the merchant can move on with their operational
+flow, without needing to query the status of each pending order.</p>
+
+<p>This automation is meant to integrate our application with yours. Email
+notifications can be set up directly on the Dashboard.</p>
+
+<h2 id="notification-parameters">Notification parameters</h2>
+
+<p>Our webhook contains a <strong>JSON</strong> with the order number, time of status
+change, new status and a validation signature.</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"order_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ORD1837213"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1608898332000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"APPROVED"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>order_id</td>
+<td>Unique identifier sent by the merchant.</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>Date and time of the notification in milliseconds (<a href="https://en.wikipedia.org/wiki/Unix_time">Unix time</a>).</td>
+</tr>
+<tr>
+<td>status</td>
+<td>New status for the order.<br /> Either <code class="prettyprint">APPROVED</code>, <code class="prettyprint">PENDING</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">CANCELED</code>, <code class="prettyprint">NOT_AUTHORIZED</code> or <code class="prettyprint">NOT_ANALYZED</code>.</td>
+</tr>
+<tr>
+<td>signature</td>
+<td>Webhook validation signature. An <a href="https://en.wikipedia.org/wiki/Hash-based_message_authentication_code">HMAC-SHA-256</a> of the fields in the notification.<br /> <em><strong>Check how to calculate the signature below</strong></em>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="webhook-receipt">Webhook receipt</h2>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"ok"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>We expect the webhook response to confirm that the event was received
+and processed. If a proper receipt is not detected we will try to
+deliver the webhook again.</p>
+
+<p>You must print a <strong>JSON</strong> in the body of the <code class="prettyprint">HTTP 200</code> response that
+contains a single value: <code class="prettyprint">{&quot;status&quot;:&quot;ok&quot;}</code>.</p>
+
+<p>When we see this response we understand that you have received the
+notification and will not try to deliver it again.</p>
+
+<h2 id="calculating-the-signature">Calculating the signature</h2>
+<pre class="highlight php"><code><span class="cp">&lt;?php</span> 
+<span class="c1">// Defines the private key
+</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T738D516F09CAB3A2C1EE"</span><span class="p">;</span>
+
+<span class="c1">// Original JSON from the webhook
+</span><span class="nv">$webhook</span> <span class="o">=</span> <span class="s1">'{
+  "order_id": "ORD1837213",
+  "timestamp": 1608898332000,
+  "status": "APPROVED",
+  "signature": "6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30"
+}'</span><span class="p">;</span>
+
+<span class="c1">// Transforms JSON into an array
+</span><span class="nv">$arr</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="nv">$webhook</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+
+<span class="c1">// Stores the webhook signature into $signature
+</span><span class="nv">$signature</span> <span class="o">=</span> <span class="nv">$arr</span><span class="p">[</span><span class="s2">"signature"</span><span class="p">];</span>
+
+<span class="c1">// Removes signature from array
+</span><span class="nb">unset</span><span class="p">(</span><span class="nv">$arr</span><span class="p">[</span><span class="s2">"signature"</span><span class="p">]);</span>
+
+<span class="c1">// Transforms array into a string concatenated by #
+// ORD1837213#1608898332000#APPROVED
+</span><span class="nv">$to_hash</span> <span class="o">=</span> <span class="nb">implode</span><span class="p">(</span><span class="s2">"#"</span><span class="p">,</span> <span class="nv">$arr</span><span class="p">);</span>
+
+<span class="c1">// Calculates HMAC with the webhook values
+</span><span class="nv">$my_hash</span> <span class="o">=</span> <span class="nb">hash_hmac</span><span class="p">(</span><span class="s2">"sha256"</span><span class="p">,</span> <span class="nv">$to_hash</span><span class="p">,</span> <span class="nv">$private_key</span><span class="p">);</span>
+
+<span class="c1">// 6c136402b15492ca764f2687d009a4f6ebd44a2c24fabe13dc6183a6da2ceb30
+</span><span class="k">echo</span> <span class="nv">$my_hash</span><span class="p">;</span>
+
+<span class="c1">// true
+</span><span class="k">echo</span> <span class="p">(</span><span class="nv">$my_hash</span> <span class="o">===</span> <span class="nv">$signature</span><span class="p">)</span> <span class="o">?</span> <span class="kc">true</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre>
+
+<p>The webhook validation signature ensures the integrity of the message
+and prevents <em>spoofing</em>. It is <strong>highly recommended</strong> that you
+calculate and validate the signature of each webhook received.</p>
+
+<p>The message contains a <code class="prettyprint">signature</code> field with an <a href="https://en.wikipedia.org/wiki/Hash-based_message_authentication_code">HMAC-SHA-256</a>
+made by the concatenation of the other notification parameters, and
+using your API private key as secret.</p>
+
+<p>The fields must be concatenated as such:<br />
+<strong>order_id</strong> + <strong>#</strong> + <strong>timestamp</strong> + <strong>#</strong> + <strong>status</strong></p>
+
+<h1 id="reference-tables">Reference tables</h1>
+
+<p>Below you will find a list of supported currency codes and a list of
+product categories.</p>
+
+<h2 id="common-currencies">Common currencies</h2>
+
+<blockquote>
+<h3 id="full-list-of-currency-codes">Full list of currency codes<br /><br /></h3>
+
+<p>There we have a list of the most common currencies used. You can find <a href="https://en.wikipedia.org/wiki/ISO_4217">the full list of currency codes here</a>.</p>
+</blockquote>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Currency</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>USD</td>
+<td>United States Dollar ($)</td>
+</tr>
+<tr>
+<td>BRL</td>
+<td>Brazilian Real (R$)</td>
+</tr>
+<tr>
+<td>ARS</td>
+<td>Argentine Peso ($)</td>
+</tr>
+<tr>
+<td>AUD</td>
+<td>Australian Dollar ($)</td>
+</tr>
+<tr>
+<td>CAD</td>
+<td>Canadian Dollar ($)</td>
+</tr>
+<tr>
+<td>CLP</td>
+<td>Chilean Peso ($)</td>
+</tr>
+<tr>
+<td>EUR</td>
+<td>Euro (€)</td>
+</tr>
+<tr>
+<td>GBP</td>
+<td>British pound (£)</td>
+</tr>
+<tr>
+<td>JPY</td>
+<td>Japanese Yen (¥)</td>
+</tr>
+<tr>
+<td>MXP</td>
+<td>Mexican Peso ($)</td>
+</tr>
+</tbody></table>
+
+<h2 id="product-categories">Product categories</h2>
+
+<blockquote>
+<h3 id="what-are-categories?">What are categories?<br /><br /></h3>
+
+<p>Product categories are important because they tell us what type of items the customer is buying (shoes, jewelry or a GPS). Getting a TV is very different from getting a book, so categories matter for us. <br /><br /> These are loosely based on Google&rsquo;s <a href="https://support.google.com/merchants/answer/16008">product taxonomy</a> and they represent the main categories in which you can group items into. <br /><br /> If you think there is a category missing feel free to contact us at <a href="mailto:hi@konduto.com">hi@konduto.com</a> and let us know!</p>
+</blockquote>
+
+<table><thead>
+<tr>
+<th>Description</th>
+<th>Code</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><strong>Animals &amp; Pet Supplies</strong></td>
+<td>100</td>
+</tr>
+<tr>
+<td><strong>Clothing &amp; Accessories</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Clothing</td>
+<td>201</td>
+</tr>
+<tr>
+<td>Clothing Accessories</td>
+<td>202</td>
+</tr>
+<tr>
+<td>Costumes &amp; Accessories</td>
+<td>203</td>
+</tr>
+<tr>
+<td>Wallet Accessories</td>
+<td>204</td>
+</tr>
+<tr>
+<td>Handbags, Wallets &amp; Cases</td>
+<td>205</td>
+</tr>
+<tr>
+<td>Jewelry</td>
+<td>206</td>
+</tr>
+<tr>
+<td>Shoe Accessories</td>
+<td>207</td>
+</tr>
+<tr>
+<td>Shoes</td>
+<td>208</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>299</td>
+</tr>
+<tr>
+<td>Arts &amp; Entertainment</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Baby &amp; Toddler</td>
+<td>400</td>
+</tr>
+<tr>
+<td><strong>Business &amp; Industrial</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Advertising &amp; Marketing</td>
+<td>501</td>
+</tr>
+<tr>
+<td>Agriculture</td>
+<td>502</td>
+</tr>
+<tr>
+<td>Construction</td>
+<td>503</td>
+</tr>
+<tr>
+<td>Film &amp; Television</td>
+<td>504</td>
+</tr>
+<tr>
+<td>Finance &amp; Insurance</td>
+<td>505</td>
+</tr>
+<tr>
+<td>Food Service</td>
+<td>506</td>
+</tr>
+<tr>
+<td>Forestry &amp; Logging</td>
+<td>507</td>
+</tr>
+<tr>
+<td>Heavy Machinery</td>
+<td>508</td>
+</tr>
+<tr>
+<td>Hotel &amp; Hospitality</td>
+<td>509</td>
+</tr>
+<tr>
+<td>Industrial Storage</td>
+<td>510</td>
+</tr>
+<tr>
+<td>Law Enforcement</td>
+<td>511</td>
+</tr>
+<tr>
+<td>Manufacturing</td>
+<td>512</td>
+</tr>
+<tr>
+<td>Material Handling</td>
+<td>513</td>
+</tr>
+<tr>
+<td>Medical</td>
+<td>514</td>
+</tr>
+<tr>
+<td>Mining &amp; Quarrying</td>
+<td>515</td>
+</tr>
+<tr>
+<td>Piercing &amp; Tattooing</td>
+<td>516</td>
+</tr>
+<tr>
+<td>Retail</td>
+<td>517</td>
+</tr>
+<tr>
+<td>Science &amp; Laboratory</td>
+<td>518</td>
+</tr>
+<tr>
+<td>Signage</td>
+<td>519</td>
+</tr>
+<tr>
+<td>Work Safety Protective Gear</td>
+<td>520</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>599</td>
+</tr>
+<tr>
+<td><strong>Cameras &amp; Optics</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Cameras &amp; Optics</td>
+<td>601</td>
+</tr>
+<tr>
+<td>Camera &amp; Optic Accessories</td>
+<td>602</td>
+</tr>
+<tr>
+<td>Photography</td>
+<td>603</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>699</td>
+</tr>
+<tr>
+<td><strong>Electronics</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>3D Printers</td>
+<td>701</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>702</td>
+</tr>
+<tr>
+<td>Circuit Components</td>
+<td>703</td>
+</tr>
+<tr>
+<td>Communications</td>
+<td>704</td>
+</tr>
+<tr>
+<td>Components</td>
+<td>705</td>
+</tr>
+<tr>
+<td>Computers</td>
+<td>706</td>
+</tr>
+<tr>
+<td>Electronics Accessories</td>
+<td>707</td>
+</tr>
+<tr>
+<td>GPS</td>
+<td>708</td>
+</tr>
+<tr>
+<td>GPS Accessories</td>
+<td>709</td>
+</tr>
+<tr>
+<td>Networking</td>
+<td>711</td>
+</tr>
+<tr>
+<td>Print, Copy, Scan &amp; Fax</td>
+<td>712</td>
+</tr>
+<tr>
+<td>Print, Copy, Scan &amp; Fax Accessories</td>
+<td>713</td>
+</tr>
+<tr>
+<td>Video</td>
+<td>715</td>
+</tr>
+<tr>
+<td>Video Game Consoles</td>
+<td>716</td>
+</tr>
+<tr>
+<td>Video Game Consoles Accessories</td>
+<td>717</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>799</td>
+</tr>
+<tr>
+<td><strong>Food, Beverages &amp; Tobacco</strong></td>
+<td>800</td>
+</tr>
+<tr>
+<td><strong>Furniture</strong></td>
+<td>900</td>
+</tr>
+<tr>
+<td><strong>Hardware</strong></td>
+<td>1000</td>
+</tr>
+<tr>
+<td><strong>Health &amp; Beauty</strong></td>
+<td>1100</td>
+</tr>
+<tr>
+<td><strong>Home &amp; Garden</strong></td>
+<td>1200</td>
+</tr>
+<tr>
+<td><strong>Luggage &amp; Bags</strong></td>
+<td>1300</td>
+</tr>
+<tr>
+<td><strong>Adult</strong></td>
+<td>1400</td>
+</tr>
+<tr>
+<td><strong>Weapons</strong></td>
+<td>1500</td>
+</tr>
+<tr>
+<td><strong>Office Supplies</strong></td>
+<td>1600</td>
+</tr>
+<tr>
+<td><strong>Religious &amp; Ceremonial</strong></td>
+<td>1700</td>
+</tr>
+<tr>
+<td><strong>Software</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Computer Software</td>
+<td>1801</td>
+</tr>
+<tr>
+<td>Digital Goods &amp; Currency</td>
+<td>1802</td>
+</tr>
+<tr>
+<td>Digital Services</td>
+<td>1803</td>
+</tr>
+<tr>
+<td>Video Game Software</td>
+<td>1804</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>1899</td>
+</tr>
+<tr>
+<td><strong>Sporting Goods</strong></td>
+<td>1900</td>
+</tr>
+<tr>
+<td><strong>Toys &amp; Games</strong></td>
+<td>2000</td>
+</tr>
+<tr>
+<td><strong>Vehicles &amp; Parts</strong></td>
+<td>2100</td>
+</tr>
+<tr>
+<td><strong>Books</strong></td>
+<td>2300</td>
+</tr>
+<tr>
+<td><strong>DVDs &amp; Videos</strong></td>
+<td>2400</td>
+</tr>
+<tr>
+<td><strong>Magazines &amp; Newspapers</strong></td>
+<td>2500</td>
+</tr>
+<tr>
+<td><strong>Music</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>CDs &amp; Vynil</td>
+<td>2601</td>
+</tr>
+<tr>
+<td>Musical Instruments</td>
+<td>2602</td>
+</tr>
+<tr>
+<td>Digital Music</td>
+<td>2603</td>
+</tr>
+<tr>
+<td>Others</td>
+<td>2699</td>
+</tr>
+<tr>
+<td><strong>Other categories not specified</strong></td>
+<td>9999</td>
+</tr>
+</tbody></table>
+
+      </div>
+      <div class="dark-box">
+      </div>
+    </div>
+  </body>
+</html>
