@@ -340,13 +340,11 @@ en:
           is an array, so if the order was paid using multiple payment methods
           you can send the list over to analysis.
 
-          Currency we support purchases with credit cards, but other payment
-          methods will be added in the future.
-
         table:
           type:
-            "Payment type used by the customer. Currently only `credit` is
-            supported.<br />**Max. 6 chars, string.**"
+            "Payment type used by the customer. We support `credit`, `boleto`,
+            `debit`, `transfer` and `voucher`.
+            <br />**Max. 8 chars, string.**"
           bin:
             "First six digits of the customer's credit card. Used to identify
             the type of card being sent.<br />**Exactly 6 chars, string.**"

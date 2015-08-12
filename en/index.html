@@ -8,10 +8,8 @@
 
     <link href="../stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="../stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
-    <link rel="icon" type="image/png" href="/favicon.ico" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Droid+Sans+Mono|Droid+Sans:400,700" rel="stylesheet" type="text/css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="../javascripts/all.js" type="text/javascript"></script>
+      <script src="../javascripts/all_nosearch.js" type="text/javascript"></script>
 
   </head>
 
@@ -23,11 +21,7 @@
       </span>
     </a>
     <div class="tocify-wrapper">
-      <p align="center">
-        <a href="https://www.konduto.com">
-          <img src="../images/logo.png" />
-        </a>
-      </p>
+      <img src="../images/logo.png" />
       <div id="toc">
       </div>
         <ul class="toc-footer">
@@ -520,9 +514,6 @@ use the <code class="prettyprint">billing</code> and <code class="prettyprint">s
 is an array, so if the order was paid using multiple payment methods
 you can send the list over to analysis.</p>
 
-<p>Currency we support purchases with credit cards, but other payment
-methods will be added in the future.</p>
-
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -531,7 +522,7 @@ methods will be added in the future.</p>
 </thead><tbody>
 <tr>
 <td>type</td>
-<td><em>(required)</em> <br /> Payment type used by the customer. Currently only <code class="prettyprint">credit</code> is supported.<br /><strong>Max. 6 chars, string.</strong></td>
+<td><em>(required)</em> <br /> Payment type used by the customer. We support <code class="prettyprint">credit</code>, <code class="prettyprint">boleto</code>, <code class="prettyprint">debit</code>, <code class="prettyprint">transfer</code> and <code class="prettyprint">voucher</code>. <br /><strong>Max. 8 chars, string.</strong></td>
 </tr>
 <tr>
 <td>status</td>
@@ -889,9 +880,9 @@ their details.</p>
 
 <h3 id="seller-&nbsp;-&nbsp;-&nbsp;-&nbsp;-seller">Seller &nbsp; &nbsp; &nbsp; &nbsp; <code class="prettyprint">seller</code></h3>
 <pre class="highlight shell"><code><span class="o">{</span> 
-  <span class="s2">"id"</span>:<span class="s2">""</span>,
-  <span class="s2">"name"</span>:<span class="s2">""</span>,
-  <span class="s2">"created_at"</span>:<span class="s2">""</span>
+  <span class="s2">"id"</span>:<span class="s2">"37"</span>,
+  <span class="s2">"name"</span>:<span class="s2">"Joe's Store"</span>,
+  <span class="s2">"created_at"</span>:<span class="s2">"2009-11-25"</span>
 <span class="o">}</span>
 </code></pre>
 

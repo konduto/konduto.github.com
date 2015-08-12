@@ -342,14 +342,11 @@ pt:
           Você pode mandar um pedido que contém múltiplos meios de pagamento,
           como compras com dois cartões de crédito.
 
-          Atualmente nós suportamos apenas compras com cartão de crédito.
-          Consulte com o support a respeito de outros meios de pagamento para
-          análise.
-
         table:
           type:
             "Meio de pagamento usado pelo cliente. Atualmente suportamos
-            apenas credit<br />**Max. 6 chars, string.**"
+            `credit`, `boleto`, `debit`, `transfer` e `voucher`.
+            <br />**Max. 8 chars, string.**"
           bin:
             "Os primeiros seis números do cartão de crédito. É usado para
             identificar o tipo de cartão usado.
