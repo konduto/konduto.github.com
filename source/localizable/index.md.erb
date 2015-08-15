@@ -207,6 +207,10 @@ Konduto::setApiKey("T738D516F09CAB3A2C1EE");
 ?>
 ```
 
+```java
+Konduto konduto = new Konduto("T738D516F09CAB3A2C1EE");
+```
+
 <%= t("authentication.content") %>
 
 
@@ -289,6 +293,28 @@ $order = new KondutoModels\Order(array(
 ?>
 ```
 
+```java
+KondutoOrder order = new KondutoOrder()
+  .with("id", "10000000001")
+  .with("visitor", "da39a3ee5e6b4b0d3255bfef95601890afd80709")
+  .with("total_amount", 100.00)
+  .with("shipping_amount", 20.00)
+  .with("tax_amount", 3.45)
+  .with("currency", "<%= t("examples.currency") %>")
+  .with("installments", 2)
+  .with("ip", "<%= t("examples.ip") %>")
+  .with("purchased_at", "2018-12-25T12:00:25Z")
+  .with("first_message", "2018-12-20T15:59:01Z")
+  .with("messages_exchanged", 30)
+  .with("customer", customer)
+  .with("payment", $array(credit, boleto))
+  .with("billing", billing)
+  .with("shipping", shipping)
+  .with("shopping_cart", $array(item1, item2))
+  .with("travel", travel)
+  .with("seller", seller);
+```
+
 <%= t("orders.post.root.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -349,6 +375,20 @@ $customer = new KondutoModels\Customer(array(
 ?>
 ```
 
+```java
+KondutoCustomer customer = new KondutoCustomer()
+  .with("id", "28372")
+  .with("name", "<%= t("examples.name") %>")
+  .with("tax_id", "<%= t("examples.tax_id") %>")
+  .with("phone1", "<%= t("examples.phone1") %>")
+  .with("phone2", "<%= t("examples.phone2") %>")
+  .with("email", "<%= t("examples.email") %>")
+  .with("is_new", false)
+  .with("vip", false)
+  .with("dob", "1970-12-25")
+  .with("created_at", "2010-12-25");
+```
+
 <%= t("orders.post.customer.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -400,6 +440,14 @@ $boleto = new KondutoModels\Boleto(array(
 ?>
 ```
 
+```java
+KondutoCreditCardPayment creditCardPayment = new KondutoCreditCardPayment()
+  .with("bin", "490172")
+  .with("last4", "0012")
+  .with("expiration_date", "072015")
+  .with("status", "approved");
+```
+
 <%= t("orders.post.payment.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -439,6 +487,17 @@ $billing = new KondutoModels\Address(array(
   "country"   => "<%= t("examples.country") %>"
 ));
 ?>
+```
+
+```java
+KondutoAddress billing = new KondutoAddress();
+  .with("name", "<%= t("examples.name") %>")
+  .with("address1", "<%= t("examples.address1") %>")
+  .with("address2", "<%= t("examples.address2") %>")
+  .with("city", "<%= t("examples.city") %>")
+  .with("state", "<%= t("examples.state") %>")
+  .with("zip", "<%= t("examples.zip") %>")
+  .with("country", "<%= t("examples.country") %>");
 ```
 
 <%= t("orders.post.billing.content") %>
@@ -482,6 +541,17 @@ $shipping = new KondutoModels\Address(array(
   "country"   => "<%= t("examples.country") %>"
 ));
 ?>
+```
+
+```java
+KondutoAddress shipping = new KondutoAddress();
+  .with("name", "<%= t("examples.name") %>")
+  .with("address1", "<%= t("examples.address1") %>")
+  .with("address2", "<%= t("examples.address2") %>")
+  .with("city", "<%= t("examples.city") %>")
+  .with("state", "<%= t("examples.state") %>")
+  .with("zip", "<%= t("examples.zip") %>")
+  .with("country", "<%= t("examples.country") %>");
 ```
 
 <%= t("orders.post.shipping.content") %>
@@ -548,6 +618,28 @@ $item2 = new KondutoModels\Item(array(
     "created_at"  => "2015-02-28"
 ));
 ?>
+```
+
+```java
+KondutoItem item1 = new KondutoItem()
+  .with("sku", "9919023")
+  .with("product_code", "123456789999")
+  .with("category", 201)
+  .with("name", "<%= t("examples.product1") %>")
+  .with("description", "<%= t("examples.description1") %>")
+  .with("unit_cost", 29.99)
+  .with("quantity", 1)
+  .with("created_at", "2015-02-28");
+
+KondutoItem item2 = new KondutoItem()
+  .with("sku", "0017273")
+  .with("category", 202)
+  .with("name", "<%= t("examples.product2") %>")
+  .with("description", "<%= t("examples.description2") %>")
+  .with("unit_cost", 29.90)
+  .with("quantity", 2)
+  .with("discount", 5.00)
+  .with("created_at", "2015-02-28");
 ```
 
 <%= t("orders.post.shopping_cart.content") %>
