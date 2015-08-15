@@ -4,6 +4,7 @@ title: API | Konduto
 language_tabs:
   - shell: JSON
   - php: PHP
+  - java: Java
 
 toc_footers:
   - <a href='https://www.konduto.com'>HOME</a>
@@ -198,11 +199,12 @@ Authorization: Basic VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg==
 
 ```php
 <?php
-# <%= t("authentication.code.phpnamespaces") %>
+// <%= t("authentication.code.phpnamespaces") %>
 use Konduto\Core\Konduto as Konduto;
 use Konduto\Models as KondutoModels;
 
 Konduto::setApiKey("T738D516F09CAB3A2C1EE");
+?>
 ```
 
 <%= t("authentication.content") %>
@@ -284,6 +286,7 @@ $order = new KondutoModels\Order(array(
   "travel"             => $travel,
   "seller"             => $seller
 ));
+?>
 ```
 
 <%= t("orders.post.root.content") %>
@@ -343,6 +346,7 @@ $customer = new KondutoModels\Customer(array(
     "dob"        => "1970-12-25",
     "created_at" => "2010-12-25"
 ));
+?>
 ```
 
 <%= t("orders.post.customer.content") %>
@@ -393,6 +397,7 @@ $credit_card = new KondutoModels\CreditCard(array(
 $boleto = new KondutoModels\Boleto(array(
   "expiration_date" => "2014-12-11"
 ));
+?>
 ```
 
 <%= t("orders.post.payment.content") %>
@@ -433,6 +438,7 @@ $billing = new KondutoModels\Address(array(
   "zip"       => "<%= t("examples.zip") %>",
   "country"   => "<%= t("examples.country") %>"
 ));
+?>
 ```
 
 <%= t("orders.post.billing.content") %>
@@ -475,6 +481,7 @@ $shipping = new KondutoModels\Address(array(
   "zip"       => "<%= t("examples.zip") %>",
   "country"   => "<%= t("examples.country") %>"
 ));
+?>
 ```
 
 <%= t("orders.post.shipping.content") %>
@@ -540,6 +547,7 @@ $item2 = new KondutoModels\Item(array(
     "discount"    => 5.00,
     "created_at"  => "2015-02-28"
 ));
+?>
 ```
 
 <%= t("orders.post.shopping_cart.content") %>
@@ -676,6 +684,7 @@ $bus_travel = new KondutoModels\BusTravel(array(
         )
     )
 ));
+?>
 ```
 
 <%= t("orders.post.travel.content") %>
@@ -731,6 +740,7 @@ $seller = new KondutoModels\Seller(array(
     "name" => "Store Name Inc.",
     "created_at" => "2015-03-25"
 ));
+?>
 ```
 
 <%= t("orders.post.seller.content") %>
@@ -761,6 +771,7 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.creat
 $update = Konduto::updateOrderStatus(
   "ORD1237163", "approved", "Comments about this order"
 );
+?>
 ```
 
 <%= t("orders.put.content") %>
@@ -786,6 +797,7 @@ GET https://api.konduto.com/v1/orders/ORD1837213
 ```php
 <?php
 $order = Konduto::getOrder("ORD1237163");
+?>
 ```
 
 <%= t("orders.get.content") %>
@@ -1587,7 +1599,6 @@ signature | <%= t("webhook.table.signature") %>
 ## <%= t("webhook.signature.title") %>
 
 ```php
-<?php
 <?php 
 // <%= t("webhook.code.private_key") %>
 $private_key = "T738D516F09CAB3A2C1EE";
