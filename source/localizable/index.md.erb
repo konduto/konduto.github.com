@@ -1,7 +1,7 @@
 ---
 title: API | Konduto
 
-language_tabs_copy:
+language_tabs:
   - shell: JSON
   - php: PHP
   - java: Java
@@ -191,12 +191,20 @@ product | id=\<sku\>,<br />name=\<name\> | <%= t("tags.table.kdt_product") %>
 
 # <%= t("authentication.title") %>
 
-```config
+```json
 # <%= t("authentication.code.how") %>
 Authorization: Basic BASE64(T738D516F09CAB3A2C1EE:)
 
 # <%= t("authentication.code.result") %>
 Authorization: Basic VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg==
+```
+
+```php
+# <%= t("authentication.code.php-namespaces") %>
+use Konduto\Core\Konduto as Konduto;
+use Konduto\Models as KondutoModels;
+
+Konduto::setApiKey("T738D516F09CAB3A2C1EE");
 ```
 
 <%= t("authentication.content") %>
@@ -256,6 +264,29 @@ GET  https://api.konduto.com/v1/orders/{order_id}
 }
 ```
 
+```php
+$order = new KondutoModels\Order(array(
+  "id"                 => uniqid(),
+  "visitor"            => "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+  "total_amount"       => 100.00,
+  "shipping_amount"    => 20.00,
+  "tax_amount"         => 3.45,
+  "currency"           => "<%= t("examples.currency") %>",
+  "installments"       => 2,
+  "ip"                 => "<%= t("examples.ip") %>",
+  "purchased_at"       => "2018-12-25T12:00:25Z",
+  "first_message"      => "2018-12-20T15:59:01Z",
+  "messages_exchanged" => 30,
+  "customer"           => $customer,
+  "payment"            => array($credit_card, $boleto),
+  "billing"            => $billing,
+  "shipping"           => $shipping,
+  "shopping_cart"      => array($item1, $item2),
+  "travel"             => $travel,
+  "seller"             => $seller
+));
+```
+
 <%= t("orders.post.root.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -299,6 +330,21 @@ travel | *<%= t("optional") %>* <br /> <%= t("orders.post.root.table.travel") %>
 }
 ```
 
+```php
+$customer = new KondutoModels\Customer(array(
+    "id"         => "28372",
+    "name"       => "<%= t("examples.name") %>",
+    "tax_id"     => "<%= t("examples.tax_id") %>",
+    "phone1"     => "<%= t("examples.phone1") %>",
+    "phone2"     => "<%= t("examples.phone2") %>",
+    "email"      => "<%= t("examples.email") %>",
+    "is_new"     => false,
+    "vip"        => false,
+    "dob"        => "1970-12-25",
+    "created_at" => "2010-12-25"
+));
+```
+
 <%= t("orders.post.customer.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -328,14 +374,24 @@ vip | *<%= t("optional") %>* <br /> <%= t("orders.post.customer.table.vip") %>
       "status":"approved"
     },
     {  
-      "type":"credit",
-      "bin":"514800",
-      "last4":"3752",
-      "expiration_date":"082016",
-      "status":"approved"
+      "type":"boleto",
+      "expiration_date":"2014-12-11"
     }
   ]
 }
+```
+
+```php
+$credit_card = new KondutoModels\CreditCard(array(
+  "bin"             => "490172",
+  "last4"           => "0012",
+  "expiration_date" => "072015",
+  "status"          => "approved"
+));
+
+$boleto = new KondutoModels\Boleto(array(
+  "expiration_date" => "2014-12-11"
+));
 ```
 
 <%= t("orders.post.payment.content") %>
@@ -351,7 +407,7 @@ expiration_date | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table
 
 ### <%= t("orders.post.billing.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `billing`
 
-```
+```shell
 {  
   "billing":{  
     "name":"<%= t("examples.name") %>",
@@ -363,6 +419,18 @@ expiration_date | *<%= t("optional") %>* <br /> <%= t("orders.post.payment.table
     "country":"<%= t("examples.country") %>"
   }
 }
+```
+
+```php
+$billing = new KondutoModels\Address(array(
+  "name"      => "<%= t("examples.name") %>",
+  "address1"  => "<%= t("examples.address1") %>",
+  "address2"  => "<%= t("examples.address2") %>",
+  "city"      => "<%= t("examples.city") %>",
+  "state"     => "<%= t("examples.state") %>",
+  "zip"       => "<%= t("examples.zip") %>",
+  "country"   => "<%= t("examples.country") %>"
+));
 ```
 
 <%= t("orders.post.billing.content") %>
@@ -380,7 +448,7 @@ country | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.country
 
 ### <%= t("orders.post.shipping.title") %> &nbsp; &nbsp; &nbsp; &nbsp; `shipping`
 
-```
+```shell
 {  
   "shipping":{  
     "name":"<%= t("examples.name") %>",
@@ -392,6 +460,18 @@ country | *<%= t("optional") %>* <br /> <%= t("orders.post.billing.table.country
     "country":"<%= t("examples.country") %>"
   }
 }
+```
+
+```php
+$shipping = new KondutoModels\Address(array(
+  "name"      => "<%= t("examples.name") %>",
+  "address1"  => "<%= t("examples.address1") %>",
+  "address2"  => "<%= t("examples.address2") %>",
+  "city"      => "<%= t("examples.city") %>",
+  "state"     => "<%= t("examples.state") %>",
+  "zip"       => "<%= t("examples.zip") %>",
+  "country"   => "<%= t("examples.country") %>"
+));
 ```
 
 <%= t("orders.post.shipping.content") %>
@@ -432,6 +512,30 @@ country | *<%= t("optional") %>* <br /> <%= t("orders.post.shipping.table.countr
     }
   ]
 }
+```
+
+```php
+$item1 = new KondutoModels\Item(array(
+    "sku"           => "9919023",
+    "product_code"  => "123456789999",
+    "category"      => 201,
+    "name"          => "<%= t("examples.product1") %>",
+    "description"   => "<%= t("examples.description1") %>",
+    "unit_cost"     => 29.99,
+    "quantity"      => 1,
+    "created_at"    => "2015-02-28"
+));
+
+$item2 = new KondutoModels\Item(array(
+    "sku"         => "0017273",
+    "category"    => 202,
+    "name"        => "<%= t("examples.product2") %>",
+    "description" => "<%= t("examples.description2") %>",
+    "unit_cost"   => 29.90,
+    "quantity"    => 2,
+    "discount"    => 5.00,
+    "created_at"  => "2015-02-28"
+));
 ```
 
 <%= t("orders.post.shopping_cart.content") %>
@@ -501,6 +605,74 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.tabl
 }
 ```
 
+```php
+$flight = new KondutoModels\Flight(array(
+    "departure" => array(
+        "origin_airport" => "<%= t("examples.airport1") %>",
+        "destination_airport" => "<%= t("examples.airport2") %>",
+        "date" => "2018-12-25T18:00Z",
+        "number_of_connections" => 1,
+        "class" => "economy",
+        "fare_basis" => "Y"
+    ),
+    "return_leg" => array(
+        "origin_airport" => "<%= t("examples.airport2") %>",
+        "destination_airport" => "<%= t("examples.airport1") %>",
+        "date" => "2018-12-30T18:00Z",
+        "number_of_connections" => 1,
+        "class" => "business"
+    ),
+    "passengers" => array(
+        array(
+            "name" => "<%= t("examples.name") %>",
+            "document" => "<%= t("examples.tax_id") %>",
+            "document_type" => "id",
+            "dob" => "1986-03-22",
+            "nationality" => "US",
+            "frequent_flyer" => true,
+            "special_needs" => false,
+            "loyalty" => array(
+                "program" => "advantage",
+                "category" => "gold"
+            )
+        ),
+        array(
+            "name" => "<%= t("examples.passenger2") %>",
+            "document" => "AB11223344",
+            "document_type" => "passport",
+            "dob" => "1970-12-01",
+            "nationality" => "US",
+            "frequent_flyer" => false,
+            "special_needs" => true,
+            "loyalty" => array(
+                "program" => "skymiles",
+                "category" => "silver"
+            )
+        )
+    )
+));
+
+$bus_travel = new KondutoModels\BusTravel(array(
+    "departure" => array(
+        "origin_city" => "Campinas",
+        "destination_city" => "Ponta Grossa",
+        "date" => "2015-06-01T08:30Z"
+    ),
+    "return" => array(
+        "origin_city" => "Ponta Grossa",
+        "destination_city" => "Campinas",
+        "date" => "2015-06-08T11:15Z"
+    ),
+    "passengers" => array(
+        array(
+            "name" => "Amilton de Oliveira",
+            "document" => "191123872-1",
+            "document_type" => "id"
+        )
+    )
+));
+```
+
 <%= t("orders.post.travel.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -547,6 +719,14 @@ special_needs | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.sp
 }
 ```
 
+```php
+$seller = new KondutoModels\Seller(array(
+    "id" => "A000003",
+    "name" => "Store Name Inc.",
+    "created_at" => "2015-03-25"
+));
+```
+
 <%= t("orders.post.seller.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -570,6 +750,10 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.creat
 }
 ```
 
+```php
+$update = Konduto::updateOrderStatus("ORD1237163", "approved", "Comments about this order");
+```
+
 <%= t("orders.put.content") %>
 
 <%= t("parameter") %> | <%= t("description") %>
@@ -588,6 +772,10 @@ comments | *<%= t("required") %>* <br /> <%= t("orders.put.table.comments") %>
 
 ```shell
 GET https://api.konduto.com/v1/orders/ORD1837213
+```
+
+```php
+$order = Konduto::getOrder("ORD1237163");
 ```
 
 <%= t("orders.get.content") %>
