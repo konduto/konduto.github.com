@@ -758,7 +758,9 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.creat
 
 ```php
 <?php
-$update = Konduto::updateOrderStatus("ORD1237163", "approved", "Comments about this order");
+$update = Konduto::updateOrderStatus(
+  "ORD1237163", "approved", "Comments about this order"
+);
 ```
 
 <%= t("orders.put.content") %>
