@@ -4,9 +4,6 @@ title: API | Konduto
 language_tabs:
   - shell: JSON
   - php: PHP
-  - java: Java
-  - csharp: .NET
-  - js: JavaScript
 
 toc_footers:
   - <a href='https://www.konduto.com'>HOME</a>
@@ -191,7 +188,7 @@ product | id=\<sku\>,<br />name=\<name\> | <%= t("tags.table.kdt_product") %>
 
 # <%= t("authentication.title") %>
 
-```json
+```shell
 # <%= t("authentication.code.how") %>
 Authorization: Basic BASE64(T738D516F09CAB3A2C1EE:)
 
@@ -200,7 +197,7 @@ Authorization: Basic VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg==
 ```
 
 ```php
-# <%= t("authentication.code.php-namespaces") %>
+# <%= t("authentication.code.phpnamespaces") %>
 use Konduto\Core\Konduto as Konduto;
 use Konduto\Models as KondutoModels;
 

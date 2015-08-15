@@ -160,6 +160,7 @@ pt:
     code:
       how: Como montar
       result: Resultado
+      phpnamespaces: Importe os seguintes Namespaces
 
   
   orders: 

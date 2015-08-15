@@ -157,6 +157,7 @@ en:
     code:
       how: How to build
       result: Result
+      phpnamespaces: Import the following Namespaces
 
   
   orders: 
