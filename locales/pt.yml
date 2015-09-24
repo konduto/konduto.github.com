@@ -1020,6 +1020,11 @@ pt:
       **centavos** do valor da transação (campo `total_amount`), seguindo a
       tabela abaixo. Já o `score` retornado será o valor dos centavos.
 
+    notice:
+      "<strong>Atenção: estas regras se aplicam <u>somente para o nosso
+      ambiente de testes.</u></strong>. Em Produção use o campo
+      `recommendation`."
+
     table:
       amount: Centavos do valor
       response: Resposta simulada

@@ -1006,6 +1006,10 @@ en:
       the `total_amount`, following the table below. The `score` will be the
       cents value.
 
+    notice:
+      "<strong>Notice: these rules apply <u>only for our Test environment</u>
+      </strong>. In Production you should use our `recommendation`."
+
     table:
       amount: Value of the cents
       response: Simulated response
