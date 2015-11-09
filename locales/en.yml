@@ -490,7 +490,8 @@ en:
       table:
         status:
           "New status for this transaction. Either `APPROVED`, `DECLINED`,
-          `NOT_AUTHORIZED` or `FRAUD`, when you have identified a fraud or chargeback.
+          `NOT_AUTHORIZED` `CANCELLED` or `FRAUD`, when you have identified a
+          fraud or chargeback.
           <br />**Max. 8 chars, string**."
         comments:
           "Reason or comments about the status update.
