@@ -492,8 +492,9 @@ pt:
 
       table:
         status:
-          "Novo status deste pedido. Pode ser `approved`, `declined` ou
-          `fraud`, quando você identificar uma fraude ou chargeback.
+          "Novo status deste pedido. Pode ser `APPROVED`, `DECLINED`,
+          `NOT_AUTHORIZED` or `FRAUD`, quando você identificar uma fraude
+          ou chargeback.
           <br />**Max. 8 chars, string**."
         comments:
           "Razão ou comentários sobre a atualização do pedido.
