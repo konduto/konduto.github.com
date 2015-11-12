@@ -456,7 +456,7 @@ pt:
             "Nome do programa de fidelidade.<br />**Max 100 chars, string.**"
           loyalty_category:
             "Categoria do programa.<br />**Max 20 chars, string.**"
-          frequent_passenger:
+          frequent_traveler:
             "Flag de viajante frequente.<br />**Boolean, padrão é `false`.**"
           special_needs:
             "Passageiro com necessidades especiais.
@@ -865,7 +865,7 @@ pt:
             loyalty: "Objeto contendo os detalhes do programa de fidelidade"
             loyalty_program: "Nome do programa de fidelidade."
             loyalty_category: "Categoria do programa."
-            frequent_passenger: "Flag de viajante frequente."
+            frequent_traveler: "Flag de viajante frequente."
             special_needs: "Passageiro com necessidades especiais."
 
           device_title: "Objeto contendo os dados coletados da máquina."

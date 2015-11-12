@@ -455,7 +455,7 @@ en:
             "Name of loyalty program.<br />**Max 100 chars, string.**"
           loyalty_category:
             "Category of loyalty program.<br />**Max 20 chars, string.**"
-          frequent_passenger:
+          frequent_traveler:
             "Frequent flyer flag.<br />**Boolean, defaults to `false`.**"
           special_needs:
             "Passenger with special needs.
@@ -862,7 +862,7 @@ en:
             loyalty: "Object containing loyalty program details"
             loyalty_program: "Name of loyalty program."
             loyalty_category: "Category of loyalty program."
-            frequent_passenger: "Frequent flyer flag."
+            frequent_traveler: "Frequent flyer flag."
             special_needs: "Passenger with special needs."
           
           device_title: "Object containing the device information collected"
