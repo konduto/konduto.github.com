@@ -888,18 +888,18 @@ no array <code class="prettyprint">passengers</code>.</p>
 </tr>
 <tr>
 <td>document_type</td>
-<td><em>(opcional)</em> <br /> Tipo do documento. Pode ser <code class="prettyprint">passport</code> ou <code class="prettyprint">id</code>. <br /><strong>Max 8 chars, string.</strong></td>
+<td><em>(obrigatório)</em> <br /> Tipo do documento. Pode ser <code class="prettyprint">passport</code> ou <code class="prettyprint">id</code>. <br /><strong>Max 8 chars, string.</strong></td>
 </tr>
 <tr>
 <td>dob</td>
-<td><em>(obrigatório)</em> <br /> Data de nascimento do passageiro no formato YYYY-MM-DD (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>). <br /><strong>Exatamente 10 chars, string.</strong></td>
+<td><em>(opcional)</em> <br /> Data de nascimento do passageiro no formato YYYY-MM-DD (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>). <br /><strong>Exatamente 10 chars, string.</strong></td>
 </tr>
 <tr>
 <td>nationality</td>
 <td><em>(opcional)</em> <br /> País de nascimento do passageniro (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exatamente 2 chars, string.</strong></td>
 </tr>
 <tr>
-<td>frequent_passenger</td>
+<td>frequent_traveler</td>
 <td><em>(opcional)</em> <br /> Flag de viajante frequente.<br /><strong>Boolean, padrão é <code class="prettyprint">false</code>.</strong></td>
 </tr>
 <tr>
@@ -2320,7 +2320,7 @@ nossa análise.</p>
 </tr>
 <tr>
 <td>passengers</td>
-<td><strong>frequent_passenger</strong></td>
+<td><strong>frequent_traveler</strong></td>
 <td>Flag de viajante frequente.</td>
 </tr>
 <tr>
