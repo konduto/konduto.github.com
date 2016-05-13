@@ -493,7 +493,7 @@ pt:
       table:
         status:
           "Novo status deste pedido. Pode ser `APPROVED`, `DECLINED`,
-          `NOT_AUTHORIZED`, `CANCELLED` or `FRAUD`, quando você identificar uma
+          `NOT_AUTHORIZED`, `CANCELED` or `FRAUD`, quando você identificar uma
           fraude ou chargeback.
           <br />**Max. 8 chars, string**."
         comments:
