@@ -489,7 +489,7 @@ pt:
 
         O parecer de risco não deve ser confundido com a situação do pagamento.
         O status dentro da Konduto tem influencia no algoritmo e na análise de
-        risco. <a href="http://ajuda.konduto.com/article/114-entendendo-os-status-dos-pedidos">Entenda mais sobre o status dos pedidos</a>.      
+        risco. <a href="http://ajuda.konduto.com/article/114-entendendo-os-status-dos-pedidos" target="_blank">Entenda mais sobre o status dos pedidos</a>.      
 
         A chamada consiste em um objeto simples que contém dois campos,
         `status` e `comments`.
