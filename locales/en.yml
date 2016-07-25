@@ -482,10 +482,14 @@ en:
 
 
     put:
-      title: Update order status
+      title: Update fraud status
       content: |
-        You can update the status of an order using the **PUT** method and
-        passing a new `status` and `comments` on the change.
+        At any time you can update the status of an order using the **PUT**
+        method and passing a new `status` and `comments` on the change.
+
+        The fraud status is not to be confused with the payment status. The fraud
+        status inside Konduto has a direct influence on the algorithm and the risk
+        analysis.
 
       table:
         status:

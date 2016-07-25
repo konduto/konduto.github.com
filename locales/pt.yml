@@ -482,10 +482,14 @@ pt:
 
 
     put:
-      title: Atualizar status de um pedido
+      title: Atualizar o parecer de um pedido
       content: |
-        Você pode atualizar o status de um pedido através do método **PUT** e
-        passando um JSON no corpo da requisição.
+        A qualquer momento você pode atualizar o parecer de risco de um pedido
+        através do método **PUT**, passando um JSON no corpo da requisição. 
+
+        O parecer de risco não deve ser confundido com a situação do pagamento.
+        O status dentro da Konduto tem influencia no algoritmo e na análise de
+        risco. <a href="http://ajuda.konduto.com/article/114-entendendo-os-status-dos-pedidos">Entenda mais sobre o status dos pedidos</a>.      
 
         A chamada consiste em um objeto simples que contém dois campos,
         `status` e `comments`.
