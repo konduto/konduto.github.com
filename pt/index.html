@@ -938,15 +938,19 @@ produto.</p>
 </tr>
 </tbody></table>
 
-<h2 id="atualizar-status-de-um-pedido">Atualizar status de um pedido</h2>
+<h2 id="atualizar-o-parecer-de-um-pedido">Atualizar o parecer de um pedido</h2>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"status"</span>:<span class="s2">"approve"</span>,
   <span class="s2">"comments"</span>:<span class="s2">"Documentos e endereço de entrega confirmados"</span>
 <span class="o">}</span>
 </code></pre>
 
-<p>Você pode atualizar o status de um pedido através do método <strong>PUT</strong> e
-passando um JSON no corpo da requisição.</p>
+<p>A qualquer momento você pode atualizar o parecer de risco de um pedido
+através do método <strong>PUT</strong>, passando um JSON no corpo da requisição. </p>
+
+<p>O parecer de risco não deve ser confundido com a situação do pagamento.
+O status dentro da Konduto tem influencia no algoritmo e na análise de
+risco. <a href="http://ajuda.konduto.com/article/114-entendendo-os-status-dos-pedidos">Entenda mais sobre o status dos pedidos</a>.      </p>
 
 <p>A chamada consiste em um objeto simples que contém dois campos,
 <code class="prettyprint">status</code> e <code class="prettyprint">comments</code>.</p>
@@ -959,7 +963,7 @@ passando um JSON no corpo da requisição.</p>
 </thead><tbody>
 <tr>
 <td>status</td>
-<td><em>(obrigatório)</em> <br /> Novo status deste pedido. Pode ser <code class="prettyprint">APPROVED</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">NOT_AUTHORIZED</code>, <code class="prettyprint">CANCELLED</code> or <code class="prettyprint">FRAUD</code>, quando você identificar uma fraude ou chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
+<td><em>(obrigatório)</em> <br /> Novo status deste pedido. Pode ser <code class="prettyprint">APPROVED</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">NOT_AUTHORIZED</code>, <code class="prettyprint">CANCELED</code> or <code class="prettyprint">FRAUD</code>, quando você identificar uma fraude ou chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
 </tr>
 <tr>
 <td>comments</td>

@@ -914,15 +914,19 @@ Seller.</p>
 </tr>
 </tbody></table>
 
-<h2 id="update-order-status">Update order status</h2>
+<h2 id="update-fraud-status">Update fraud status</h2>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"status"</span>:<span class="s2">"approve"</span>,
   <span class="s2">"comments"</span>:<span class="s2">"Shipping address confirmed by cardholder."</span>
 <span class="o">}</span>
 </code></pre>
 
-<p>You can update the status of an order using the <strong>PUT</strong> method and
-passing a new <code class="prettyprint">status</code> and <code class="prettyprint">comments</code> on the change.</p>
+<p>At any time you can update the status of an order using the <strong>PUT</strong>
+method and passing a new <code class="prettyprint">status</code> and <code class="prettyprint">comments</code> on the change.</p>
+
+<p>The fraud status is not to be confused with the payment status. The fraud
+status inside Konduto has a direct influence on the algorithm and the risk
+analysis.</p>
 
 <table><thead>
 <tr>
@@ -932,7 +936,7 @@ passing a new <code class="prettyprint">status</code> and <code class="prettypri
 </thead><tbody>
 <tr>
 <td>status</td>
-<td><em>(required)</em> <br /> New status for this transaction. Either <code class="prettyprint">APPROVED</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">NOT_AUTHORIZED</code> <code class="prettyprint">CANCELLED</code> or <code class="prettyprint">FRAUD</code>, when you have identified a fraud or chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
+<td><em>(required)</em> <br /> New status for this transaction. Either <code class="prettyprint">APPROVED</code>, <code class="prettyprint">DECLINED</code>, <code class="prettyprint">NOT_AUTHORIZED</code> <code class="prettyprint">CANCELED</code> or <code class="prettyprint">FRAUD</code>, when you have identified a fraud or chargeback. <br /><strong>Max. 8 chars, string</strong>.</td>
 </tr>
 <tr>
 <td>comments</td>
