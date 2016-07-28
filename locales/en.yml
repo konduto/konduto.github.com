@@ -4,6 +4,7 @@ en:
   description: Description
   object: Object
   required: (required)
+  required_if_card: (required if 'credit')
   required_if_flight: (required if type=flight)
   required_if_bus: (required if type=bus)
   optional: (optional)

@@ -4,6 +4,7 @@ pt:
   description: Descrição
   object: Objeto
   required: (obrigatório)
+  required_if_card: (obrigatório para 'credit')
   required_if_flight: (obrigatório se type=flight)
   required_if_bus: (obrigatório se type=bus)
   optional: (opcional)
