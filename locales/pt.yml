@@ -15,17 +15,28 @@ pt:
     title: Introdução
     content: |
       Olá! Este documento explica como integrar com o serviço de antifraude da
-      **Konduto** para que você comece a detectar as fraudes no seu e-commerce.
+      Konduto para que você comece a detectar as fraudes no seu e-commerce.
 
       Nosso serviço usa o comportamento do visitante para analisar padrões de
       navegação e detectar fraudes. Você precisará adicionar um código
-      **JavaScript** ao seu site e marcar suas páginas, para que possamos ver
-      os seus visitantes, e deverá enviar pedidos para nossa **API REST**, para
-      que nós possamos fazer a análise.
+      JavaScript ao seu site e marcar suas páginas, para que possamos ver os
+      seus visitantes, e deverá enviar pedidos para nossa API REST, para que
+      nós possamos fazer a análise.
+
+      Nessa documentação, você encontra todo embasamento técnico necessário
+      para encaminhar seus pedidos para nossa API, além de bibliotecas de
+      integração para as principais linguagens.
+
+      Todo o contexto técnico voltado para os padrões de navegação podem ser
+      encontrados <a href="http://ajuda.konduto.com" target="_blank">acessando
+      nosso portal de ajuda</a>. Nele você encontrará as informações para
+      implementar o JavaScript, coletar eventos de navegação e as formas de
+      identificação do visitante em sua página.
 
       Nós estamos melhorando constantemente este documento e agradecemos
       qualquer sugestão enviada. Você pode mandar uma mensagem para
-      <oi@konduto.com> com suas perguntas e sugestões de como melhora-lo.
+      suporte@konduto.com com suas perguntas e sugestões de como melhora-lo.
+
 
   collector:
     title: Coletor de eventos

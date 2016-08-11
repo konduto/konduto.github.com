@@ -23,6 +23,9 @@ en:
       to your website and tag your pages, so we can see your visitors, and call
       our **REST API** to send purchases, so we can analyze them.
 
+      In this page you will find the technical specs for our REST API, as well
+      as integration libraries for the most popular languages.
+
       We are constantly improving this document and we appreciate any feedback
       you have. You can drop us a line at <hi@konduto.com> with questions and
       suggestions about how to improve it.
