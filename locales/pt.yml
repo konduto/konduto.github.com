@@ -329,7 +329,7 @@ pt:
 
         table:
           name:
-            "Nome do destinatário do cartão.<br />**Max. 100 chars, string.**"
+            "Nome do destinatário do pedido.<br />**Max. 100 chars, string.**"
           address1:
             "Endereço de entrega do destinatário.
             <br />**Max. 255 chars, string.**"
