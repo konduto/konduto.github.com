@@ -686,6 +686,10 @@ pt:
             `APPROVE`, `REVIEW` ou `DECLINE`.<br/><br/>
             Para transações que não foram analisadas o valor `NONE` é retornado
             (ver parâmetro **order.analyze**)."
+          status:
+            "Status atual do pedido. <br />
+            Pode ser `APPROVED`, `PENDING`, `DECLINED`, `CANCELED`,
+            `NOT_AUTHORIZED`, `NOT_ANALYZED` e `FRAUD`."
           geolocation_title:
             "Objeto contendo os dados de geolocalização do cliente"
           device_title: "Objeto contendo os dados coletados da máquina"

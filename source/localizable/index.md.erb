@@ -419,7 +419,7 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.seller.table.creat
 
 ```shell
 {  
-  "status":"approve",
+  "status":"approved",
   "comments":"<%= t("examples.comments") %>"
 }
 ```
@@ -701,7 +701,8 @@ order | <%= t("responses.orders.post.table.order") %>
     "id":"ORD1837213",
     "visitor":"da39a3ee5e6b4b0d3255bfef95601890afd80709",
     "score":0.07,
-    "recommendation":"APPROVE",
+    "recommendation":"review",
+    "status": "approved",
     "ip":"<%= t("examples.ip") %>",
     "device":{  
       "user_id": "405961fab293600daeed93ae561",
@@ -748,6 +749,7 @@ order | <%= t("responses.orders.post.table.order") %>
 - | **visitor** | <%= t("responses.orders.post.table.visitor") %>
 - | **score** | <%= t("responses.orders.post.table.score") %>
 - | **recommendation** | <%= t("responses.orders.post.table.recommendation") %>
+- | **status** | <%= t("responses.orders.post.table.status") %>
 - | **device** | <%= t("responses.orders.post.table.device_title") %>
 device | **user_id** | <%= t("responses.orders.post.table.device.user_id") %>
 device | **fingerprint** | <%= t("responses.orders.post.table.device.fingerprint") %>

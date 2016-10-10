@@ -684,6 +684,9 @@ en:
             `REVIEW` or `DECLINE`.<br /><br />
             For transactions that were not analyzed the value `NONE` will be
             returned (see **order.analyze** parameter)."
+          status:
+            "Current status for this transaction. Either `APPROVED`, `PENDING`,
+            `DECLINED`, `CANCELED`, `NOT_AUTHORIZED`, `NOT_ANALYZED` or `FRAUD`"
           geolocation_title:
             "Object containing the customer's geolocation data"
           device_title: "Object containing the device information collected"
