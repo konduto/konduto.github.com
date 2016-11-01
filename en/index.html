@@ -338,7 +338,7 @@ you can send the list over to analysis.</p>
 </tr>
 <tr>
 <td>status</td>
-<td><em>translation missing: en.required_if_credit</em> <br /> The status of the transaction returned by the payment processor. Accepts <code class="prettyprint">approved</code>, <code class="prettyprint">declined</code> or <code class="prettyprint">pending</code> if the payment wasn&rsquo;t been processed yet.<br /><strong>Max. 8 chars, string.</strong></td>
+<td><em>(required if &lsquo;credit&rsquo;)</em> <br /> The status of the transaction returned by the payment processor. Accepts <code class="prettyprint">approved</code>, <code class="prettyprint">declined</code> or <code class="prettyprint">pending</code> if the payment wasn&rsquo;t been processed yet.<br /><strong>Max. 8 chars, string.</strong></td>
 </tr>
 <tr>
 <td>bin</td>
@@ -770,26 +770,13 @@ including <code class="prettyprint">recommendation</code>, <code class="prettypr
 <span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/email/{email}
 </code></pre>
 
-<blockquote>
-<p>Email Blacklist URLs</p>
-</blockquote>
-<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/address/{id}
-</code></pre>
-
 <p>The Blacklist is a resource that allows you to block orders that contain
 certain data. Purchases made with this information will be <strong>declined
 automatically</strong> by our platform. You can add an entry to the Blacklist
 permanently or until a certain expiration date.</p>
 
 <p>With the Blacklist API you can <strong>add</strong>, <strong>update</strong>, <strong>query</strong> and
-<strong>remove</strong> items from the list. Currently you can block <strong>emails</strong> and
-<strong>addresses</strong>.</p>
-
-<p>Please note that to manage an <strong>address</strong> you need to give it a
-unique id.</p>
+<strong>remove</strong> email addresses from the list.</p>
 
 <h2 id="add-an-item">Add an item</h2>
 
@@ -798,21 +785,6 @@ unique id.</p>
 </blockquote>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"email_address"</span>:<span class="s2">"mary.jane@example.com"</span>,
-  <span class="s2">"days_to_expire"</span>:180
-<span class="o">}</span>
-</code></pre>
-
-<blockquote>
-<p>Example of adding an address to the Blacklist</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>  
-  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
-  <span class="s2">"address_line_1"</span>:<span class="s2">"123 Main St."</span>,
-  <span class="s2">"address_line_2"</span>:<span class="s2">"Apartment 4"</span>,
-  <span class="s2">"city"</span>:<span class="s2">"New York City"</span>,
-  <span class="s2">"state"</span>:<span class="s2">"NY"</span>,
-  <span class="s2">"zip"</span>:<span class="s2">"10460"</span>,
-  <span class="s2">"country"</span>:<span class="s2">"US"</span>,
   <span class="s2">"days_to_expire"</span>:180
 <span class="o">}</span>
 </code></pre>
@@ -835,48 +807,6 @@ remain in the Blacklist indefinitely.</p>
 <tr>
 <td>email_address</td>
 <td><em>(required)</em> <br /> Customer&rsquo;s e-mail address<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>days_to_expire</td>
-<td><em>(optional)</em> <br /> Days for this entry to be automatically removed from the Blacklist <br /><strong>Number.</strong></td>
-</tr>
-</tbody></table>
-
-<h4 id="parameters-to-add-an-address">Parameters to add an address</h4>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>address_identifier</td>
-<td><em>(required)</em> <br /> <strong>Unique</strong> ID for this address. Is used to reference this record in the Blacklist.<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>address_line_1</td>
-<td><em>(optional)</em> <br /> Cardholder&rsquo;s billing address on file with the bank. <br /><strong>Max. 255 chars, string.</strong></td>
-</tr>
-<tr>
-<td>address_line_2</td>
-<td><em>(optional)</em> <br /> Additional cardholder address information. <br /><strong>Max. 255 chars, string.</strong></td>
-</tr>
-<tr>
-<td>city</td>
-<td><em>(optional)</em> <br /> Cardholder&rsquo;s city.<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>state</td>
-<td><em>(optional)</em> <br /> Cardholder&rsquo;s state.<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>zip</td>
-<td><em>(optional)</em> <br /> Cardholder&rsquo;s ZIP code.<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>country</td>
-<td><em>(optional)</em> <br /> Cardholder&rsquo;s country code (<a href="https://en.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a>) <br /><strong>Exactly 2 chars, string.</strong></td>
 </tr>
 <tr>
 <td>days_to_expire</td>

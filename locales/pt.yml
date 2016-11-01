@@ -533,40 +533,19 @@ pt:
       Blacklist permanentemente ou até uma certa data de expiração.
 
       Com a API de Blacklist você pode **adicionar**, **atualizar**,
-      **consultar** e **remover** itens da lista. Atualmente é possível
-      bloquear **emails** e **endereços**.
-
-      Note que para gerenciar um **endereço** você precisa associar um
-      identificador único para aquela entrada.
+      **consultar** e **remover** emails da lista.
 
     code:
       email_resources: URLs da Blacklist de Email
-      address_resources: URLs da Blacklist de Endereço
       email_add: Exemplo de adição de email à Blacklist
-      address_add: Exemplo de adição de endereço à Blacklist
       update: Examplo de atualização de expiração
 
     table:
       email_title: Parâmetros para adicionar um email
-      address_title: Parâmetros para adicionar um endereço
       email_address: "Endereço de email<br />**Max. 100 chars, string**"
       days_to_expire:
         "Dias para que esta entrada seja removida automaticamente da
         Blacklist<br />**Número.**"
-      address_identifier:
-        "Identificador **único** do endereço. Será utilizado para referenciar
-        este registro na Blacklist no futuro.<br />**Max. 100 chars, string.**"
-      address_line_1:
-        "Endereço de entrega do destinatário.<br />**Max. 255 chars, string.**"
-      address_line_2:
-        "Complemento do endereço de fatura.<br />**Max. 255 chars, string.**"
-      city: "Cidade do destinatário.<br>**Max. 100 chars, string.**"
-      state: "Estado do destinatário<br>**Max. 100 chars, string.**"
-      zip: "CEP do destinatário.<br>**Max. 100 chars, string.**"
-      country: 
-        "Código do país do destinatário [ISO 3166-2]
-        (https://pt.wikipedia.org/wiki/ISO_3166-2)
-        <br />**Exatamente 2 chars, string.**"
 
 
     post:

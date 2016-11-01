@@ -523,49 +523,21 @@ en:
       permanently or until a certain expiration date.
 
       With the Blacklist API you can **add**, **update**, **query** and
-      **remove** items from the list. Currently you can block **emails** and
-      **addresses**.
-
-      Please note that to manage an **address** you need to give it a
-      unique id.
+      **remove** email addresses from the list.
 
     code:
       email_resources: Email Blacklist URLs
-      address_resources: Address Blacklist URLs
       email_add: Example of adding an email to the Blacklist
-      address_add: Example of adding an address to the Blacklist
       update: Example of an update to the expiration date
 
     table:
       email_title: Parameters to add an email
-      address_title: Parameters to add an address
 
       email_address:
         "Customer's e-mail address<br />**Max. 100 chars, string.**"
       days_to_expire:
         "Days for this entry to be automatically removed from the Blacklist
-        <br />**Number.**"
-      address_identifier:
-        "**Unique** ID for this address. Is used to reference this record in
-        the Blacklist.<br />**Max. 100 chars, string.**"
-      address_line_1:
-        "Cardholder's billing address on file with the bank.
-        <br />**Max. 255 chars, string.**"
-      address_line_2:
-        "Additional cardholder address information.
-        <br />**Max. 255 chars, string.**"
-      city:
-        "Cardholder's city.<br />**Max. 100 chars, string.**"
-      state:
-        "Cardholder's state.<br />**Max. 100 chars, string.**"
-      zip:
-        "Cardholder's ZIP code.<br />**Max. 100 chars, string.**"
-      country:
-        "Cardholder's country code
-        ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2))
-        <br />**Exactly 2 chars, string.**"
-
-      
+        <br />**Number.**"      
 
     post:
       title: Add an item

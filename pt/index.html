@@ -350,7 +350,7 @@ como compras com dois cartões de crédito.</p>
 </tr>
 <tr>
 <td>status</td>
-<td><em>translation missing: pt.required_if_credit</em> <br /> O status do pagamento retornado pela operadora de cartão. <br />Pode ser approved (aprovado), declined (negado) ou pending (pendente), caso o pagamento não tenha sido feito ainda. <br /><strong>Max. 8 chars, string.</strong></td>
+<td><em>(obrigatório para &lsquo;credit&rsquo;)</em> <br /> O status do pagamento retornado pela operadora de cartão. <br />Pode ser approved (aprovado), declined (negado) ou pending (pendente), caso o pagamento não tenha sido feito ainda. <br /><strong>Max. 8 chars, string.</strong></td>
 </tr>
 <tr>
 <td>bin</td>
@@ -790,26 +790,13 @@ incluindo <code class="prettyprint">recommendation</code>, <code class="prettypr
 <span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/email/{email}
 </code></pre>
 
-<blockquote>
-<p>URLs da Blacklist de Email</p>
-</blockquote>
-<pre class="highlight apache"><code><span class="ss">POST</span>    https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">PUT</span>     https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">GET</span>     https://api.konduto.com/v1/blacklist/address/{id}
-<span class="ss">DELETE</span>  https://api.konduto.com/v1/blacklist/address/{id}
-</code></pre>
-
 <p>A Blacklist é um recurso que lhe permite bloquear pedidos que contém
 certos dados. Compras feitas com estas informações serão <strong>negadas
 automaticamente</strong> pelo nosso sistema. Você pode adicionar uma entrada à
 Blacklist permanentemente ou até uma certa data de expiração.</p>
 
 <p>Com a API de Blacklist você pode <strong>adicionar</strong>, <strong>atualizar</strong>,
-<strong>consultar</strong> e <strong>remover</strong> itens da lista. Atualmente é possível
-bloquear <strong>emails</strong> e <strong>endereços</strong>.</p>
-
-<p>Note que para gerenciar um <strong>endereço</strong> você precisa associar um
-identificador único para aquela entrada.</p>
+<strong>consultar</strong> e <strong>remover</strong> emails da lista.</p>
 
 <h2 id="adicionar-item">Adicionar item</h2>
 
@@ -818,21 +805,6 @@ identificador único para aquela entrada.</p>
 </blockquote>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"email_address"</span>:<span class="s2">"jsilva@exemplo.com.br"</span>,
-  <span class="s2">"days_to_expire"</span>:180
-<span class="o">}</span>
-</code></pre>
-
-<blockquote>
-<p>Exemplo de adição de endereço à Blacklist</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>  
-  <span class="s2">"address_identifier"</span>:<span class="s2">"382773ABC"</span>,
-  <span class="s2">"address_line_1"</span>:<span class="s2">"Rua Primeiro de Abril, 123"</span>,
-  <span class="s2">"address_line_2"</span>:<span class="s2">"Apto. 45"</span>,
-  <span class="s2">"city"</span>:<span class="s2">"São Paulo"</span>,
-  <span class="s2">"state"</span>:<span class="s2">"SP"</span>,
-  <span class="s2">"zip"</span>:<span class="s2">" 01001-001"</span>,
-  <span class="s2">"country"</span>:<span class="s2">"BR"</span>,
   <span class="s2">"days_to_expire"</span>:180
 <span class="o">}</span>
 </code></pre>
@@ -856,48 +828,6 @@ Blacklist indefinidamente.</p>
 <tr>
 <td>email_address</td>
 <td><em>(obrigatório)</em> <br /> Endereço de email<br /><strong>Max. 100 chars, string</strong></td>
-</tr>
-<tr>
-<td>days_to_expire</td>
-<td><em>(opcional)</em> <br /> Dias para que esta entrada seja removida automaticamente da Blacklist<br /><strong>Número.</strong></td>
-</tr>
-</tbody></table>
-
-<h4 id="parâmetros-para-adicionar-um-endereço">Parâmetros para adicionar um endereço</h4>
-
-<table><thead>
-<tr>
-<th>Parâmetro</th>
-<th>Descrição</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>address_identifier</td>
-<td><em>(obrigatório)</em> <br /> Identificador <strong>único</strong> do endereço. Será utilizado para referenciar este registro na Blacklist no futuro.<br /><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>address_line_1</td>
-<td><em>(opcional)</em> <br /> Endereço de entrega do destinatário.<br /><strong>Max. 255 chars, string.</strong></td>
-</tr>
-<tr>
-<td>address_line_2</td>
-<td><em>(opcional)</em> <br /> Complemento do endereço de fatura.<br /><strong>Max. 255 chars, string.</strong></td>
-</tr>
-<tr>
-<td>city</td>
-<td><em>(opcional)</em> <br /> Cidade do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>state</td>
-<td><em>(opcional)</em> <br /> Estado do destinatário<br><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>zip</td>
-<td><em>(opcional)</em> <br /> CEP do destinatário.<br><strong>Max. 100 chars, string.</strong></td>
-</tr>
-<tr>
-<td>country</td>
-<td><em>(opcional)</em> <br /> Código do país do destinatário <a href="https://pt.wikipedia.org/wiki/ISO_3166-2">ISO 3166-2</a> <br /><strong>Exatamente 2 chars, string.</strong></td>
 </tr>
 <tr>
 <td>days_to_expire</td>

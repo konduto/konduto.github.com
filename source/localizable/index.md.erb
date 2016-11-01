@@ -463,15 +463,6 @@ GET     https://api.konduto.com/v1/blacklist/email/{email}
 DELETE  https://api.konduto.com/v1/blacklist/email/{email}
 ```
 
-> <%= t("blacklist.code.email_resources") %>
-
-```apache
-POST    https://api.konduto.com/v1/blacklist/address/{id}
-PUT     https://api.konduto.com/v1/blacklist/address/{id}
-GET     https://api.konduto.com/v1/blacklist/address/{id}
-DELETE  https://api.konduto.com/v1/blacklist/address/{id}
-```
-
 <%= t("blacklist.content") %>
 
 
@@ -491,21 +482,6 @@ DELETE  https://api.konduto.com/v1/blacklist/address/{id}
 }
 ```
 
-> <%= t("blacklist.code.address_add") %>
-
-```shell
-{  
-  "address_identifier":"382773ABC",
-  "address_line_1":"<%= t("examples.address1") %>",
-  "address_line_2":"<%= t("examples.address2") %>",
-  "city":"<%= t("examples.city") %>",
-  "state":"<%= t("examples.state") %>",
-  "zip":"<%= t("examples.zip") %>",
-  "country":"<%= t("examples.country") %>",
-  "days_to_expire":180
-}
-```
-
 <%= t("blacklist.post.content") %>
 
 
@@ -515,22 +491,6 @@ DELETE  https://api.konduto.com/v1/blacklist/address/{id}
 -------------- | --------------
 email_address | *<%= t("required") %>* <br /> <%= t("blacklist.table.email_address") %> 
 days_to_expire | *<%= t("optional") %>* <br /> <%= t("blacklist.table.days_to_expire") %> 
-
-
-#### <%= t("blacklist.table.address_title") %> 
-
-<%= t("parameter") %> | <%= t("description") %>
--------------- | --------------
-address_identifier | *<%= t("required") %>* <br /> <%= t("blacklist.table.address_identifier") %> 
-address_line_1 | *<%= t("optional") %>* <br /> <%= t("blacklist.table.address_line_1") %> 
-address_line_2 | *<%= t("optional") %>* <br /> <%= t("blacklist.table.address_line_2") %> 
-city | *<%= t("optional") %>* <br /> <%= t("blacklist.table.city") %> 
-state | *<%= t("optional") %>* <br /> <%= t("blacklist.table.state") %> 
-zip | *<%= t("optional") %>* <br /> <%= t("blacklist.table.zip") %> 
-country | *<%= t("optional") %>* <br /> <%= t("blacklist.table.country") %> 
-days_to_expire | *<%= t("optional") %>* <br /> <%= t("blacklist.table.days_to_expire") %> 
-
-
 
 
 <%# %>
