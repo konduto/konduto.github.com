@@ -650,7 +650,7 @@ pt:
           objeto `order` são:
 
         table:
-          status:
+          obj_status:
             "Mensagem de status da chamada. Retorna `ok` quando bem sucedida e
             `error` quando falhou."
           order: "Objeto contendo a resposta da análise."

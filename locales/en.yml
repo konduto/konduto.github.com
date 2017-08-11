@@ -642,7 +642,7 @@ en:
 
         table:
           order: "Object containing the analysis respose."
-          status:
+          obj_status:
             "Request status message. Responds `ok` for successful or `error`
             for failed requests."
           id: "Unique identifier sent in the request"
