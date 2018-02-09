@@ -369,6 +369,9 @@ en:
         content: |
           This list of objects contains the products added to the order and
           their details.
+          <br /><br />
+          <b>PLEASE NOTE:<b/> you must send at least one of the parameters marked
+          with a *.
 
         table:
           sku:
