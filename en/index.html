@@ -19,13 +19,13 @@
     <a href="#" id="nav-button">
       <span>
         NAV
-        <img src="../images/navbar.png" />
+        <img src="../images/navbar.png" alt="Navbar" />
       </span>
     </a>
     <div class="tocify-wrapper">
       <p align="center">
         <a href="https://www.konduto.com">
-          <img src="../images/logo.png" />
+          <img src="../images/logo.png" alt="Logo" />
         </a>
       </p>
       <div id="toc">
@@ -63,7 +63,8 @@ suggestions about how to improve it.</p>
 <blockquote>
 <p><a href="https://github.com/konduto/php-sdk">php-sdk</a> - PHP helper<br>
 <a href="https://github.com/konduto/java-sdk">java-sdk</a> - Java helper<br>
-<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper  </p>
+<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper<br>
+<a href="https://github.com/konduto/konduto-ruby">ruby-sdk</a> - Ruby helper</p>
 </blockquote>
 
 <p>We offer SDKs to help with the development effort as well as plugin
@@ -487,7 +488,10 @@ download.</p>
 </code></pre>
 
 <p>This list of objects contains the products added to the order and
-their details.</p>
+their details.
+<br /><br />
+<b>PLEASE NOTE:<b/> you must send at least one of the parameters marked
+with a *.</p>
 
 <table><thead>
 <tr>
@@ -496,11 +500,11 @@ their details.</p>
 </tr>
 </thead><tbody>
 <tr>
-<td>sku</td>
+<td>sku *</td>
 <td><em>(optional)</em> <br /> Product or service&rsquo;s <a href="https://en.wikipedia.org/wiki/Stock-keeping_unit">SKU</a> or inventory id. <br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>product_code</td>
+<td>product_code *</td>
 <td><em>(optional)</em> <br /> Product or service&rsquo;s <a href="https://en.wikipedia.org/wiki/Universal_Product_Code">UPC</a>, barcode or secondary id.<br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
@@ -508,15 +512,15 @@ their details.</p>
 <td><em>(optional)</em> <br /> Category code for the item purchased.<br /> See our <a href='#'>category codes</a> for more information .<br /><strong>Max. 4 digits, number.</strong></td>
 </tr>
 <tr>
-<td>name</td>
+<td>name *</td>
 <td><em>(optional)</em> <br /> Name of the product or service.<br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>description</td>
+<td>description *</td>
 <td><em>(optional)</em> <br /> Detailed description of the item. <br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>unit_cost</td>
+<td>unit_cost *</td>
 <td><em>(optional)</em> <br /> Cost of a single unit of this item. <br /><strong>Max. 10 digits, number.</strong></td>
 </tr>
 <tr>

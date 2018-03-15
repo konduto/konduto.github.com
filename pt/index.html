@@ -19,13 +19,13 @@
     <a href="#" id="nav-button">
       <span>
         NAV
-        <img src="../images/navbar.png" />
+        <img src="../images/navbar.png" alt="Navbar" />
       </span>
     </a>
     <div class="tocify-wrapper">
       <p align="center">
         <a href="https://www.konduto.com">
-          <img src="../images/logo.png" />
+          <img src="../images/logo.png" alt="Logo" />
         </a>
       </p>
       <div id="toc">
@@ -70,7 +70,8 @@ suporte@konduto.com com suas perguntas e sugestões de como melhora-lo.</p>
 <blockquote>
 <p><a href="https://github.com/konduto/php-sdk">php-sdk</a> - PHP helper<br>
 <a href="https://github.com/konduto/java-sdk">java-sdk</a> - Java helper<br>
-<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper  </p>
+<a href="https://github.com/konduto/dotnet-sdk">dotnet-sdk</a> - .NET helper<br>
+<a href="https://github.com/konduto/konduto-ruby">ruby-sdk</a> - Ruby helper</p>
 </blockquote>
 
 <p>Nós disponibilizamos bibliotecas para ajudar com o desenvolvimento, bem
@@ -501,7 +502,10 @@ serviço ou download de software.</p>
 
 <p>Esta lista de objetos contém uma lista dos produtos que foram
 comprados neste pedido. Não existe limite para a quantidade de
-objetos que esta lista aceita.</p>
+objetos que esta lista aceita.
+<br /><br />
+<b>ATENÇÃO:<b/> é obrigatório fornecer ao menos 1 dos campos marcados
+com *.</p>
 
 <table><thead>
 <tr>
@@ -510,11 +514,11 @@ objetos que esta lista aceita.</p>
 </tr>
 </thead><tbody>
 <tr>
-<td>sku</td>
+<td>sku *</td>
 <td><em>(opcional)</em> <br /> <a href="https://pt.wikipedia.org/wiki/Stock_Keeping_Unit">SKU</a> ou número de inventário do produto ou serviço. <br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>product_code</td>
+<td>product_code *</td>
 <td><em>(opcional)</em> <br /> Código de barras ou <a href="https://pt.wikipedia.org/wiki/C%C3%B3digo_de_barras">UPC</a> do produto ou serviço.<br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
@@ -522,15 +526,15 @@ objetos que esta lista aceita.</p>
 <td><em>(opcional)</em> <br /> Código da categoria do produto comprado.<br />Veja nossa <a href="#">lista de categorias</a> para mais informações. <br /><strong>Max. 4 dígitos, número.</strong></td>
 </tr>
 <tr>
-<td>name</td>
+<td>name *</td>
 <td><em>(opcional)</em> <br /> Nome do produto ou serviço.<br><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>description</td>
+<td>description *</td>
 <td><em>(opcional)</em> <br /> Descrição de detalhada do produto ou serviço. <br /><strong>Max. 100 chars, string.</strong></td>
 </tr>
 <tr>
-<td>unit_cost</td>
+<td>unit_cost *</td>
 <td><em>(opcional)</em> <br /> Custo unitário deste produto ou serviço. <br /><strong>Max. 10 dígitos, número.</strong></td>
 </tr>
 <tr>
