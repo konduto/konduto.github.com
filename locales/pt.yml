@@ -382,9 +382,6 @@ pt:
           Esta lista de objetos contém uma lista dos produtos que foram
           comprados neste pedido. Não existe limite para a quantidade de
           objetos que esta lista aceita.
-          <br /><br />
-          <b>ATENÇÃO:<b/> é obrigatório fornecer ao menos 1 dos campos marcados
-          com *.
 
         table:
           sku:
