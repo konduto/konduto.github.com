@@ -425,6 +425,11 @@ pt:
 
         table:
           type: "Tipo de viagem. Atualmente são suportados `flight` ou `bus`."
+          expiration_date:
+              "Data e hora em UTC do prazo de expiração da reserva no formato
+              YYYY-MM-DDThh:mmZ ([ISO 8601](https://pt.wikipedia.org/wiki/ISO_8601))
+              <br />**Exatamente 17 chars, string.**"
+          company: "Nome da companhia aérea ou empresa de ônibus."
           departure: "Objeto com as informações do viagem de **ida**."
           return: "Objeto com as informações do viagem de **volta**."
           passengers: "Array de objetos com os dados dos passegeiros"

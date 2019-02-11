@@ -308,10 +308,12 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.tabl
 {  
   "travel":{  
     "type":"flight",
+    "expiration_date": "2025-12-25T15:41:53Z",
     "departure":{  
       "origin_airport":"<%= t("examples.airport1") %>",
       "destination_airport":"<%= t("examples.airport2") %>",
       "date":"2018-12-25T18:00Z",
+      "company": "LATAM",
       "number_of_connections":1,
       "class":"economy",
       "fare_basis":"Y"
@@ -320,6 +322,7 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.tabl
       "origin_airport":"<%= t("examples.airport2") %>",
       "destination_airport":"<%= t("examples.airport1") %>",
       "date":"2018-12-30T18:00Z",
+      "company": "Avianca",
       "number_of_connections":1,
       "class":"business"
     },
@@ -360,6 +363,7 @@ created_at | *<%= t("optional") %>* <br /> <%= t("orders.post.shopping_cart.tabl
 <%= t("parameter") %> | <%= t("description") %>
 -------------- | --------------
 type | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.type") %> 
+expiration_date | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.expiration_date") %> 
 departure | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.departure") %> 
 return | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.return") %> 
 passengers | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.passengers") %> 
@@ -374,6 +378,7 @@ destination_city | *<%= t("required_if_bus") %>* <br /> <%= t("orders.post.trave
 origin_airport | *<%= t("required_if_flight") %>* <br /> <%= t("orders.post.travel.table.origin_airport") %> 
 destination_airport | *<%= t("required_if_flight") %>* <br /> <%= t("orders.post.travel.table.destination_airport") %> 
 date | *<%= t("required") %>* <br /> <%= t("orders.post.travel.table.date") %> 
+company | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.company") %> 
 number_of_connections | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.number_of_connections") %> 
 class | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.class") %> 
 fare_basis | *<%= t("optional") %>* <br /> <%= t("orders.post.travel.table.fare_basis") %> 

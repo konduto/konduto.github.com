@@ -537,10 +537,12 @@ their details.</p>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"travel"</span>:<span class="o">{</span>  
     <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+    <span class="s2">"expiration_date"</span>: <span class="s2">"2025-12-25T15:41:53Z"</span>,
     <span class="s2">"departure"</span>:<span class="o">{</span>  
       <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
       <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
       <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+      <span class="s2">"company"</span>: <span class="s2">"LATAM"</span>,
       <span class="s2">"number_of_connections"</span>:1,
       <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
       <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
@@ -549,6 +551,7 @@ their details.</p>
       <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
       <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
       <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+      <span class="s2">"company"</span>: <span class="s2">"Avianca"</span>,
       <span class="s2">"number_of_connections"</span>:1,
       <span class="s2">"class"</span>:<span class="s2">"business"</span>
     <span class="o">}</span>,
@@ -597,6 +600,10 @@ their details.</p>
 <td><em>(required)</em> <br /> Transportation type. Currently <code class="prettyprint">flight</code> or <code class="prettyprint">bus</code> are supported.</td>
 </tr>
 <tr>
+<td>expiration_date</td>
+<td><em>(optional)</em> <br /> UTC date and time of PNR reservation expiration YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exactly 17 chars, string.</strong></td>
+</tr>
+<tr>
 <td>departure</td>
 <td><em>(required)</em> <br /> Object with the <strong>departure</strong> information.</td>
 </tr>
@@ -637,6 +644,10 @@ their details.</p>
 <tr>
 <td>date</td>
 <td><em>(required)</em> <br /> UTC date and time of departure in YYYY-MM-DDThh:mmZ format (<a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exactly 17 chars, string.</strong></td>
+</tr>
+<tr>
+<td>company</td>
+<td><em>(optional)</em> <br /> Name of the airline or bus company.</td>
 </tr>
 <tr>
 <td>number_of_connections</td>

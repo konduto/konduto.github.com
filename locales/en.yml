@@ -412,6 +412,11 @@ en:
         table:
           type:
             "Transportation type. Currently `flight` or `bus` are supported."
+          expiration_date:
+              "UTC date and time of PNR reservation expiration YYYY-MM-DDThh:mmZ
+              format ([ISO 8601](https://en.wikipedia.org/wiki/ISO_8601))
+              <br />**Exactly 17 chars, string.**"
+          company: "Name of the airline or bus company."
           departure: "Object with the **departure** information."
           return: "Object with the **return** information."
           passengers: "Array of objects with the passenger details."

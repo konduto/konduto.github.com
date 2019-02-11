@@ -551,10 +551,12 @@ objetos que esta lista aceita.</p>
 <pre class="highlight shell"><code><span class="o">{</span>  
   <span class="s2">"travel"</span>:<span class="o">{</span>  
     <span class="s2">"type"</span>:<span class="s2">"flight"</span>,
+    <span class="s2">"expiration_date"</span>: <span class="s2">"2025-12-25T15:41:53Z"</span>,
     <span class="s2">"departure"</span>:<span class="o">{</span>  
       <span class="s2">"origin_airport"</span>:<span class="s2">"GRU"</span>,
       <span class="s2">"destination_airport"</span>:<span class="s2">"SFO"</span>,
       <span class="s2">"date"</span>:<span class="s2">"2018-12-25T18:00Z"</span>,
+      <span class="s2">"company"</span>: <span class="s2">"LATAM"</span>,
       <span class="s2">"number_of_connections"</span>:1,
       <span class="s2">"class"</span>:<span class="s2">"economy"</span>,
       <span class="s2">"fare_basis"</span>:<span class="s2">"Y"</span>
@@ -563,6 +565,7 @@ objetos que esta lista aceita.</p>
       <span class="s2">"origin_airport"</span>:<span class="s2">"SFO"</span>,
       <span class="s2">"destination_airport"</span>:<span class="s2">"GRU"</span>,
       <span class="s2">"date"</span>:<span class="s2">"2018-12-30T18:00Z"</span>,
+      <span class="s2">"company"</span>: <span class="s2">"Avianca"</span>,
       <span class="s2">"number_of_connections"</span>:1,
       <span class="s2">"class"</span>:<span class="s2">"business"</span>
     <span class="o">}</span>,
@@ -614,6 +617,10 @@ no array <code class="prettyprint">passengers</code>.</p>
 <td><em>(obrigatório)</em> <br /> Tipo de viagem. Atualmente são suportados <code class="prettyprint">flight</code> ou <code class="prettyprint">bus</code>.</td>
 </tr>
 <tr>
+<td>expiration_date</td>
+<td><em>(opcional)</em> <br /> Data e hora em UTC do prazo de expiração da reserva no formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exatamente 17 chars, string.</strong></td>
+</tr>
+<tr>
 <td>departure</td>
 <td><em>(obrigatório)</em> <br /> Objeto com as informações do viagem de <strong>ida</strong>.</td>
 </tr>
@@ -654,6 +661,10 @@ no array <code class="prettyprint">passengers</code>.</p>
 <tr>
 <td>date</td>
 <td><em>(obrigatório)</em> <br /> Date e hora do embarque em UTC no formato YYYY-MM-DDThh:mmZ (<a href="https://pt.wikipedia.org/wiki/ISO_8601">ISO 8601</a>) <br /><strong>Exatamente 17 chars, string.</strong></td>
+</tr>
+<tr>
+<td>company</td>
+<td><em>(opcional)</em> <br /> Nome da companhia aérea ou empresa de ônibus.</td>
 </tr>
 <tr>
 <td>number_of_connections</td>
