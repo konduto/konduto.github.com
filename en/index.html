@@ -76,10 +76,10 @@ of the integrations available to date, which are hosted on our
 
 <h1 id="api-authentication">API Authentication</h1>
 <pre class="highlight conf"><code><span class="c"># How to build
-</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T738D516F09CAB3A2C1EE</span>:)
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T00000111112222233333</span>:)
 
 <span class="c"># Result
-</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg</span>==
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDAwMDAwMTExMTEyMjIyMjMzMzMzOg</span>==
 </code></pre>
 
 <p>We use the <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic Auth</a> standard to
@@ -2265,7 +2265,7 @@ notification and will not try to deliver it again.</p>
 <h2 id="calculating-the-signature">Calculating the signature</h2>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span> 
 <span class="c1">// Defines the private key
-</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T738D516F09CAB3A2C1EE"</span><span class="p">;</span>
+</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T00000111112222233333"</span><span class="p">;</span>
 
 <span class="c1">// Original JSON from the webhook
 </span><span class="nv">$webhook</span> <span class="o">=</span> <span class="s1">'{

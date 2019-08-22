@@ -83,10 +83,10 @@ entre em contato através do email <a href="mailto:oi@konduto.com">oi@konduto.co
 
 <h1 id="autenticação-da-api">Autenticação da API</h1>
 <pre class="highlight conf"><code><span class="c"># Como montar
-</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T738D516F09CAB3A2C1EE</span>:)
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">BASE64</span>(<span class="n">T00000111112222233333</span>:)
 
 <span class="c"># Resultado
-</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDczOEQ1MTZGMDlDQUIzQTJDMUVFOg</span>==
+</span><span class="n">Authorization</span>: <span class="n">Basic</span> <span class="n">VDAwMDAwMTExMTEyMjIyMjMzMzMzOg</span>==
 </code></pre>
 
 <p>Nós usamos padrão <a href="https://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic Auth</a>
@@ -2293,7 +2293,7 @@ notificação foi recebida corretamente e não tentaremos outras entregas.</p>
 <h2 id="calculando-a-assinatura">Calculando a assinatura</h2>
 <pre class="highlight php"><code><span class="cp">&lt;?php</span> 
 <span class="c1">// Define a chave privada
-</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T738D516F09CAB3A2C1EE"</span><span class="p">;</span>
+</span><span class="nv">$private_key</span> <span class="o">=</span> <span class="s2">"T00000111112222233333"</span><span class="p">;</span>
 
 <span class="c1">// JSON original recebido no webhook
 </span><span class="nv">$webhook</span> <span class="o">=</span> <span class="s1">'{
