@@ -394,7 +394,7 @@ pt:
             serviço.<br />**Max. 100 chars, string.**"
           category:
             "Código da categoria do produto comprado.<br />Veja nossa [lista de
-            categorias](#) para mais informações.
+            categorias](http://docs.konduto.com/pt/#categorias-de-produtos) para mais informações.
             <br />**Max. 4 dígitos, número.**"
           name: "Nome do produto ou serviço.<br>**Max. 100 chars, string.**"
           description:

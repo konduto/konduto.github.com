@@ -381,7 +381,7 @@ en:
             secondary id.<br />**Max. 100 chars, string.**"
           category:
             "Category code for the item purchased.<br />
-            See our <a href='#'>category codes</a> for more information
+            See our <a href='http://docs.konduto.com/en/#product-categories'>category codes</a> for more information
             .<br />**Max. 4 digits, number.**"
           name:
             "Name of the product or service.<br />**Max. 100 chars, string.**"
